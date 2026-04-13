@@ -90,6 +90,6 @@ interface ApiService {
      * 获取收藏列表
      * GET /lg/collect/page/{page}/json
      */
-    @GET("lg/collect/page/{page}/json")
+    @GET("lg/collect/list/{page}/json")
     suspend fun getCollectList(@Path("page") page: Int): Response<WanResponse<PageData<Article>>>
 }

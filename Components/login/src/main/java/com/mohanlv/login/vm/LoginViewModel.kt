@@ -62,6 +62,7 @@ class LoginViewModel : ViewModel() {
                         )
                     }
                 } else {
+                    android.util.Log.e("LoginViewModel", "登录失败，响应码: ${response.code()}")
                     _loginResult.value = LoginResult.Error("网络错误: ${response.code()}")
                 }
             } catch (e: Exception) {

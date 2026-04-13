@@ -96,34 +96,53 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
     }
 
     private fun loadCollectList() {
-        if (isLoading) return
+        Log.d(TAG, "loadCollectList() called, currentPage=$currentPage, isLoading=$isLoading")
+        if (isLoading) {
+            Log.d(TAG, "正在加载中，直接返回")
+            return
+        }
         isLoading = true
         
         viewLifecycleOwner.lifecycleScope.launch {
             try {
+                Log.d(TAG, "开始加载收藏列表，页码: $currentPage")
                 val response = apiService.getCollectList(currentPage)
+                Log.d(TAG, "收到响应，code=${response.code()}")
+                
                 if (response.isSuccessful) {
                     val body = response.body()
+                    Log.d(TAG, "body isSuccess=${body?.isSuccess()}, data=${body?.data}")
                     if (body != null && body.isSuccess()) {
                         val newArticles = body.data?.datas ?: emptyList()
+                        Log.d(TAG, "解析到 ${newArticles.size} 条收藏")
+                        
                         if (currentPage == 0) {
+                            Log.d(TAG, "第一页，清空旧数据")
                             articles.clear()
                         }
                         articles.addAll(newArticles)
-                        binding.recyclerView.adapter?.notifyDataSetChanged()
+                        Log.d(TAG, "articles 当前共有 ${articles.size} 条")
                         
-                        // 更新空状态
-                        binding.layoutEmpty.visibility = if (articles.isEmpty()) View.VISIBLE else View.GONE
+                        activity?.runOnUiThread {
+                            Log.d(TAG, "UI线程: 调用 notifyDataSetChanged")
+                            binding.recyclerView.adapter?.notifyDataSetChanged()
+                            Log.d(TAG, "UI线程: notifyDataSetChanged 完成")
+                            binding.layoutEmpty.visibility = if (articles.isEmpty()) View.VISIBLE else View.GONE
+                            Log.d(TAG, "UI线程: layoutEmpty 已设置")
+                        }
                     } else {
-                        Log.e(TAG, "获取收藏失败: ${body?.errorMsg}")
+                        Log.e(TAG, "API错误: ${body?.errorMsg}")
                     }
+                } else {
+                    Log.e(TAG, "HTTP错误: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "获取收藏失败: ${e.message}")
+                Log.e(TAG, "异常: ${e.message}", e)
                 Toast.makeText(context, "加载失败: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false
                 binding.swipeRefresh.isRefreshing = false
+                Log.d(TAG, "loadCollectList 结束")
             }
         }
     }

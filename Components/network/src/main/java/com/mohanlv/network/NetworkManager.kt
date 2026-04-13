@@ -4,7 +4,9 @@ import android.content.Context
 import com.mohanlv.network.api.ApiService
 import com.mohanlv.network.interceptor.HeaderInterceptor
 import com.mohanlv.network.interceptor.LoggingInterceptor
-import com.mohanlv.network.utils.AppCookieManager
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -29,20 +31,39 @@ object NetworkManager {
     private var isInitialized = false
 
     /**
+     * Cookie 持久化存储
+     */
+    object PersistentCookieJar : CookieJar {
+        private val cookieStore = mutableMapOf<String, List<Cookie>>()
+        
+        override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+            val host = url.host.replace("www.", "")
+            cookieStore[host] = cookies
+            android.util.Log.d("CookieJar", "保存 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
+        }
+
+        override fun loadForRequest(url: HttpUrl): List<Cookie> {
+            val host = url.host.replace("www.", "")
+            val cookies = cookieStore[host] ?: emptyList()
+            if (cookies.isNotEmpty()) {
+                android.util.Log.d("CookieJar", "发送 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
+            }
+            return cookies
+        }
+    }
+
+    /**
      * 初始化网络管理器
      * @param context Application Context
      */
     fun init(context: Context) {
         if (isInitialized) return
 
-        // 初始化 Cookie 管理器
-        AppCookieManager.init(context)
-
         okHttpClient = OkHttpClient.Builder()
             .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
-            .cookieJar(AppCookieManager)
+            .cookieJar(PersistentCookieJar)
             .addInterceptor(HeaderInterceptor(context))
             .addInterceptor(LoggingInterceptor())
             .retryOnConnectionFailure(true)
