@@ -8,6 +8,19 @@ tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
 
+// 生成路由表的 task
+tasks.register<Exec>("generateRouteTable") {
+    group = "router"
+    description = "Generate RouteTable.kt by scanning @Route annotations"
+    
+    workingDir = rootProject.projectDir
+    commandLine("python3", "generate_routes.py")
+    
+    doFirst {
+        println("Generating RouteTable...")
+    }
+}
+
 // 为 library 模块配置 Maven 发布
 subprojects {
     afterEvaluate {
@@ -30,6 +43,13 @@ subprojects {
                 repositories {
                     mavenLocal()
                 }
+            }
+        }
+        
+        // router 模块需要在编译前生成路由表
+        if (project.name == "router") {
+            tasks.matching { it.name.startsWith("compile") }.configureEach {
+                dependsOn(":generateRouteTable")
             }
         }
     }

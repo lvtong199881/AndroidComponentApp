@@ -162,6 +162,7 @@
 
                 <!-- 收藏文章 -->
                 <LinearLayout
+                    android:id="@+id/layoutCollect"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:orientation="horizontal"

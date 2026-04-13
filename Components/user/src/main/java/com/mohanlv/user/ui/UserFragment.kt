@@ -39,6 +39,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
     // 使用 findViewById 替代 ViewBinding 避免 ID 命名空间问题
     private lateinit var layoutLoggedIn: LinearLayout
     private lateinit var layoutNotLogin: LinearLayout
+    private lateinit var layoutCollect: LinearLayout
     private lateinit var tvUsername: TextView
     private lateinit var tvUserId: TextView
     private lateinit var tvCoinCount: TextView
@@ -65,6 +66,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
         // 初始化视图引用
         layoutLoggedIn = binding.root.findViewById(R.id.layoutLoggedIn)
         layoutNotLogin = binding.root.findViewById(R.id.layoutNotLogin)
+        layoutCollect = binding.root.findViewById(R.id.layoutCollect)
         tvUsername = binding.root.findViewById(R.id.tvUsername)
         tvUserId = binding.root.findViewById(R.id.tvUserId)
         tvCoinCount = binding.root.findViewById(R.id.tvCoinCount)
@@ -91,6 +93,11 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
         // 登录按钮（未登录时显示）
         btnLogin.setOnClickListener {
             RouterManager.navigate(RoutePath.LOGIN)
+        }
+        
+        // 我的收藏
+        layoutCollect.setOnClickListener {
+            RouterManager.navigate(RoutePath.COLLECT_LIST)
         }
     }
 

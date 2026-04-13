@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    // maven-publish 已在根项目配置，无需重复应用
 }
 
 android {
@@ -36,6 +35,5 @@ dependencies {
     implementation(project(":base"))
     testImplementation("junit:junit:4.13.2")
 }
-
 
 // publishing 配置已在根项目统一管理

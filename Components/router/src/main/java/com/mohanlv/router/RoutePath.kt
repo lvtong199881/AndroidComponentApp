@@ -21,6 +21,7 @@ object RoutePath {
     // 个人中心
     const val USER = "/home/user"
     const val PROFILE = "/profile/main"
+    const val COLLECT_LIST = "/user/collect"
     
     // 通用
     const val WEB_VIEW = "/common/webview"

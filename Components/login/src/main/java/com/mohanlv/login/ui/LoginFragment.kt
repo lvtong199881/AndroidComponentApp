@@ -9,13 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.base.utils.SPUtils
+import com.mohanlv.router.RoutePath
+import com.mohanlv.router.RouterManager
+import com.mohanlv.router.annotation.Route
 import com.mohanlv.login.databinding.FragmentLoginBinding
 import com.mohanlv.login.model.LoginResult
 import com.mohanlv.login.vm.LoginState
 import com.mohanlv.login.vm.LoginViewModel
-import com.mohanlv.router.RoutePath
-import com.mohanlv.router.RouterManager
-import com.mohanlv.router.annotation.Route
 
 @Route(path = RoutePath.LOGIN, description = "登录页面")
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
