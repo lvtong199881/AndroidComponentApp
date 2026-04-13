@@ -19,18 +19,27 @@ interface ApiService {
     /**
      * 用户登录
      * POST /user/login
-     * 参数：username, password
+     * 参数：username, password (form-urlencoded)
      */
+    @FormUrlEncoded
     @POST("user/login")
-    suspend fun login(@Body request: LoginRequest): Response<WanResponse<LoginData>>
+    suspend fun login(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Response<WanResponse<LoginData>>
 
     /**
      * 用户注册
      * POST /user/register
-     * 参数：username, password, repassword
+     * 参数：username, password, repassword (form-urlencoded)
      */
+    @FormUrlEncoded
     @POST("user/register")
-    suspend fun register(@Body request: RegisterRequest): Response<WanResponse<LoginData>>
+    suspend fun register(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("repassword") repassword: String
+    ): Response<WanResponse<LoginData>>
 
     /**
      * 退出登录

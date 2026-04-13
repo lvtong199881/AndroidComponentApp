@@ -43,8 +43,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val request = LoginRequest(username, password)
-                val response = apiService.login(request)
+                val response = apiService.login(username, password)
 
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -66,7 +65,13 @@ class LoginViewModel : ViewModel() {
                     _loginResult.value = LoginResult.Error("网络错误: ${response.code()}")
                 }
             } catch (e: Exception) {
-                _loginResult.value = LoginResult.Error(e.message ?: "网络请求失败")
+                val errorMsg = when {
+                    e.message?.contains("Unable to resolve") == true -> "网络连接失败，请检查网络设置"
+                    e.message?.contains("timeout") == true -> "请求超时，请稍后重试"
+                    e.message?.contains("CERTIFICATE") == true -> "证书验证失败"
+                    else -> e.message ?: "网络请求失败"
+                }
+                _loginResult.value = LoginResult.Error(errorMsg)
             } finally {
                 _isLoading.value = false
             }
@@ -98,8 +103,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val request = RegisterRequest(username, password, repassword)
-                val response = apiService.register(request)
+                val response = apiService.register(username, password, repassword)
 
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -167,5 +171,15 @@ object LoginState {
         username = ""
         nickname = ""
         token = ""
+    }
+
+    /**
+     * 从外部数据恢复登录状态（用于 App 重启后从 SPUtils 恢复）
+     */
+    fun restore(userId: Int, username: String, nickname: String?) {
+        this.isLoggedIn = true
+        this.userId = userId
+        this.username = username
+        this.nickname = nickname ?: ""
     }
 }

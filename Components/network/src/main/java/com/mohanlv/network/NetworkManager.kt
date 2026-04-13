@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 object NetworkManager {
 
     // WanAndroid API 基础地址
-    private const val BASE_URL = "https://www.wanandroid.com/"
+    private const val BASE_URL = "https://wanandroid.com/"
 
     // 超时配置
     private const val CONNECT_TIMEOUT = 30L
