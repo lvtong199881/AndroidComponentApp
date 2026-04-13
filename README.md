@@ -16,7 +16,7 @@ AndroidComponentApp/
 │   │       ├── AndroidManifest.xml
 │   │       ├── java/com/mohanlv/app/
 │   │       │   ├── AppApplication.kt
-│   │       │   └── MainActivity.kt
+│   │       │   └── MainActivity.kt      # Double Click Exit
 │   │       └── res/
 │   │
 │   ├── dependencies-config.gradle.kts  # 🔑 组件依赖配置（核心）
@@ -31,6 +31,7 @@ AndroidComponentApp/
     │       │   ├── base/BaseFragment.kt     # Fragment 基类
     │       │   └── utils/
     │       │       ├── AppUtils.kt          # App 工具类
+    │       │       ├── ImageLoader.kt       # Coil 图片加载封装
     │       │       ├── LogUtils.kt          # 日志工具
     │       │       └── SPUtils.kt          # SharedPreferences 封装
     │       └── res/
@@ -39,29 +40,28 @@ AndroidComponentApp/
     │           │   ├── slide_out_left.xml
     │           │   ├── slide_in_left.xml
     │           │   └── slide_out_right.xml
+    │           ├── layout/
+    │           │   └── item_article.xml     # 共享文章列表项
     │           └── values/colors.xml        # 统一颜色资源
     │
     ├── router/                   # 路由组件（核心）
     │   └── src/main/java/com/mohanlv/router/
-    │       ├── RouterManager.kt           # 路由管理器
+    │       ├── RouterManager.kt           # 路由管理器（支持 Bundle 传参）
     │       ├── RoutePath.kt              # 路由路径常量
     │       ├── RouteTable.kt             # ⭐ 编译时自动生成的路由表
-    │       ├── RouterManager.kt          # 路由管理器
     │       └── annotation/Route.kt       # @Route 注解
     │
     ├── network/                   # 网络组件
     │   └── src/main/java/com/mohanlv/network/
     │       ├── NetworkManager.kt          # 网络管理器（单例）
-    │       ├── api/ApiService.kt         # Retrofit API 接口
+    │       ├── api/ApiService.kt         # Retrofit API 接口（WanAndroid）
     │       ├── model/                   # 数据模型
-    │       │   ├── WanResponse.kt        # 统一响应体
-    │       │   ├── Article.kt            # 文章
-    │       │   └── UserInfo.kt          # 用户信息
-    │       ├── interceptor/
-    │       │   ├── HeaderInterceptor.kt  # 请求头拦截器
-    │       │   └── LoggingInterceptor.kt # 日志拦截器
-    │       └── utils/
-    │           └── CookieManager.kt      # ⭐ Cookie 管理器
+    │       │   ├── BaseResponse.kt       # 统一响应体
+    │       │   ├── Models.kt             # Article、Banner、UserInfo 等
+    │       │   └── PageData.kt           # 分页数据
+    │       └── interceptor/
+    │           ├── HeaderInterceptor.kt  # 请求头拦截器
+    │           └── LoggingInterceptor.kt # ⭐ 日志拦截器（一行格式）
     │
     ├── login/                     # 登录组件
     │   └── src/main/java/com/mohanlv/login/
@@ -74,20 +74,21 @@ AndroidComponentApp/
     ├── home/                      # 首页组件
     │   └── src/main/java/com/mohanlv/home/
     │       ├── ui/
-    │       │   ├── HomeFragment.kt           # 首页文章列表
+    │       │   ├── HomeFragment.kt           # ⭐ Banner 轮播 + 文章列表
     │       │   ├── container/HomeContainerFragment.kt  # Tab 容器
-    │       │   └── web/WebFragment.kt        # 公众号 Tab
+    │       │   └── web/WebFragment.kt        # ⭐ 网页（支持 URL 参数）
     │       └── res/layout/
+    │           ├── fragment_home.xml
+    │           └── item_banner.xml
     │
     └── user/                      # 用户中心组件
         └── src/main/java/com/mohanlv/user/
             ├── ui/
             │   ├── UserFragment.kt       # 个人中心页面
-            │   └── CollectFragment.kt    # ⭐ 我的收藏页面
+            │   └── CollectFragment.kt    # 我的收藏页面
             └── res/layout/
                 ├── fragment_user_center.xml
-                ├── fragment_collect.xml
-                └── item_article.xml      # 文章列表项
+                └── fragment_collect.xml
 ```
 
 ---
@@ -117,8 +118,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 // 2. 初始化路由
 RouterManager.init(context, containerId = R.id.fragment_container)
 
-// 3. 页面跳转（带过渡动画，自动加入返回栈）
-RouterManager.navigate(RoutePath.LOGIN, addToBackStack = true)
+// 3. 页面跳转（带 Bundle 参数，过渡动画，自动加入返回栈）
+val args = Bundle().apply { putString("url", article.link) }
+RouterManager.navigate(RoutePath.WEB_VIEW, args)
 
 // 4. 关闭当前页面
 RouterManager.popBackStack()
@@ -142,27 +144,48 @@ RouterManager.popBackStack()
 
 **功能特性：**
 - OkHttp 连接/读取/写入超时 30s 配置
-- 自动注入常用请求头（User-Agent、Content-Type、Cookie 等）
-- **⭐ Cookie 管理**：登录态自动持久化，后续请求自动携带
-- 请求/响应日志打印
+- 自动注入常用请求头（User-Agent、Content-Type、Referer）
+- **Cookie 管理**：使用 OkHttp 内置 CookieJar，登录态自动持久化
+- **日志打印**：一行格式输出，`[REQ]`/`[RES]`/`[ERR]` 前缀区分
 - Gson 自动序列化/反序列化
-- 支持请求重试
 
-### 4. 登录功能
+**日志格式示例：**
+```
+I/Network: [REQ] GET https://wanandroid.com/lg/collect/list/0/json
+I/Network: [RES] 200 89ms https://wanandroid.com/lg/collect/list/0/json
+
+E/Network: [ERR] GET 404 102ms https://wanandroid.com/lg/collect/page/1/json
+E/Network:      错误: HttpException: Not Found
+E/Network:      堆栈: java.net.HttpRetryException: ...
+```
+
+### 4. 首页功能（Home）
+
+- **Banner 轮播**：ViewPager2 自动轮播（3秒切换），深度切换动画，底部指示器
+- **文章列表**：RecyclerView + 下拉刷新，点击跳转网页
+- **网页查看**：WebFragment 支持 URL 参数传递
+
+### 5. 登录功能
 
 - MVVM 架构（LoginViewModel + LoginState）
 - 登录状态全局共享（LoginState 单例）
-- 登录成功后自动保存 Cookie
+- 登录成功后 Cookie 自动保存
 - 支持从 SPUtils 恢复登录态
 
-### 5. 收藏功能
+### 6. 收藏功能
 
 - 我的收藏页面（CollectFragment）
 - 下拉刷新 + 上拉加载更多
 - 未登录时提示先登录
 - 空状态显示
 
-### 6. 源码/Maven 双模式切换
+### 7. Double Click Exit
+
+- MainActivity 双击返回键退出功能
+- 2秒内双击确认退出
+- 否则提示"再按一次退出"
+
+### 8. 源码/Maven 双模式切换
 
 修改 `App/gradle.properties`：
 
@@ -207,11 +230,11 @@ vim App/gradle.properties
 
 | 组件 | 功能 | 状态 |
 |------|------|------|
-| `base` | BaseFragment、工具类、动画、颜色资源 | ✅ |
+| `base` | BaseFragment、ImageLoader、动画、颜色、共享布局 | ✅ |
 | `router` | 路由管理、@Route 注解、编译时生成路由表 | ✅ |
-| `network` | OkHttp + Retrofit + Cookie 管理 | ✅ |
+| `network` | OkHttp + Retrofit + Cookie + 日志拦截器 | ✅ |
 | `login` | 登录界面、ViewModel、登录状态 | ✅ |
-| `home` | 首页 Tab 容器、文章列表 | ✅ |
+| `home` | Banner 轮播、文章列表、网页查看 | ✅ |
 | `user` | 个人中心、我的收藏 | ✅ |
 
 ---
@@ -236,15 +259,45 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
 ### 页面跳转示例
 
 ```kotlin
-// 跳转（带返回）
-RouterManager.navigate(RoutePath.COLLECT_LIST, addToBackStack = true)
+// 跳转（带 Bundle 参数，默认加入返回栈）
+val args = Bundle().apply { putString("url", article.link) }
+RouterManager.navigate(RoutePath.WEB_VIEW, args)
 
 // 跳转（不带返回，如首页）
-RouterManager.navigate(RoutePath.HOME_CONTAINER)
+RouterManager.navigate(RoutePath.HOME_CONTAINER, addToBackStack = false)
 
 // 返回
 RouterManager.popBackStack()
 ```
+
+### 网络请求示例
+
+```kotlin
+val response = apiService.getArticleList(0)
+if (response.isSuccessful) {
+    val body = response.body()
+    if (body?.isSuccess() == true) {
+        val articles = body.data?.datas ?: emptyList()
+        // 处理数据
+    }
+}
+```
+
+---
+
+## 📝 WanAndroid API
+
+项目使用 [WanAndroid 开放 API](https://www.wanandroid.com/blog/show/2)，接入真实数据。
+
+**主要接口：**
+
+| 功能 | URL | 方法 |
+|------|-----|------|
+| 文章列表 | `/article/list/{page}/json` | GET |
+| Banner | `/banner/json` | GET |
+| 登录 | `/user/login` | POST |
+| 收藏列表 | `/lg/collect/list/{page}/json` | GET |
+| 收藏文章 | `/lg/collect/add/json` | POST |
 
 ---
 
