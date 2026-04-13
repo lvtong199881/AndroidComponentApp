@@ -35,5 +35,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation(project(":base"))
     implementation(project(":router"))
+    implementation(project(":login"))
+    implementation(project(":network"))
     testImplementation("junit:junit:4.13.2")
 }

@@ -58,7 +58,7 @@ interface ApiService {
      * 页码从 0 开始
      */
     @GET("article/list/{page}/json")
-    suspend fun getArticleList(@Path("page") page: Int): Response<WanResponse<PageData<Article>>
+    suspend fun getArticleList(@Path("page") page: Int): Response<WanResponse<PageData<Article> > >
 
     /**
      * 首页 Banner
