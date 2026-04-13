@@ -35,16 +35,10 @@ class MainActivity : AppCompatActivity() {
         
         RouterManager.currentActivity = this
 
-        // 根据登录状态跳转到不同页面
+        // 始终跳转到首页
         if (savedInstanceState == null) {
-            val path = if (SPUtils.isLogin) {
-                Log.e(TAG, "已登录，跳转到 HomeContainerFragment")
-                RoutePath.HOME_CONTAINER
-            } else {
-                Log.e(TAG, "未登录，跳转到 LoginFragment")
-                RoutePath.LOGIN
-            }
-            RouterManager.navigate(path)
+            Log.e(TAG, "跳转到 HomeContainerFragment")
+            RouterManager.navigate(RoutePath.HOME_CONTAINER)
         }
     }
 }
