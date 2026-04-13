@@ -24,48 +24,70 @@ AndroidComponentApp/
 │   └── docs/                     # 踩坑修复文档
 │
 └── Components/                   # 🔧 可复用组件模块
-    ├── base/                     # 基础组件（Base类、工具类）
-    │   └── src/main/java/com/mohanlv/base/
-    │       ├── base/BaseFragment.kt     # 通用 Fragment 基类（ViewBinding）
-    │       └── utils/
-    │           ├── AppUtils.kt          # App 工具类
-    │           ├── LogUtils.kt          # 日志工具
-    │           └── SPUtils.kt           # SharedPreferences 封装
     │
-    ├── router/                   # 路由组件
+    ├── base/                     # 基础组件
+    │   └── src/main/
+    │       ├── java/com/mohanlv/base/
+    │       │   ├── base/BaseFragment.kt     # Fragment 基类
+    │       │   └── utils/
+    │       │       ├── AppUtils.kt          # App 工具类
+    │       │       ├── LogUtils.kt          # 日志工具
+    │       │       └── SPUtils.kt          # SharedPreferences 封装
+    │       └── res/
+    │           ├── anim/                   # 页面过渡动画
+    │           │   ├── slide_in_right.xml
+    │           │   ├── slide_out_left.xml
+    │           │   ├── slide_in_left.xml
+    │           │   └── slide_out_right.xml
+    │           └── values/colors.xml        # 统一颜色资源
+    │
+    ├── router/                   # 路由组件（核心）
     │   └── src/main/java/com/mohanlv/router/
-    │       ├── RouterManager.kt           # 路由管理器（核心）
-    │       ├── RoutePath.kt               # 路由路径常量
-    │       ├── RouteParams.kt            # 路由参数
+    │       ├── RouterManager.kt           # 路由管理器
+    │       ├── RoutePath.kt              # 路由路径常量
+    │       ├── RouteTable.kt             # ⭐ 编译时自动生成的路由表
+    │       ├── RouterManager.kt          # 路由管理器
     │       └── annotation/Route.kt       # @Route 注解
     │
     ├── network/                   # 网络组件
     │   └── src/main/java/com/mohanlv/network/
     │       ├── NetworkManager.kt          # 网络管理器（单例）
-    │       ├── api/ApiService.kt          # Retrofit API 接口
-    │       ├── model/BaseResponse.kt      # 统一响应体
+    │       ├── api/ApiService.kt         # Retrofit API 接口
+    │       ├── model/                   # 数据模型
+    │       │   ├── WanResponse.kt        # 统一响应体
+    │       │   ├── Article.kt            # 文章
+    │       │   └── UserInfo.kt          # 用户信息
     │       ├── interceptor/
-    │       │   ├── HeaderInterceptor.kt   # 请求头拦截器
-    │       │   └── LoggingInterceptor.kt  # 日志拦截器
-    │       └── utils/RequestExtensions.kt # 请求扩展函数
+    │       │   ├── HeaderInterceptor.kt  # 请求头拦截器
+    │       │   └── LoggingInterceptor.kt # 日志拦截器
+    │       └── utils/
+    │           └── CookieManager.kt      # ⭐ Cookie 管理器
     │
     ├── login/                     # 登录组件
     │   └── src/main/java/com/mohanlv/login/
-    │       ├── model/LoginResult.kt
-    │       ├── ui/LoginFragment.kt
-    │       └── vm/LoginViewModel.kt
+    │       ├── model/LoginResult.kt     # 登录结果
+    │       ├── ui/LoginFragment.kt      # 登录页面
+    │       └── vm/
+    │           ├── LoginViewModel.kt    # 登录 ViewModel
+    │           └── LoginState.kt        # 登录状态（单例）
     │
     ├── home/                      # 首页组件
     │   └── src/main/java/com/mohanlv/home/
     │       ├── ui/
-    │       │   ├── HomeFragment.kt
-    │       │   ├── container/HomeContainerFragment.kt
-    │       │   └── web/WebFragment.kt
+    │       │   ├── HomeFragment.kt           # 首页文章列表
+    │       │   ├── container/HomeContainerFragment.kt  # Tab 容器
+    │       │   └── web/WebFragment.kt        # 公众号 Tab
     │       └── res/layout/
     │
     └── user/                      # 用户中心组件
         └── src/main/java/com/mohanlv/user/
-            └── ui/UserFragment.kt
+            ├── ui/
+            │   ├── UserFragment.kt       # 个人中心页面
+            │   └── CollectFragment.kt    # ⭐ 我的收藏页面
+            └── res/layout/
+                ├── fragment_user_center.xml
+                ├── fragment_collect.xml
+                └── item_article.xml      # 文章列表项
 ```
 
 ---
@@ -79,24 +101,15 @@ AndroidComponentApp/
 - **独立发布**：发布到 Maven 仓库供其他项目使用
 - **按需集成**：只需要哪个组件就引入哪个
 
-```
-App (壳工程)
-    │
-    ├── login  ──→  登录模块
-    ├── home   ──→  首页模块
-    ├── user   ──→  用户中心模块
-    └── router ──→  路由模块（所有组件共用）
-```
-
 ### 2. 路由管理（Router）
 
-实现组件间页面的解耦跳转，不依赖组件的具体实现。
+实现组件间页面的解耦跳转，基于 `@Route` 注解和编译时生成。
 
 **使用方式：**
 
 ```kotlin
 // 1. 在 Fragment 上添加 @Route 注解
-@Route(path = "/login/main")
+@Route(path = RoutePath.LOGIN, description = "登录页面")
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     // ...
 }
@@ -104,96 +117,52 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 // 2. 初始化路由
 RouterManager.init(context, containerId = R.id.fragment_container)
 
-// 3. 页面跳转
-RouterManager.navigate(RoutePath.LOGIN)
+// 3. 页面跳转（带过渡动画，自动加入返回栈）
+RouterManager.navigate(RoutePath.LOGIN, addToBackStack = true)
 
-// 4. 获取 Fragment 实例（用于嵌套）
-val fragment = RouterManager.getFragment(RoutePath.HOME)
+// 4. 关闭当前页面
+RouterManager.popBackStack()
 ```
 
 **实现原理：**
-- 自定义 `@Route` 注解标记需要注册的 Fragment
-- `RouterManager.init()` 时通过 **Dex 扫描** 自动发现所有带注解的 Fragment
-- 将 path → Fragment 构造器的映射存入 `ConcurrentHashMap`
-- 跳转时通过 path 找到对应的 Fragment 实例化并显示
+- `generate_routes.py` 在编译时扫描所有 `@Route` 注解
+- 自动生成 `RouteTable.kt`，包含 path → Fragment 类的映射
+- 使用 `Class.forName().newInstance()` 反射创建实例
+- 跳转时用 `add()` + `addToBackStack()` 实现叠加效果
+
+**页面过渡动画：**
+- 进入：`slide_in_right`（从右滑入，200ms，decelerate）
+- 退出：`slide_out_left`（向左滑出，accelerate）
+- 返回进入：`slide_in_left`（从左滑入）
+- 返回退出：`slide_out_right`（向右滑出）
 
 ### 3. 网络封装（Network）
 
-基于 OkHttp + Retrofit 封装， 提供统一的网络请求能力。
-
-**使用方式：**
-
-```kotlin
-// 1. 初始化（通常在 Application 中）
-NetworkManager.init(context, baseUrl = "https://api.example.com/")
-
-// 2. 定义 API 接口
-interface ApiService {
-    @GET("/user/info")
-    suspend fun getUserInfo(): BaseResponse<UserInfo>
-}
-
-// 3. 获取 API 实例
-val api = NetworkManager.createApi(ApiService::class.java)
-
-// 4. 发起请求
-val result = api.getUserInfo()
-```
+基于 OkHttp + Retrofit + Gson 封装，接入 [WanAndroid API](https://www.wanandroid.com/)。
 
 **功能特性：**
-- OkHttp 连接/读取超时 30s 配置
-- 自动注入常用请求头（User-Agent、Content-Type 等）
-- 可配置 Header 拦截器
+- OkHttp 连接/读取/写入超时 30s 配置
+- 自动注入常用请求头（User-Agent、Content-Type、Cookie 等）
+- **⭐ Cookie 管理**：登录态自动持久化，后续请求自动携带
 - 请求/响应日志打印
 - Gson 自动序列化/反序列化
-- 支持 RetryOnConnectionFailure
+- 支持请求重试
 
-### 4. BaseFragment 基类
+### 4. 登录功能
 
-封装 Fragment 通用逻辑，减少样板代码。
+- MVVM 架构（LoginViewModel + LoginState）
+- 登录状态全局共享（LoginState 单例）
+- 登录成功后自动保存 Cookie
+- 支持从 SPUtils 恢复登录态
 
-```kotlin
-@Route(path = "/home/main")
-class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+### 5. 收藏功能
 
-    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHomeBinding {
-        return FragmentHomeBinding.inflate(inflater, container, false)
-    }
+- 我的收藏页面（CollectFragment）
+- 下拉刷新 + 上拉加载更多
+- 未登录时提示先登录
+- 空状态显示
 
-    override fun initView(savedInstanceState: Bundle?) {
-        // 初始化视图
-    }
-
-    override fun initData() {
-        // 加载数据
-    }
-
-    override fun initEvent() {
-        // 设置点击事件等
-    }
-}
-```
-
-**提供的能力：**
-- `inflateBinding()` — 子类实现，返回 ViewBinding 实例
-- `initView()` — 视图初始化
-- `initData()` — 数据加载
-- `initEvent()` — 事件监听设置
-- `showLoading() / hideLoading()` — 加载状态 UI
-- `showError()` — 错误提示
-
-### 5. 源码/Maven 双模式切换
-
-这是本项目最大的亮点 —— **一行配置切换依赖方式**。
-
-#### 模式说明
-
-| 模式 | 适用场景 | 优点 | 缺点 |
-|------|----------|------|------|
-| **源码模式** | 开发调试 | 可直接断点调试组件代码 | 编译稍慢 |
-| **Maven 模式** | 发布/CI | 编译快，组件独立 | 调试需 publish |
-
-#### 切换方式
+### 6. 源码/Maven 双模式切换
 
 修改 `App/gradle.properties`：
 
@@ -205,42 +174,6 @@ component.sourceDependency=true
 component.sourceDependency=false
 ```
 
-#### 实现原理
-
-在 `dependencies-config.gradle.kts` 中通过 `includeBuild` 和 `dependencySubstitution` 实现：
-
-```kotlin
-if (componentSourceDependency) {
-    // 源码模式：直接依赖 Components 目录下的模块
-    includeBuild("../Components") {
-        dependencySubstitution {
-            substitute(module("com.mohanlv.component:base")).using(project(":base"))
-            substitute(module("com.mohanlv.component:router")).using(project(":router"))
-            // ...
-        }
-    }
-} else {
-    // Maven 模式：从本地 Maven 仓库读取组件
-    dependencyResolutionManagement {
-        repositories {
-            mavenLocal()
-            // 阿里云镜像加速
-            maven { url = uri("https://maven.aliyun.com/repository/google") }
-            maven { url = uri("https://maven.aliyun.com/repository/public") }
-        }
-    }
-}
-```
-
-#### 发布组件到 Maven
-
-```bash
-cd Components
-./gradlew publishToMavenLocal
-```
-
-发布后，其他项目只需修改 groupId、artifactId、version 即可引用。
-
 ---
 
 ## 🚀 快速开始
@@ -251,7 +184,7 @@ cd Components
 - **Android Gradle Plugin**: 8.2.0
 - **Kotlin**: 2.2.10
 - **Gradle**: 8.2
-- **Android SDK**: Build Tools 30.0.3 +
+- **Android SDK**: 34
 
 ### 运行项目
 
@@ -260,60 +193,30 @@ cd App
 ./gradlew assembleDebug
 ```
 
-或直接用 Android Studio 打开 `App` 目录，同步后运行。
-
 ### 切换到 Maven 模式
 
 ```bash
-# 编辑配置文件
 vim App/gradle.properties
-
-# 确保有这一行
-component.sourceDependency=false
-
-# 重新 Sync 项目
-# Android Studio: File → Sync Project with Gradle Files
+# 设置 component.sourceDependency=false
+./gradlew assembleDebug
 ```
 
 ---
 
 ## 📦 已集成的组件
 
-| 组件 | 功能 | 依赖情况 |
-|------|------|----------|
-| `base` | BaseFragment、工具类 | 基础组件，所有组件共享 |
-| `router` | 路由管理、@Route 注解 | 基础组件，App 和所有业务组件共享 |
-| `network` | OkHttp + Retrofit 封装 | 基础组件，需要网络的功能组件共享 |
-| `login` | 登录界面 + ViewModel | 业务组件 |
-| `home` | 首页 Tab 容器 | 业务组件 |
-| `user` | 个人中心 | 业务组件 |
+| 组件 | 功能 | 状态 |
+|------|------|------|
+| `base` | BaseFragment、工具类、动画、颜色资源 | ✅ |
+| `router` | 路由管理、@Route 注解、编译时生成路由表 | ✅ |
+| `network` | OkHttp + Retrofit + Cookie 管理 | ✅ |
+| `login` | 登录界面、ViewModel、登录状态 | ✅ |
+| `home` | 首页 Tab 容器、文章列表 | ✅ |
+| `user` | 个人中心、我的收藏 | ✅ |
 
 ---
 
 ## 🛠 扩展开发
-
-### 添加新组件
-
-1. 在 `Components/` 下创建新模块目录
-2. 创建 `build.gradle.kts` 引入基础组件
-3. 在 `App/dependencies-config.gradle.kts` 中注册
-4. 使用 `@Route` 注解标记 Fragment
-
-**示例：新建 `profile` 组件**
-
-```kotlin
-// Components/profile/build.gradle.kts
-dependencies {
-    implementation(project(":base"))
-    implementation(project(":router"))
-    implementation(project(":network"))
-}
-```
-
-```kotlin
-// 在 dependencies-config.gradle.kts 中添加
-substitute(module("$componentGroupId:profile")).using(project(":profile"))
-```
 
 ### 添加新页面
 
@@ -322,26 +225,32 @@ substitute(module("$componentGroupId:profile")).using(project(":profile"))
 3. 使用 `@Route(path = "xxx")` 注解标记
 
 ```kotlin
-@Route(path = "/profile/main")
-class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
+@Route(path = RoutePath.COLLECT_LIST, description = "我的收藏")
+class CollectFragment : BaseFragment<FragmentCollectBinding>() {
     // ...
 }
+```
+
+4. 编译后 `RouteTable.kt` 会自动更新
+
+### 页面跳转示例
+
+```kotlin
+// 跳转（带返回）
+RouterManager.navigate(RoutePath.COLLECT_LIST, addToBackStack = true)
+
+// 跳转（不带返回，如首页）
+RouterManager.navigate(RoutePath.HOME_CONTAINER)
+
+// 返回
+RouterManager.popBackStack()
 ```
 
 ---
 
 ## 📝 踩坑记录
 
-项目开发过程中遇到的问题和解决方案记录在 `App/docs/` 目录下：
-
-| 文档 | 内容 |
-|------|------|
-| `GRADLE_SETUP.md` | Java 17 配置 |
-| `GRADLE_SPEEDUP_SUMMARY.md` | Maven 仓库加速（阿里云镜像） |
-| `DEPENDENCIES_CONFIG_FIX.md` | 组件依赖配置脚本修复 |
-| `FIX_OFFLINE_MODE.md` | Gradle 离线模式问题 |
-| `QUICK_SWITCH.md` | 源码/Maven 模式切换 |
-| `MIRRORS.md` | 国内镜像配置 |
+项目开发过程中遇到的问题和解决方案记录在 `App/docs/` 目录下。
 
 ---
 
