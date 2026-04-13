@@ -1,0 +1,28 @@
+# ========================================
+# Android Component Project Configuration
+# ========================================
+
+# --- Gradle 优化 ---
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+org.gradle.caching=true
+org.gradle.parallel=true
+org.gradle.daemon=true
+
+# --- AndroidX ---
+android.useAndroidX=true
+
+# --- Kotlin ---
+kotlin.code.style=official
+
+# --- 组件依赖模式 ---
+# true  = 源码依赖模式 (开发调试，使用 ../Components 目录)
+# false = Maven 依赖模式 (发布/CI，使用 Maven Local 仓库)
+# 如果未配置，默认为 true
+component.sourceDependency=true
+
+# --- 组件 Maven 坐标 (当 component.sourceDependency=false 时使用) ---
+component.groupId=com.mohanlv.component
+component.version=1.0.0
+
+# --- 禁用 Gradle 源码下载 (加速 Sync) ---
+kotlin.gradle.plugin.download.sources=false
