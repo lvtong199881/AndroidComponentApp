@@ -15,8 +15,8 @@ class AppApplication : Application() {
         AppUtils.init(this)
         SPUtils.init(this)
         
-        // 初始化网络（修改为你的 API 地址）
-        NetworkManager.init(this, "https://api.example.com/")
+        // 初始化网络（使用 WanAndroid API）
+        NetworkManager.init(this)
         
         // 初始化路由（自动扫描注册带 @Route 注解的 Fragment）
         RouterManager.init(this, R.id.container)

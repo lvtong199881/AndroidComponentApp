@@ -1,19 +1,86 @@
 package com.mohanlv.network.api
 
-import com.mohanlv.network.model.BaseResponse
+import com.mohanlv.network.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
+/**
+ * WanAndroid API 服务接口
+ * 文档：https://www.wanandroid.com/blog/show/2
+ *
+ * 注意：
+ * - POST 请求建议使用 postman 模拟
+ * - 登录错误码：-1001，其他错误码：-1，成功：0
+ */
 interface ApiService {
-    @POST("user/login")
-    suspend fun login(@Body params: Map<String, String>): Response<BaseResponse<LoginResponse>>
-    
-    @GET("user/info")
-    suspend fun getUserInfo(): Response<BaseResponse<UserInfo>>
-    
-    @POST("user/logout")
-    suspend fun logout(): Response<BaseResponse<Unit>>
-}
 
-data class LoginResponse(val token: String, val userId: String, val expiresIn: Long)
-data class UserInfo(val id: String, val username: String, val avatar: String?, val email: String?)
+    // ==================== 用户相关 ====================
+
+    /**
+     * 用户登录
+     * POST /user/login
+     * 参数：username, password
+     */
+    @POST("user/login")
+    suspend fun login(@Body request: LoginRequest): Response<WanResponse<LoginData>>
+
+    /**
+     * 用户注册
+     * POST /user/register
+     * 参数：username, password, repassword
+     */
+    @POST("user/register")
+    suspend fun register(@Body request: RegisterRequest): Response<WanResponse<LoginData>>
+
+    /**
+     * 退出登录
+     * GET /user/logout
+     * 需要登录
+     */
+    @GET("user/logout")
+    suspend fun logout(): Response<WanResponse<Any>>
+
+    // ==================== 用户信息 ====================
+
+    /**
+     * 获取个人积分信息
+     * GET /lg/coin/userinfo/json
+     * 需要登录
+     */
+    @GET("lg/coin/userinfo/json")
+    suspend fun getCoinInfo(): Response<WanResponse<UserInfo>>
+
+    // ==================== 首页文章 ====================
+
+    /**
+     * 首页文章列表
+     * GET /article/list/{page}/json
+     * 页码从 0 开始
+     */
+    @GET("article/list/{page}/json")
+    suspend fun getArticleList(@Path("page") page: Int): Response<WanResponse<PageData<Article>>
+
+    /**
+     * 首页 Banner
+     * GET /banner/json
+     */
+    @GET("banner/json")
+    suspend fun getBanner(): Response<WanResponse<List<Banner>>>
+
+    // ==================== 收藏相关 ====================
+
+    /**
+     * 收藏文章
+     * POST /lg/collect/add/json
+     * 参数：title, author, link
+     */
+    @POST("lg/collect/add/json")
+    suspend fun collectArticle(@Body params: Map<String, String>): Response<WanResponse<Any>>
+
+    /**
+     * 获取收藏列表
+     * GET /lg/collect/page/{page}/json
+     */
+    @GET("lg/collect/page/{page}/json")
+    suspend fun getCollectList(@Path("page") page: Int): Response<WanResponse<PageData<Article>>>
+}
