@@ -7,7 +7,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.databinding.FragmentWebBinding
+import com.mohanlv.router.RoutePath
+import com.mohanlv.router.annotation.Route
 
+@Route(path = RoutePath.WEB_VIEW, description = "网页")
 class WebFragment : BaseFragment<FragmentWebBinding>() {
     
     companion object {
@@ -21,6 +24,11 @@ class WebFragment : BaseFragment<FragmentWebBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setupWebView()
+        
+        // 获取 URL 参数
+        arguments?.getString("url")?.let { url ->
+            binding.webView.loadUrl(url)
+        }
     }
     
     private fun setupWebView() {

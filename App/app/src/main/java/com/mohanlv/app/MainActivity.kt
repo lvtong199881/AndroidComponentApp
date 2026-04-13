@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.mohanlv.base.utils.SPUtils
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
 
@@ -14,7 +15,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val DOUBLE_CLICK_INTERVAL = 2000L // 双击间隔 2 秒
     }
+
+    private var lastBackTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,5 +44,23 @@ class MainActivity : AppCompatActivity() {
             Log.e(TAG, "跳转到 HomeContainerFragment")
             RouterManager.navigate(RoutePath.HOME_CONTAINER)
         }
+        
+        // 设置返回键处理
+        setupBackHandler()
+    }
+    
+    private fun setupBackHandler() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastBackTime < DOUBLE_CLICK_INTERVAL) {
+                    // 双击确认退出
+                    finish()
+                } else {
+                    lastBackTime = currentTime
+                    Toast.makeText(this@MainActivity, "再按一次退出", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 }

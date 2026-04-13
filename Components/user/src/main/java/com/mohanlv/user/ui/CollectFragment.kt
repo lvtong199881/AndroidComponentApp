@@ -1,6 +1,7 @@
 package com.mohanlv.user.ui
 
 import android.os.Bundle
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,7 @@ import com.mohanlv.network.model.Article
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
-import com.mohanlv.user.R
+import com.mohanlv.base.R
 import com.mohanlv.user.databinding.FragmentCollectBinding
 import kotlinx.coroutines.launch
 
@@ -69,7 +70,7 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = ArticleAdapter(articles) { article ->
             // 点击文章，打开链接
-            RouterManager.navigate("${RoutePath.WEB_VIEW}?url=${article.link}")
+            RouterManager.navigate(RoutePath.WEB_VIEW, Bundle().apply { putString("url", article.link) })
         }
         
         // 加载更多

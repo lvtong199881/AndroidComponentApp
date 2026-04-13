@@ -1,6 +1,8 @@
 package com.mohanlv.router
 
 import android.content.Context
+import android.net.Uri
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import java.util.concurrent.ConcurrentHashMap
@@ -35,10 +37,16 @@ object RouterManager {
         routes[path] = provider
     }
     
-    fun navigate(path: String, addToBackStack: Boolean = false) {
-        val provider = routes[path]
+    fun navigate(path: String, addToBackStack: Boolean = true) {
+        navigate(path, null, addToBackStack)
+    }
+    
+    fun navigate(path: String, args: Bundle?, addToBackStack: Boolean = true) {
+        val routePath = path.substringBefore("?")
+        
+        val provider = routes[routePath]
         if (provider == null) {
-            throw IllegalStateException("Route not found: $path, registered routes: ${routes.keys}")
+            throw IllegalStateException("Route not found: $routePath, registered routes: ${routes.keys}")
         }
         
         val activity = currentActivity
@@ -47,6 +55,12 @@ object RouterManager {
         }
         
         val fragment = provider()
+        
+        // 传递参数到 Fragment
+        if (args != null) {
+            fragment.arguments = args
+        }
+        
         val transaction = activity.supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 com.mohanlv.base.R.anim.slide_in_right,
@@ -54,10 +68,10 @@ object RouterManager {
                 com.mohanlv.base.R.anim.slide_in_left,
                 com.mohanlv.base.R.anim.slide_out_right
             )
-            .add(containerId, fragment, path)
+            .add(containerId, fragment, routePath)
         
         if (addToBackStack) {
-            transaction.addToBackStack(path)
+            transaction.addToBackStack(routePath)
         }
         
         transaction.commit()
