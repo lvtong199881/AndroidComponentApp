@@ -35,7 +35,7 @@ object RouterManager {
         routes[path] = provider
     }
     
-    fun navigate(path: String) {
+    fun navigate(path: String, addToBackStack: Boolean = false) {
         val provider = routes[path]
         if (provider == null) {
             throw IllegalStateException("Route not found: $path, registered routes: ${routes.keys}")
@@ -47,9 +47,24 @@ object RouterManager {
         }
         
         val fragment = provider()
-        activity.supportFragmentManager.beginTransaction()
-            .replace(containerId, fragment)
-            .commit()
+        val transaction = activity.supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                com.mohanlv.base.R.anim.slide_in_right,
+                com.mohanlv.base.R.anim.slide_out_left,
+                com.mohanlv.base.R.anim.slide_in_left,
+                com.mohanlv.base.R.anim.slide_out_right
+            )
+            .add(containerId, fragment, path)
+        
+        if (addToBackStack) {
+            transaction.addToBackStack(path)
+        }
+        
+        transaction.commit()
+    }
+    
+    fun popBackStack() {
+        currentActivity?.supportFragmentManager?.popBackStack()
     }
     
     fun getFragment(path: String): Fragment? {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.mohanlv.network.api.ApiService
 import com.mohanlv.network.interceptor.HeaderInterceptor
 import com.mohanlv.network.interceptor.LoggingInterceptor
+import com.mohanlv.network.utils.AppCookieManager
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,10 +35,14 @@ object NetworkManager {
     fun init(context: Context) {
         if (isInitialized) return
 
+        // 初始化 Cookie 管理器
+        AppCookieManager.init(context)
+
         okHttpClient = OkHttpClient.Builder()
             .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .cookieJar(AppCookieManager)
             .addInterceptor(HeaderInterceptor(context))
             .addInterceptor(LoggingInterceptor())
             .retryOnConnectionFailure(true)

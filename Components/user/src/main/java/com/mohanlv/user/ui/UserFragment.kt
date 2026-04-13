@@ -92,12 +92,12 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
 
         // 登录按钮（未登录时显示）
         btnLogin.setOnClickListener {
-            RouterManager.navigate(RoutePath.LOGIN)
+            RouterManager.navigate(RoutePath.LOGIN, addToBackStack = true)
         }
         
         // 我的收藏
         layoutCollect.setOnClickListener {
-            RouterManager.navigate(RoutePath.COLLECT_LIST)
+            RouterManager.navigate(RoutePath.COLLECT_LIST, addToBackStack = true)
         }
     }
 

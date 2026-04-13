@@ -23,7 +23,6 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        Log.e("mhs", "bottomNavigation = ${binding.bottomNavigation}")
         setupBottomNavigation()
     }
 
