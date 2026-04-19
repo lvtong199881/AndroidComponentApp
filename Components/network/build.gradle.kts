@@ -32,6 +32,9 @@ android {
 dependencies {
     api("androidx.core:core-ktx:1.12.0")
     
+    // Startup 框架
+    api(project(":startup"))
+    
     // Retrofit + OkHttp
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")

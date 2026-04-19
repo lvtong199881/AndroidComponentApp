@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 }
 
 // 组件模块（独立的 Gradle 项目）
+include(":startup")
 include(":router")
 include(":network")
 include(":login")

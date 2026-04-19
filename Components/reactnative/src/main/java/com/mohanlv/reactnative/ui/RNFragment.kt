@@ -1,14 +1,14 @@
 package com.mohanlv.reactnative.ui
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
-import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.reactnative.ReactNativeHelper
 import com.mohanlv.reactnative.databinding.FragmentRnBinding
 import com.mohanlv.router.RoutePath
@@ -18,8 +18,11 @@ import com.mohanlv.router.annotation.Route
  * React Native 页面容器 Fragment
  */
 @Route(path = RoutePath.RN, description = "React Native 页面")
-class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHandler {
+class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
 
+    private var _binding: FragmentRnBinding? = null
+    private val binding get() = _binding!!
+    
     private var reactRootView: ReactRootView? = null
     private var reactInstanceManager: ReactInstanceManager? = null
 
@@ -28,12 +31,17 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         const val DEFAULT_COMPONENT_NAME = "MyRNApp"
     }
 
-    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentRnBinding {
-        return FragmentRnBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRnBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initReactNative()
     }
 
@@ -41,7 +49,7 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: DEFAULT_COMPONENT_NAME
 
         activity?.let { activity ->
-            // 获取 ReactInstanceManager（懒创建）
+            // 获取 ReactInstanceManager
             val application = activity.application
             val reactNativeHost = if (application is ReactApplication) {
                 application.reactNativeHost
@@ -95,7 +103,7 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         reactInstanceManager?.onHostDestroy(activity)
         reactRootView?.unmountReactApplication()
         reactRootView = null
-        reactInstanceManager = null
+        _binding = null
     }
 
     override fun invokeDefaultOnBackPressed() {

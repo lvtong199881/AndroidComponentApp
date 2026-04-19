@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mohanlv.reactnative"
+    namespace = "com.mohanlv.startup"
     compileSdk = 34
 
     defaultConfig {
@@ -26,28 +26,10 @@ android {
     }
     
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { viewBinding = true }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    
-    // React Native Core
-    api("com.facebook.react:react-android:0.76.9")
-    
-    // Hermes Engine (required for JS execution)
-    api("com.facebook.react:hermes-android:0.76.9")
-    
-    // SoLoader for native library loading
-    api("com.facebook.soloader:soloader:0.11.0")
-    
-    // 依赖 router（获取 @Route 注解）
-    implementation(project(":router"))
-    
-    // Startup 框架
-    implementation(project(":startup"))
     
     testImplementation("junit:junit:4.13.2")
 }

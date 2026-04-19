@@ -43,7 +43,10 @@ dependencies {
     implementation("androidx.databinding:viewbinding:9.1.0")
     implementation("io.coil-kt:coil:2.5.0")
     
-    // 核心基础 SDK（通过 api() 传递依赖）
+    // Startup 框架
+    api(project(":startup"))
+    
+    // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
     api(project(":router"))
     api(project(":network"))
     

@@ -5,13 +5,12 @@ import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactNativeHost
-import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.react.shell.MainReactPackage
-import com.facebook.soloader.SoLoader
-import com.mohanlv.base.utils.AppUtils
-import com.mohanlv.base.utils.SPUtils
-import com.mohanlv.network.NetworkManager
-import com.mohanlv.router.RouterManager
+import com.mohanlv.base.BaseStartupTask
+import com.mohanlv.network.NetworkStartupTask
+import com.mohanlv.reactnative.ReactNativeStartupTask
+import com.mohanlv.router.RouterStartupTask
+import com.mohanlv.startup.StartupManager
 
 class AppApplication : Application(), ReactApplication {
     
@@ -20,10 +19,13 @@ class AppApplication : Application(), ReactApplication {
     override fun onCreate() {
         super.onCreate()
         
-        // 初始化 React Native SoLoader（必须在其他RN代码之前）
-        SoLoader.init(this, OpenSourceMergedSoMapping)
+        // 注册各模块的初始化任务
+        StartupManager.register(BaseStartupTask(this))
+        StartupManager.register(NetworkStartupTask(this))
+        StartupManager.register(RouterStartupTask(this, R.id.container))
+        StartupManager.register(ReactNativeStartupTask(this))
         
-        // 初始化 React Native Host
+        // 初始化 React Native Host（必须在 StartupManager.start() 之前）
         reactNativeHost = object : DefaultReactNativeHost(this) {
             override fun getJSMainModuleName(): String = "index"
             
@@ -37,14 +39,7 @@ class AppApplication : Application(), ReactApplication {
             override val isHermesEnabled: Boolean = true
         }
         
-        // 初始化工具类
-        AppUtils.init(this)
-        SPUtils.init(this)
-        
-        // 初始化网络（使用 WanAndroid API）
-        NetworkManager.init(this)
-        
-        // 初始化路由（自动扫描注册带 @Route 注解的 Fragment）
-        RouterManager.init(this, R.id.container)
+        // 启动所有初始化任务
+        StartupManager.start()
     }
 }

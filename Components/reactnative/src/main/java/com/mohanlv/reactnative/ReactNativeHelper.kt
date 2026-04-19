@@ -14,6 +14,15 @@ object ReactNativeHelper {
     
     private var reactInstanceManager: ReactInstanceManager? = null
     
+    /**
+     * 初始化 ReactInstanceManager（通常在 Application 或 StartupTask 中调用）
+     */
+    fun init(application: Application) {
+        if (reactInstanceManager == null) {
+            reactInstanceManager = createReactInstanceManager(application)
+        }
+    }
+    
     fun get(application: Application, reactNativeHost: ReactNativeHost): ReactInstanceManager {
         return reactInstanceManager ?: synchronized(this) {
             reactInstanceManager ?: createReactInstanceManager(application).also {
