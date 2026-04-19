@@ -1,11 +1,14 @@
 package com.mohanlv.reactnative.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
+import com.facebook.react.ReactApplication
 import com.facebook.react.ReactInstanceManager
+import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactRootView
+import com.facebook.react.bridge.JSBundleLoader
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
 import com.facebook.react.shell.MainReactPackage
@@ -16,22 +19,6 @@ import com.mohanlv.router.annotation.Route
 
 /**
  * React Native 页面容器 Fragment
- * 
- * 支持加载任意 React Native 组件，使用方式：
- * 
- * 1. JS 侧注册组件：
- *    AppRegistry.registerComponent('MyComponent', () => MyComponent)
- * 
- * 2. Android 侧跳转：
- *    val args = Bundle().apply {
- *        putString("componentName", "MyComponent")  // 必填，JS 侧注册的组件名
- *        putString("appKey", "MyApp")  // 可选，默认 "MyApp"
- *    }
- *    RouterManager.navigate(RoutePath.RN, args)
- * 
- * 3. JS Bundle 放置位置：
- *    - Debug: 从 Metro 开发服务器加载
- *    - Release: 放入 src/main/assets/index.android.bundle
  */
 @Route(path = RoutePath.RN, description = "React Native 页面")
 class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHandler {
@@ -41,8 +28,7 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
 
     companion object {
         const val KEY_COMPONENT_NAME = "componentName"
-        const val KEY_APP_KEY = "appKey"
-        const val DEFAULT_APP_KEY = "MyApp"
+        const val DEFAULT_COMPONENT_NAME = "MyRNApp"
     }
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentRnBinding {
@@ -51,35 +37,45 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setupToolbar()
         initReactNative()
     }
 
-    private fun setupToolbar() {
-        binding.toolbar?.let { toolbar ->
-            val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: "RN"
-            toolbar.title = "RN: $componentName"
-            toolbar.setNavigationOnClickListener {
-                activity?.onBackPressedDispatcher?.onBackPressed()
-            }
-        }
-    }
-
     private fun initReactNative() {
-        val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: run {
-            logError("Component name is required")
-            return
-        }
-        val appKey = arguments?.getString(KEY_APP_KEY) ?: DEFAULT_APP_KEY
+        val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: DEFAULT_COMPONENT_NAME
 
         activity?.let { activity ->
+            // 获取 ReactNativeHost
+            val host = if (activity.application is ReactApplication) {
+                (activity.application as ReactApplication).reactNativeHost
+            } else {
+                createDefaultReactNativeHost(activity)
+            }
+
+            // 创建 JSBundleLoader
+            val jsBundleLoader = JSBundleLoader.createAssetLoader(
+                activity,
+                "index.android.bundle",
+                false
+            )
+
+            // 创建 ReactInstanceManager
+            reactInstanceManager = ReactInstanceManager.builder()
+                .setCurrentActivity(activity)
+                .setApplication(activity.application)
+                .setJSMainModulePath("index")
+                .setJSBundleLoader(jsBundleLoader)
+                .addPackage(MainReactPackage())
+                .setUseDeveloperSupport(false)
+                .setInitialLifecycleState(LifecycleState.RESUMED)
+                .build()
+
             // 创建 ReactRootView
             reactRootView = ReactRootView(activity)
 
             // 构建初始属性
             val initProps = Bundle().apply {
                 arguments?.keySet()?.forEach { key ->
-                    if (key != KEY_COMPONENT_NAME && key != KEY_APP_KEY) {
+                    if (key != KEY_COMPONENT_NAME) {
                         get(key)?.let { value ->
                             when (value) {
                                 is String -> putString(key, value)
@@ -92,19 +88,10 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
                 }
             }
 
-            // 创建 ReactInstanceManager
-            reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(activity.application)
-                .setBundleAssetName("index.android.bundle")  // assets 目录下的 bundle 文件
-                .setJSMainModulePath("index")  // JS 入口文件名（不含 .js）
-                .addPackage(MainReactPackage())
-                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
-                .build()
-
             // 启动 React Native 应用
             reactRootView?.startReactApplication(
                 reactInstanceManager,
-                componentName,  // JS 侧注册的组件名
+                componentName,
                 initProps
             )
 
@@ -112,9 +99,15 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         }
     }
 
-    private fun logError(message: String) {
-        activity?.runOnUiThread {
-            android.util.Log.e("RNFragment", message)
+    private fun createDefaultReactNativeHost(activity: Activity): ReactNativeHost {
+        return object : ReactNativeHost(activity.application) {
+            override fun getJSMainModuleName(): String = "index"
+
+            override fun getUseDeveloperSupport(): Boolean = false
+
+            override fun getPackages(): MutableList<com.facebook.react.ReactPackage> {
+                return mutableListOf(MainReactPackage())
+            }
         }
     }
 
@@ -136,7 +129,6 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         reactInstanceManager = null
     }
 
-    /** 处理 RN 页面的返回键 */
     override fun invokeDefaultOnBackPressed() {
         activity?.onBackPressedDispatcher?.onBackPressed()
     }

@@ -34,8 +34,14 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     
-    // React Native Core（需要手动集成 JS bundle）
-    implementation("com.facebook.react:react-android:0.76.9")
+    // React Native Core
+    api("com.facebook.react:react-android:0.76.9")
+    
+    // Hermes Engine (required for JS execution)
+    api("com.facebook.react:hermes-android:0.76.9")
+    
+    // SoLoader for native library loading
+    api("com.facebook.soloader:soloader:0.11.0")
     
     implementation(project(":base"))
     implementation(project(":router"))

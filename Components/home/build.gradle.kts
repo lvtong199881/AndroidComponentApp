@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":network"))
     implementation(project(":router"))
     implementation(project(":user"))
+    implementation(project(":reactnative"))
     testImplementation("junit:junit:4.13.2")
 }
 

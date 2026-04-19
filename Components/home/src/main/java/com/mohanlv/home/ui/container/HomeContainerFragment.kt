@@ -1,7 +1,6 @@
 package com.mohanlv.home.ui.container
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -33,6 +32,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
                 R.id.nav_home -> "home"
                 R.id.nav_web -> "web"
                 R.id.nav_user -> "user"
+                R.id.nav_rn -> "rn"
                 else -> return@setOnItemSelectedListener false
             }
             switchFragment(tag)
@@ -75,6 +75,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
             "home" -> com.mohanlv.home.ui.HomeFragment()
             "web" -> com.mohanlv.home.ui.web.WebFragment()
             "user" -> com.mohanlv.user.ui.UserFragment()
+            "rn" -> com.mohanlv.reactnative.ui.RNFragment()
             else -> null
         }
     }
