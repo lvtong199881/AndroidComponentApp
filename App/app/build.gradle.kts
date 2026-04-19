@@ -56,6 +56,7 @@ dependencies {
     implementation("$componentGroupId:network:$componentVersion")
     implementation("$componentGroupId:login:$componentVersion")
     implementation("$componentGroupId:home:$componentVersion")
+    implementation("$componentGroupId:reactnative:$componentVersion")
     // =======================================================
     
     // Lifecycle

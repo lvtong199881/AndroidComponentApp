@@ -22,6 +22,7 @@ if (componentSourceDependency) {
             substitute(module("$componentGroupId:login")).using(project(":login"))
             substitute(module("$componentGroupId:home")).using(project(":home"))
             substitute(module("$componentGroupId:user")).using(project(":user"))
+            substitute(module("$componentGroupId:reactnative")).using(project(":reactnative"))
         }
     }
     println("✅ Using SOURCE dependency (Components/ folder)")

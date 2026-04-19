@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mohanlv.router"
+    namespace = "com.mohanlv.reactnative"
     compileSdk = 34
 
     defaultConfig {
@@ -26,6 +26,7 @@ android {
     }
     
     kotlinOptions { jvmTarget = "17" }
+    buildFeatures { viewBinding = true }
 }
 
 dependencies {
@@ -33,8 +34,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     
+    // React Native Core（需要手动集成 JS bundle）
+    implementation("com.facebook.react:react-android:0.76.9")
+    
     implementation(project(":base"))
+    implementation(project(":router"))
+    
     testImplementation("junit:junit:4.13.2")
 }
-
-// publishing 配置已在根项目统一管理
