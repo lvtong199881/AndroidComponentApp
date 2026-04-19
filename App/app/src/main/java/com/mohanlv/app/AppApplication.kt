@@ -6,6 +6,7 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
+import com.facebook.react.shell.MainReactPackage
 import com.facebook.soloader.SoLoader
 import com.mohanlv.base.utils.AppUtils
 import com.mohanlv.base.utils.SPUtils
@@ -29,11 +30,11 @@ class AppApplication : Application(), ReactApplication {
             override fun getUseDeveloperSupport(): Boolean = false
             
             override fun getPackages(): List<ReactPackage> {
-                return listOf(com.facebook.react.shell.MainReactPackage())
+                return listOf(MainReactPackage())
             }
             
             override val isNewArchEnabled: Boolean = false
-            override val isHermesEnabled: Boolean = true  // 使用 Hermes 引擎（支持 64 位）
+            override val isHermesEnabled: Boolean = true
         }
         
         // 初始化工具类

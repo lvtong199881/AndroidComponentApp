@@ -43,6 +43,7 @@ dependencies {
     // SoLoader for native library loading
     api("com.facebook.soloader:soloader:0.11.0")
     
+    // 依赖 base（获取 BaseFragment），依赖 router（获取 @Route 注解）
     implementation(project(":base"))
     implementation(project(":router"))
     

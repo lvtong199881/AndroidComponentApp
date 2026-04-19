@@ -37,8 +37,6 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation(project(":base"))
-    implementation(project(":network"))
-    implementation(project(":router"))
     implementation(project(":user"))
     implementation(project(":reactnative"))
     testImplementation("junit:junit:4.13.2")

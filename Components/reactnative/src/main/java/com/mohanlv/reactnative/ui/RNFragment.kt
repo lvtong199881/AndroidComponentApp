@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactInstanceManager
-import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactRootView
-import com.facebook.react.bridge.JSBundleLoader
-import com.facebook.react.common.LifecycleState
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
-import com.facebook.react.shell.MainReactPackage
 import com.mohanlv.base.base.BaseFragment
+import com.mohanlv.reactnative.ReactNativeHelper
 import com.mohanlv.reactnative.databinding.FragmentRnBinding
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
@@ -44,30 +41,14 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
         val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: DEFAULT_COMPONENT_NAME
 
         activity?.let { activity ->
-            // 获取 ReactNativeHost
-            val host = if (activity.application is ReactApplication) {
-                (activity.application as ReactApplication).reactNativeHost
+            // 获取 ReactInstanceManager（懒创建）
+            val application = activity.application
+            val reactNativeHost = if (application is ReactApplication) {
+                application.reactNativeHost
             } else {
-                createDefaultReactNativeHost(activity)
+                throw IllegalStateException("Application must implement ReactApplication")
             }
-
-            // 创建 JSBundleLoader
-            val jsBundleLoader = JSBundleLoader.createAssetLoader(
-                activity,
-                "index.android.bundle",
-                false
-            )
-
-            // 创建 ReactInstanceManager
-            reactInstanceManager = ReactInstanceManager.builder()
-                .setCurrentActivity(activity)
-                .setApplication(activity.application)
-                .setJSMainModulePath("index")
-                .setJSBundleLoader(jsBundleLoader)
-                .addPackage(MainReactPackage())
-                .setUseDeveloperSupport(false)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build()
+            reactInstanceManager = ReactNativeHelper.get(application, reactNativeHost)
 
             // 创建 ReactRootView
             reactRootView = ReactRootView(activity)
@@ -96,18 +77,6 @@ class RNFragment : BaseFragment<FragmentRnBinding>(), DefaultHardwareBackBtnHand
             )
 
             binding.reactContainer.addView(reactRootView)
-        }
-    }
-
-    private fun createDefaultReactNativeHost(activity: Activity): ReactNativeHost {
-        return object : ReactNativeHost(activity.application) {
-            override fun getJSMainModuleName(): String = "index"
-
-            override fun getUseDeveloperSupport(): Boolean = false
-
-            override fun getPackages(): MutableList<com.facebook.react.ReactPackage> {
-                return mutableListOf(MainReactPackage())
-            }
         }
     }
 

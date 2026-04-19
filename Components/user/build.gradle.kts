@@ -37,8 +37,6 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation(project(":base"))
-    implementation(project(":router"))
     implementation(project(":login"))
-    implementation(project(":network"))
     testImplementation("junit:junit:4.13.2")
 }

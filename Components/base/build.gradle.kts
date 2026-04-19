@@ -42,6 +42,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.databinding:viewbinding:9.1.0")
     implementation("io.coil-kt:coil:2.5.0")
+    
+    // 核心基础 SDK（通过 api() 传递依赖）
+    api(project(":router"))
+    api(project(":network"))
+    
     testImplementation("junit:junit:4.13.2")
 }
 

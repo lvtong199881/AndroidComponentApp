@@ -31,7 +31,6 @@ android {
 
 dependencies {
     api("androidx.core:core-ktx:1.12.0")
-    implementation(project(":base"))
     
     // Retrofit + OkHttp
     api("com.squareup.retrofit2:retrofit:2.9.0")

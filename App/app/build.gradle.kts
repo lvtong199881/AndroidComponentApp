@@ -50,7 +50,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     
     // ========== 组件依赖（自动切换源码/Maven 模式） ==========
-    // 当 component.sourceDependency=true 时，dependencySubstitution 会自动替换为项目源码
     implementation("$componentGroupId:base:$componentVersion")
     implementation("$componentGroupId:router:$componentVersion")
     implementation("$componentGroupId:network:$componentVersion")
@@ -65,6 +64,9 @@ dependencies {
     
     // React Native SoLoader (for native library loading)
     implementation("com.facebook.soloader:soloader:0.11.0")
+    
+    // React Native Core (for ReactInstanceManager)
+    implementation("com.facebook.react:react-android:0.76.9")
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
