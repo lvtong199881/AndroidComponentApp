@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.facebook.react.ReactApplication
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
@@ -24,7 +23,6 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
     private val binding get() = _binding!!
     
     private var reactRootView: ReactRootView? = null
-    private var reactInstanceManager: ReactInstanceManager? = null
 
     companion object {
         const val KEY_COMPONENT_NAME = "componentName"
@@ -49,14 +47,9 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
         val componentName = arguments?.getString(KEY_COMPONENT_NAME) ?: DEFAULT_COMPONENT_NAME
 
         activity?.let { activity ->
-            // 获取 ReactInstanceManager
-            val application = activity.application
-            val reactNativeHost = if (application is ReactApplication) {
-                application.reactNativeHost
-            } else {
-                throw IllegalStateException("Application must implement ReactApplication")
-            }
-            reactInstanceManager = ReactNativeHelper.get(application, reactNativeHost)
+            // 获取预创建的 ReactInstanceManager
+            val reactInstanceManager = ReactNativeHelper.get()
+                ?: throw IllegalStateException("ReactInstanceManager not initialized. Call ReactNativeStartupTask first.")
 
             // 创建 ReactRootView
             reactRootView = ReactRootView(activity)
@@ -90,17 +83,17 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
 
     override fun onResume() {
         super.onResume()
-        reactInstanceManager?.onHostResume(activity, this)
+        ReactNativeHelper.get()?.onHostResume(activity, this)
     }
 
     override fun onPause() {
         super.onPause()
-        reactInstanceManager?.onHostPause(activity)
+        ReactNativeHelper.get()?.onHostPause(activity)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        reactInstanceManager?.onHostDestroy(activity)
+        ReactNativeHelper.get()?.onHostDestroy(activity)
         reactRootView?.unmountReactApplication()
         reactRootView = null
         _binding = null
