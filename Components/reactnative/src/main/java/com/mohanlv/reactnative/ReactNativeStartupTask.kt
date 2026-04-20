@@ -12,7 +12,7 @@ import com.mohanlv.startup.StartupTask
 /**
  * React Native 模块的初始化任务
  * 只负责初始化 SoLoader 和预创建 ReactNativeHost
- * 实际 bundle 加载由 RNFragment 自行处理
+ * Bundle 加载由 RNFragment 懒加载
  */
 class ReactNativeStartupTask(private val application: Application) : StartupTask {
     
@@ -24,7 +24,7 @@ class ReactNativeStartupTask(private val application: Application) : StartupTask
         // 初始化 SoLoader
         SoLoader.init(application, OpenSourceMergedSoMapping)
         
-        // 创建 ReactNativeHost（实际加载 bundle 在 RNFragment 中进行）
+        // 创建 ReactNativeHost（不带 bundle loader，由 RNFragment 懒加载）
         val reactNativeHost = createReactNativeHost()
         ReactNativeHelper.init(application, reactNativeHost)
     }
