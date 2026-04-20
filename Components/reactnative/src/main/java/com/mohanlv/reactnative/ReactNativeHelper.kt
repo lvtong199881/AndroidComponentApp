@@ -11,10 +11,11 @@ import java.io.File
 
 /**
  * ReactInstanceManager 持有者，懒创建
+ * 只负责初始化，实际 bundle 加载由 RNFragment 处理
  */
 object ReactNativeHelper {
     
-    private const val TAG = "ReactNativeHelper"
+    private const val TAG = "RN"
     
     private var reactInstanceManager: ReactInstanceManager? = null
     private var isInitialized = false
@@ -37,16 +38,17 @@ object ReactNativeHelper {
     
     fun isInitialized(): Boolean = isInitialized
     
+    /**
+     * 创建 ReactInstanceManager（bundle 加载方式由调用方指定）
+     */
     private fun createReactInstanceManager(application: Application): ReactInstanceManager {
-        // 获取本地 bundle 文件
+        // 优先从本地文件加载，不存在则从 assets 加载
         val bundleFile = File(application.getDir("react-native", Application.MODE_PRIVATE), "index.android.bundle")
-        
-        // 选择 bundle 加载方式
         val jsBundleLoader = if (bundleFile.exists()) {
-            Log.d(TAG, "Loading bundle from file: ${bundleFile.absolutePath}")
+            Log.d(TAG, "Bundle from file: ${bundleFile.absolutePath}")
             JSBundleLoader.createFileLoader(bundleFile.absolutePath)
         } else {
-            Log.d(TAG, "Loading bundle from assets")
+            Log.d(TAG, "Bundle from assets")
             JSBundleLoader.createAssetLoader(application, "index.android.bundle", false)
         }
         

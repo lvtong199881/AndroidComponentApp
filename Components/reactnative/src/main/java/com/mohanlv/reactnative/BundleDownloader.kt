@@ -21,7 +21,7 @@ class BundleDownloader(
 ) {
     
     companion object {
-        private const val TAG = "BundleDownloader"
+        private const val TAG = "RN"
         
         // 默认远端 bundle URL（可通过配置修改）
         const val DEFAULT_BUNDLE_URL = "https://your-cdn.com/bundle/index.android.bundle"

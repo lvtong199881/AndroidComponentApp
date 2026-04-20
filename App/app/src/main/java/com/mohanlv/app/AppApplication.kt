@@ -1,7 +1,6 @@
 package com.mohanlv.app
 
 import android.app.Application
-import com.facebook.react.ReactNativeHost
 import com.mohanlv.base.BaseStartupTask
 import com.mohanlv.network.NetworkStartupTask
 import com.mohanlv.reactnative.ReactNativeStartupTask

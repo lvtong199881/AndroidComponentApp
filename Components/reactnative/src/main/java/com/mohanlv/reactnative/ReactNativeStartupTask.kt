@@ -1,7 +1,6 @@
 package com.mohanlv.reactnative
 
 import android.app.Application
-import android.util.Log
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactNativeHost
@@ -9,20 +8,13 @@ import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.react.shell.MainReactPackage
 import com.facebook.soloader.SoLoader
 import com.mohanlv.startup.StartupTask
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 /**
  * React Native 模块的初始化任务
+ * 只负责初始化 SoLoader 和预创建 ReactNativeHost
+ * 实际 bundle 加载由 RNFragment 自行处理
  */
-class ReactNativeStartupTask(
-    private val application: Application,
-    private val bundleUrl: String = BundleDownloader.DEFAULT_BUNDLE_URL
-) : StartupTask {
-    
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+class ReactNativeStartupTask(private val application: Application) : StartupTask {
     
     override val name: String = "ReactNativeStartupTask"
     
@@ -32,30 +24,12 @@ class ReactNativeStartupTask(
         // 初始化 SoLoader
         SoLoader.init(application, OpenSourceMergedSoMapping)
         
-        // 异步下载 bundle（不阻塞主线程）
-        scope.launch {
-            try {
-                val downloader = BundleDownloader(application, bundleUrl)
-                val bundleFile = downloader.getLocalBundle()
-                
-                if (bundleFile != null) {
-                    Log.d(TAG, "Bundle ready: ${bundleFile.absolutePath}")
-                    // 创建 ReactNativeHost（此时 bundle 已就绪）
-                    val reactNativeHost = createReactNativeHost(bundleFile.absolutePath)
-                    ReactNativeHelper.init(application, reactNativeHost)
-                } else {
-                    Log.e(TAG, "Bundle download failed, using bundled asset as fallback")
-                    // 下载失败时，使用打包在 APK 里的 bundle
-                    val reactNativeHost = createReactNativeHost(null)
-                    ReactNativeHelper.init(application, reactNativeHost)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "ReactNative initialization failed", e)
-            }
-        }
+        // 创建 ReactNativeHost（实际加载 bundle 在 RNFragment 中进行）
+        val reactNativeHost = createReactNativeHost()
+        ReactNativeHelper.init(application, reactNativeHost)
     }
     
-    private fun createReactNativeHost(bundlePath: String?): ReactNativeHost {
+    private fun createReactNativeHost(): ReactNativeHost {
         return object : DefaultReactNativeHost(application) {
             override fun getJSMainModuleName(): String = "index"
             
@@ -68,9 +42,5 @@ class ReactNativeStartupTask(
             override val isNewArchEnabled: Boolean = false
             override val isHermesEnabled: Boolean = true
         }
-    }
-    
-    companion object {
-        private const val TAG = "ReactNativeStartup"
     }
 }

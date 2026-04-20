@@ -127,17 +127,12 @@ def generate_routes():
     lines.append('')
     lines.append('import androidx.fragment.app.Fragment')
     lines.append('')
-    lines.append('/**')
-    lines.append(' * Auto-generated route table by compile-time scanning')
-    lines.append(' * DO NOT EDIT MANUALLY')
-    lines.append(' * Generated at: ' + os.popen('date').read().strip())
-    lines.append(' */')
     lines.append('object RouteTable {')
     lines.append('')
     lines.append('    fun registerAll(manager: RouterManager) {')
     
     for path, cls, _ in routes:
-        lines.append(f'        manager.registerInternal("{path}") {{ Class.forName("{cls}").newInstance() as Fragment }}')
+        lines.append(f'        manager.registerInternal("{path}") {{ Class.forName("{cls}").getDeclaredConstructor().newInstance() as Fragment }}')
     
     lines.append('    }')
     lines.append('}')
@@ -145,16 +140,28 @@ def generate_routes():
     
     output = '\n'.join(lines)
     
-    # 写入文件
+    # 检查是否需要更新（只有内容变化时才更新）
     output_dir = 'router/src/main/java/com/mohanlv/router'
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, 'RouteTable.kt')
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(output)
     
-    print(f"Generated {len(routes)} routes to {output_file}:")
-    for path, cls, _ in routes:
-        print(f"  {path} -> {cls}")
+    # 读取现有文件内容进行比较
+    need_update = True
+    if os.path.exists(output_file):
+        with open(output_file, 'r', encoding='utf-8') as f:
+            existing_content = f.read()
+        if existing_content == output:
+            need_update = False
+            print(f"Route table unchanged, skipping update")
+    
+    if need_update:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(output)
+        print(f"Generated {len(routes)} routes to {output_file}:")
+        for path, cls, _ in routes:
+            print(f"  {path} -> {cls}")
+    else:
+        print(f"Route table is up to date, no changes needed")
     
     return len(routes)
 
