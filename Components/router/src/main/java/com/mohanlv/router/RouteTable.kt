@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 /**
  * Auto-generated route table by compile-time scanning
  * DO NOT EDIT MANUALLY
- * Generated at: Mon Apr 20 02:23:50 CST 2026
+ * Generated at: Mon Apr 20 02:26:45 CST 2026
  */
 object RouteTable {
 

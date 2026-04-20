@@ -43,6 +43,9 @@ dependencies {
     // SoLoader for native library loading
     api("com.facebook.soloader:soloader:0.11.0")
     
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
     // 依赖 router（获取 @Route 注解）
     implementation(project(":router"))
     
