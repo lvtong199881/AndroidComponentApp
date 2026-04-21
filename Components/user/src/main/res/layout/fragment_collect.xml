@@ -12,7 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="我的收藏"
+        app:title="@string/my_collect"
         app:titleTextColor="@color/white"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="暂无收藏"
+                    android:text="@string/no_collect"
                     android:textSize="16sp"
                     android:textColor="@color/text_secondary"/>
 

@@ -17,6 +17,7 @@ import com.mohanlv.network.model.Article
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
+import com.mohanlv.user.R
 import com.mohanlv.user.databinding.FragmentCollectBinding
 import kotlinx.coroutines.launch
 
@@ -44,7 +45,7 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
         
         // 检查登录状态
         if (!LoginState.isLoggedIn) {
-            Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.please_login_first, Toast.LENGTH_SHORT).show()
             RouterManager.navigate(RoutePath.LOGIN)
             return
         }
@@ -124,7 +125,7 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "加载收藏列表失败: ${e.message}")
-                Toast.makeText(context, "加载失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.load_failed, e.message), Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false
                 binding.swipeRefresh.isRefreshing = false

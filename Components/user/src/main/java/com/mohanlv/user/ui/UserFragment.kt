@@ -112,7 +112,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
             btnLogout.visibility = View.VISIBLE
 
             tvUsername.text = LoginState.nickname.ifEmpty { LoginState.username }
-            tvUserId.text = "ID: ${LoginState.userId}"
+            tvUserId.text = getString(R.string.user_id_format, LoginState.userId)
         } else {
             layoutLoggedIn.visibility = View.GONE
             layoutNotLogin.visibility = View.VISIBLE
@@ -133,8 +133,8 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                     val body = response.body()
                     if (body != null && body.isSuccess()) {
                         val userInfo = body.data
-                        tvCoinCount.text = "${userInfo?.coinCount ?: 0}"
-                        tvRank.text = "排名: ${userInfo?.rank ?: "--"}"
+                        tvCoinCount.text = userInfo?.coinCount?.toString() ?: getString(R.string.default_placeholder)
+                        tvRank.text = getString(R.string.rank_format, userInfo?.rank ?: getString(R.string.default_placeholder))
                         Log.i(TAG, "积分信息加载成功: ${userInfo?.coinCount}")
                     } else {
                         val errorMsg = body?.errorMsg ?: ""
@@ -144,12 +144,12 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                             clearLoginState()
                             return@launch
                         }
-                        tvCoinCount.text = "--"
+                        tvCoinCount.text = getString(R.string.default_placeholder)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "获取积分失败: ${e.message}")
-                tvCoinCount.text = "--"
+                tvCoinCount.text = getString(R.string.default_placeholder)
             }
         }
     }
@@ -167,7 +167,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
      */
     private fun logout() {
         LoginState.logout()
-        Toast.makeText(context, "已退出登录", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.logout_success, Toast.LENGTH_SHORT).show()
         // UI 更新由 onLogout 回调处理
     }
 
