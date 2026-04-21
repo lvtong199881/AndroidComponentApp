@@ -22,18 +22,14 @@ Android 组件化开发模板工程，支持**源码模式**和 **Maven 模式**
 ```
 AndroidComponentApp/
 ├── App/                          # 宿主应用（壳工程）
-│   ├── app/                      # Application 模块
-│   ├── dependencies-config.gradle.kts  # 组件依赖配置
-│   └── settings.gradle.kts
-│
-└── Components/                   # 可复用组件模块
-    ├── base/                     # 基础组件（BaseFragment、工具类、动画）
-    ├── router/                   # 路由组件（RouterManager、@Route）
-    ├── network/                  # 网络组件（OkHttp + Retrofit）
-    ├── login/                    # 登录组件（登录页、LoginState）
-    ├── home/                     # 首页组件（Banner、文章列表、WebView）
-    ├── user/                     # 用户中心（个人中心、收藏）
-    └── reactnative/              # React Native 组件（热更新）
+└── Components/                   # 7 个可复用组件模块
+    ├── base/                     # 基础组件
+    ├── router/                   # 路由组件
+    ├── network/                  # 网络组件
+    ├── login/                    # 登录组件
+    ├── home/                     # 首页组件
+    ├── user/                     # 用户中心
+    └── reactnative/              # React Native 组件
 ```
 
 ---
