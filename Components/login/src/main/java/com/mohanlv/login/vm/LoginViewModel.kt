@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import android.os.Handler
 import android.os.Looper
 import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 登录 ViewModel
@@ -108,23 +109,21 @@ object LoginState {
     var token: String = ""
         private set
 
-    // 登录状态监听器列表（使用弱引用避免内存泄漏）
-    private val listeners = mutableListOf<WeakReference<OnLoginStateChangedListener>>()
+    // 登录状态监听器列表（线程安全 + 弱引用避免内存泄漏）
+    private val listeners = ConcurrentHashMap.newKeySet<WeakReference<OnLoginStateChangedListener>>()
 
     /**
      * 注册登录状态监听器
      */
     fun addListener(listener: OnLoginStateChangedListener) {
-        if (listeners.none { it.get() === listener }) {
-            listeners.add(WeakReference(listener))
-        }
+        listeners.add(WeakReference(listener))
     }
 
     /**
      * 移除登录状态监听器
      */
     fun removeListener(listener: OnLoginStateChangedListener) {
-        listeners.removeAll { it.get() === listener }
+        listeners.removeIf { it.get() === listener }
     }
 
     /**
@@ -160,7 +159,7 @@ object LoginState {
         SPUtils.clear()
 
         // 通知所有监听器（清理已回收的弱引用），切到主线程
-        listeners.removeAll { it.get() == null }
+        listeners.removeIf { it.get() == null }
         Handler(Looper.getMainLooper()).post {
             listeners.forEach { it.get()?.onLogout() }
         }
@@ -177,7 +176,7 @@ object LoginState {
         this.token = token ?: ""
 
         // 通知所有监听器（清理已回收的弱引用），切到主线程
-        listeners.removeAll { it.get() == null }
+        listeners.removeIf { it.get() == null }
         Handler(Looper.getMainLooper()).post {
             listeners.forEach { it.get()?.onLoginSuccess(userId, username, nickname) }
         }
