@@ -5,9 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.mohanlv.base.base.BaseFragment
@@ -31,30 +28,21 @@ import kotlinx.coroutines.launch
 class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChangedListener {
 
     private val apiService = NetworkManager.createApi(ApiService::class.java)
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentUserCenterBinding {
+        return FragmentUserCenterBinding.inflate(inflater, container, false)
+    }
 
     companion object {
         private const val TAG = "UserFragment"
     }
 
-    // 使用 findViewById 替代 ViewBinding 避免 ID 命名空间问题
-    private lateinit var layoutLoggedIn: LinearLayout
-    private lateinit var layoutNotLogin: LinearLayout
-    private lateinit var layoutCollect: LinearLayout
-    private lateinit var tvUsername: TextView
-    private lateinit var tvUserId: TextView
-    private lateinit var tvCoinCount: TextView
-    private lateinit var tvRank: TextView
-    private lateinit var btnLogout: Button
-    private lateinit var btnLogin: Button
-
-    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentUserCenterBinding {
-        return FragmentUserCenterBinding.inflate(inflater, container, false)
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         
-        // 从 SPUtils 恢复登录状态
+        // 从 LoginPrefs 恢复登录状态
         if (LoginPrefs.isLogin) {
             LoginState.restore(
                 userId = LoginPrefs.userId,
@@ -62,19 +50,6 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                 nickname = LoginPrefs.nickname
             )
         }
-        
-        // 初始化视图引用
-        layoutLoggedIn = binding.root.findViewById(R.id.layoutLoggedIn)
-        layoutNotLogin = binding.root.findViewById(R.id.layoutNotLogin)
-        layoutCollect = binding.root.findViewById(R.id.layoutCollect)
-        tvUsername = binding.root.findViewById(R.id.tvUsername)
-        tvUserId = binding.root.findViewById(R.id.tvUserId)
-        tvCoinCount = binding.root.findViewById(R.id.tvCoinCount)
-        tvRank = binding.root.findViewById(R.id.tvRank)
-        btnLogout = binding.root.findViewById(R.id.btnLogout)
-        btnLogin = binding.root.findViewById(R.id.btnLogin)
-        
-        updateUserInfo()
     }
 
     override fun initData() {
@@ -85,20 +60,9 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
     }
 
     override fun initEvent() {
-        // 退出登录按钮
-        btnLogout.setOnClickListener {
-            logout()
-        }
-
-        // 登录按钮（未登录时显示）
-        btnLogin.setOnClickListener {
-            RouterManager.navigate(RoutePath.LOGIN, addToBackStack = true)
-        }
-        
-        // 我的收藏
-        layoutCollect.setOnClickListener {
-            RouterManager.navigate(RoutePath.COLLECT_LIST, addToBackStack = true)
-        }
+        binding.btnLogout.setOnClickListener { logout() }
+        binding.btnLogin.setOnClickListener { RouterManager.navigate(RoutePath.LOGIN, addToBackStack = true) }
+        binding.layoutCollect.setOnClickListener { RouterManager.navigate(RoutePath.COLLECT_LIST, addToBackStack = true) }
     }
 
     /**
@@ -106,16 +70,15 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
      */
     private fun updateUserInfo() {
         if (LoginState.isLoggedIn) {
-            layoutLoggedIn.visibility = View.VISIBLE
-            layoutNotLogin.visibility = View.GONE
-            btnLogout.visibility = View.VISIBLE
+            binding.layoutLoggedIn.visibility = View.VISIBLE
+            binding.layoutNotLogin.visibility = View.GONE
 
-            tvUsername.text = LoginState.nickname.ifEmpty { LoginState.username }
-            tvUserId.text = getString(R.string.user_id_format, LoginState.userId)
+            binding.tvUsername.text = LoginState.nickname.ifEmpty { LoginState.username }
+            binding.tvUserId.text = getString(R.string.user_id_format, LoginState.userId)
+            binding.tvAvatar.text = binding.tvUsername.text.firstOrNull()?.uppercase() ?: "?"
         } else {
-            layoutLoggedIn.visibility = View.GONE
-            layoutNotLogin.visibility = View.VISIBLE
-            btnLogout.visibility = View.GONE
+            binding.layoutLoggedIn.visibility = View.GONE
+            binding.layoutNotLogin.visibility = View.VISIBLE
         }
     }
 
@@ -132,47 +95,36 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                     val body = response.body()
                     if (body != null && body.isSuccess()) {
                         val userInfo = body.data
-                        tvCoinCount.text = userInfo?.coinCount?.toString() ?: getString(R.string.default_placeholder)
-                        tvRank.text = getString(R.string.rank_format, userInfo?.rank ?: getString(R.string.default_placeholder))
+                        binding.tvCoinCount.text = userInfo?.coinCount?.toString() ?: getString(R.string.default_placeholder)
+                        binding.tvRank.text = getString(R.string.rank_format, userInfo?.rank ?: getString(R.string.default_placeholder))
                         Log.i(TAG, "积分信息加载成功: ${userInfo?.coinCount}")
                     } else {
-                        val errorMsg = body?.errorMsg ?: ""
-                        Log.e(TAG, "获取积分失败: $errorMsg")
-                        // 如果是"请先登录"，说明本地登录状态已失效，清除本地状态
-                        if (errorMsg.contains("请先登录")) {
+                        Log.e(TAG, "获取积分失败: ${body?.errorMsg}")
+                        if (body?.needLogin() == true) {
                             clearLoginState()
                             return@launch
                         }
-                        tvCoinCount.text = getString(R.string.default_placeholder)
+                        binding.tvCoinCount.text = getString(R.string.default_placeholder)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "获取积分失败", e)
-                tvCoinCount.text = getString(R.string.default_placeholder)
+                binding.tvCoinCount.text = getString(R.string.default_placeholder)
             }
         }
     }
 
-    /**
-     * 清除登录状态（本地状态失效）
-     */
     private fun clearLoginState() {
         LoginState.clear()
-        // UI 更新由 onLogout 回调处理
     }
 
-    /**
-     * 退出登录
-     */
     private fun logout() {
         LoginState.logout()
         Toast.makeText(context, R.string.logout_success, Toast.LENGTH_SHORT).show()
-        // UI 更新由 onLogout 回调处理
     }
 
     override fun onResume() {
         super.onResume()
-        // 注册登录状态监听
         LoginState.addListener(this)
         updateUserInfo()
         if (LoginState.isLoggedIn) {
@@ -182,21 +134,14 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
 
     override fun onPause() {
         super.onPause()
-        // 取消注册登录状态监听
         LoginState.removeListener(this)
     }
 
-    /**
-     * 登录成功回调
-     */
     override fun onLoginSuccess(userId: Int, username: String, nickname: String?) {
         updateUserInfo()
         loadUserCoinInfo()
     }
 
-    /**
-     * 退出登录回调
-     */
     override fun onLogout() {
         updateUserInfo()
     }

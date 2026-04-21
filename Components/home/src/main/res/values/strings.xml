@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home">首页</string>
-    <string name="web">网页</string>
-    <string name="my">我的</string>
+    <string name="home">Home</string>
+    <string name="web">Web</string>
+    <string name="my">My</string>
     <string name="rn">RN</string>
 </resources>

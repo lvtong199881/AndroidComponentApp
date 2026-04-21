@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="bundle_delete_confirm">确定删除此 Bundle？</string>
     <string name="bundle_delete">删除</string>
