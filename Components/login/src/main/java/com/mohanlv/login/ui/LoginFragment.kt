@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.google.android.material.chip.Chip
 import com.mohanlv.base.base.BaseFragment
-import com.mohanlv.base.utils.SPUtils
+import com.mohanlv.login.LoginPrefs
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.login.databinding.FragmentLoginBinding
@@ -20,7 +20,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()
 
-    private val loginHistory = mutableListOf<SPUtils.Account>()
+    private val loginHistory = mutableListOf<LoginPrefs.Account>()
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentLoginBinding {
         return FragmentLoginBinding.inflate(inflater, container, false)
@@ -33,7 +33,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun loadLoginHistory() {
-        val history = SPUtils.loginHistory
+        val history = LoginPrefs.loginHistory
         loginHistory.clear()
         loginHistory.addAll(history)
         binding.chipGroupHistory.removeAllViews()
@@ -53,11 +53,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private fun saveToHistory(username: String, password: String) {
         loginHistory.removeAll { it.username == username }
-        loginHistory.add(0, SPUtils.Account(username, password))
+        loginHistory.add(0, LoginPrefs.Account(username, password))
         if (loginHistory.size > 5) {
             loginHistory.removeAt(loginHistory.lastIndex)
         }
-        SPUtils.loginHistory = loginHistory.toList()
+        LoginPrefs.loginHistory = loginHistory.toList()
     }
 
     private fun observeViewModel() {
@@ -71,9 +71,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         nickname = result.nickname,
                         token = result.token
                     )
-                    SPUtils.isLogin = true
-                    SPUtils.userId = result.userId
-                    SPUtils.username = result.username
+                    LoginPrefs.isLogin = true
+                    LoginPrefs.userId = result.userId
+                    LoginPrefs.username = result.username
                     showError("登录成功，欢迎 ${result.nickname ?: result.username}")
                     parentFragmentManager.popBackStack()
                 }

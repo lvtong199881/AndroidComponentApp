@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.mohanlv.base.base.BaseFragment
-import com.mohanlv.base.utils.SPUtils
+import com.mohanlv.login.LoginPrefs
 import com.mohanlv.login.vm.LoginState
 import com.mohanlv.login.vm.OnLoginStateChangedListener
 import com.mohanlv.network.NetworkManager
@@ -56,11 +55,11 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
         super.initView(savedInstanceState)
         
         // 从 SPUtils 恢复登录状态
-        if (SPUtils.isLogin) {
+        if (LoginPrefs.isLogin) {
             LoginState.restore(
-                userId = SPUtils.userId,
-                username = SPUtils.username ?: "",
-                nickname = SPUtils.nickname
+                userId = LoginPrefs.userId,
+                username = LoginPrefs.username ?: "",
+                nickname = LoginPrefs.nickname
             )
         }
         

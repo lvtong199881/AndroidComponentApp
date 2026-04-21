@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mohanlv.login.model.LoginResult
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
-import com.mohanlv.base.utils.SPUtils
+import com.mohanlv.login.LoginPrefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,7 +64,7 @@ class LoginViewModel : ViewModel() {
                         )
                     }
                 } else {
-                    android.util.Log.e("LoginViewModel", "登录失败，响应码: ${response.code()}")
+                    Log.e("LoginViewModel", "登录失败，响应码: ${response.code()}")
                     _loginResult.value = LoginResult.Error("网络错误: ${response.code()}")
                 }
             } catch (e: Exception) {
@@ -159,11 +159,11 @@ object LoginState {
 
 
         // 仅清除登录相关字段，保留账号历史
-        SPUtils.token = null
-        SPUtils.userId = 0
-        SPUtils.username = null
-        SPUtils.nickname = null
-        SPUtils.isLogin = false
+        LoginPrefs.token = null
+        LoginPrefs.userId = 0
+        LoginPrefs.username = null
+        LoginPrefs.nickname = null
+        LoginPrefs.isLogin = false
 
         listeners.removeIf { it.get() == null }
         Handler(Looper.getMainLooper()).post {
@@ -181,6 +181,13 @@ object LoginState {
         this.nickname = nickname ?: ""
         this.token = token ?: ""
 
+        // 持久化到 LoginPrefs
+        LoginPrefs.isLogin = true
+        LoginPrefs.userId = userId
+        LoginPrefs.username = username
+        LoginPrefs.nickname = nickname
+        LoginPrefs.token = token
+
         // 通知所有监听器（清理已回收的弱引用），切到主线程
         listeners.removeIf { it.get() == null }
         Handler(Looper.getMainLooper()).post {
@@ -189,7 +196,7 @@ object LoginState {
     }
 
     /**
-     * 从外部数据恢复登录状态（用于 App 重启后从 SPUtils 恢复）
+     * 从外部数据恢复登录状态（用于 App 重启后从 LoginPrefs 恢复）
      * 注意：恢复状态不触发回调，因为这不是新的登录/登出动作
      */
     fun restore(userId: Int, username: String, nickname: String?) {

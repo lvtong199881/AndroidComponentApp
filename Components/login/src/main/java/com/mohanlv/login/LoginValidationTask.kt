@@ -2,7 +2,6 @@ package com.mohanlv.login
 
 import android.app.Application
 import android.util.Log
-import com.mohanlv.base.utils.SPUtils
 import com.mohanlv.login.vm.LoginState
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
@@ -26,15 +25,15 @@ class LoginValidationTask(private val application: Application) : StartupTask {
 
     override fun create() {
         // 如果本地未登录，不需要校验
-        if (!SPUtils.isLogin) {
+        if (!LoginPrefs.isLogin) {
             return
         }
 
         // 恢复本地登录状态
         LoginState.restore(
-            userId = SPUtils.userId,
-            username = SPUtils.username ?: "",
-            nickname = SPUtils.nickname
+            userId = LoginPrefs.userId,
+            username = LoginPrefs.username ?: "",
+            nickname = LoginPrefs.nickname
         )
 
         // 异步校验登录状态
