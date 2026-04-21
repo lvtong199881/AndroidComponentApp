@@ -3,6 +3,7 @@ package com.mohanlv.reactnative.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -18,9 +19,9 @@ class RepoAdapter(
 ) : RecyclerView.Adapter<RepoAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvRepoName: android.widget.TextView = view.findViewById(R.id.tv_repo_name)
-        val tvVersionCount: android.widget.TextView = view.findViewById(R.id.tv_version_count)
-        val tvTotalSize: android.widget.TextView = view.findViewById(R.id.tv_total_size)
+        val tvRepoName: TextView = view.findViewById(R.id.tv_repo_name)
+        val tvVersionCount: TextView = view.findViewById(R.id.tv_version_count)
+        val tvTotalSize: TextView = view.findViewById(R.id.tv_total_size)
         val rvVersions: RecyclerView = view.findViewById(R.id.rv_versions)
         val btnDeleteRepo: MaterialButton = view.findViewById(R.id.btn_delete_repo)
     }

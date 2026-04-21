@@ -3,6 +3,7 @@ package com.mohanlv.home.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mohanlv.base.R
 import com.mohanlv.network.model.Article
@@ -16,9 +17,9 @@ class ArticleAdapter(
 ) : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
 
     class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val titleText: android.widget.TextView = itemView.findViewById(R.id.tvTitle)
-        val authorText: android.widget.TextView = itemView.findViewById(R.id.tvAuthor)
-        val dateText: android.widget.TextView = itemView.findViewById(R.id.tvDate)
+        val titleText: TextView = itemView.findViewById(R.id.tvTitle)
+        val authorText: TextView = itemView.findViewById(R.id.tvAuthor)
+        val dateText: TextView = itemView.findViewById(R.id.tvDate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {

@@ -3,6 +3,7 @@ package com.mohanlv.reactnative.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.mohanlv.reactnative.R
@@ -20,9 +21,9 @@ class VersionAdapter(
 ) : RecyclerView.Adapter<VersionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvVersion: android.widget.TextView = view.findViewById(R.id.tv_version)
-        val tvSize: android.widget.TextView = view.findViewById(R.id.tv_size)
-        val tvTime: android.widget.TextView = view.findViewById(R.id.tv_time)
+        val tvVersion: TextView = view.findViewById(R.id.tv_version)
+        val tvSize: TextView = view.findViewById(R.id.tv_size)
+        val tvTime: TextView = view.findViewById(R.id.tv_time)
         val btnDelete: MaterialButton = view.findViewById(R.id.btn_delete)
     }
 
