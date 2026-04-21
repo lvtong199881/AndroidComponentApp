@@ -140,6 +140,14 @@ class LoginViewModel : ViewModel() {
 }
 
 /**
+ * 登录状态变化监听器
+ */
+interface OnLoginStateChangedListener {
+    fun onLoginSuccess(userId: Int, username: String, nickname: String?)
+    fun onLogout()
+}
+
+/**
  * 登录状态管理器
  */
 object LoginState {
@@ -158,24 +166,60 @@ object LoginState {
     var token: String = ""
         private set
 
+    // 登录状态监听器列表
+    private val listeners = mutableListOf<OnLoginStateChangedListener>()
+
+    /**
+     * 注册登录状态监听器
+     */
+    fun addListener(listener: OnLoginStateChangedListener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener)
+        }
+    }
+
+    /**
+     * 移除登录状态监听器
+     */
+    fun removeListener(listener: OnLoginStateChangedListener) {
+        listeners.remove(listener)
+    }
+
+    /**
+     * 保存登录状态并通知监听器
+     */
     fun saveLogin(userId: Int, username: String, nickname: String?, token: String?) {
         this.isLoggedIn = true
         this.userId = userId
         this.username = username
         this.nickname = nickname ?: ""
         this.token = token ?: ""
+
+        // 通知所有监听器
+        listeners.forEach {
+            it.onLoginSuccess(userId, username, nickname)
+        }
     }
 
+    /**
+     * 清除登录状态并通知监听器
+     */
     fun clear() {
         isLoggedIn = false
         userId = 0
         username = ""
         nickname = ""
         token = ""
+
+        // 通知所有监听器
+        listeners.forEach {
+            it.onLogout()
+        }
     }
 
     /**
      * 从外部数据恢复登录状态（用于 App 重启后从 SPUtils 恢复）
+     * 注意：恢复状态不触发回调，因为这不是新的登录/登出动作
      */
     fun restore(userId: Int, username: String, nickname: String?) {
         this.isLoggedIn = true

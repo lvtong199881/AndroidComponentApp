@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.base.utils.SPUtils
 import com.mohanlv.login.vm.LoginState
+import com.mohanlv.login.vm.OnLoginStateChangedListener
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
 import com.mohanlv.router.RoutePath
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
  * 显示用户信息和积分
  */
 @Route(path = RoutePath.USER, description = "个人中心")
-class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
+class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChangedListener {
 
     private val apiService = NetworkManager.createApi(ApiService::class.java)
 
@@ -159,7 +160,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
     private fun clearLoginState() {
         LoginState.clear()
         SPUtils.clear()
-        updateUserInfo()
+        // UI 更新由回调处理
     }
 
     /**
@@ -175,17 +176,39 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
 
             LoginState.clear()
             SPUtils.clear()
-
             Toast.makeText(context, "已退出登录", Toast.LENGTH_SHORT).show()
-            updateUserInfo()
+            // UI 更新由回调处理
         }
     }
 
     override fun onResume() {
         super.onResume()
+        // 注册登录状态监听
+        LoginState.addListener(this)
         updateUserInfo()
         if (LoginState.isLoggedIn) {
             loadUserCoinInfo()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 取消注册登录状态监听
+        LoginState.removeListener(this)
+    }
+
+    /**
+     * 登录成功回调
+     */
+    override fun onLoginSuccess(userId: Int, username: String, nickname: String?) {
+        updateUserInfo()
+        loadUserCoinInfo()
+    }
+
+    /**
+     * 退出登录回调
+     */
+    override fun onLogout() {
+        updateUserInfo()
     }
 }
