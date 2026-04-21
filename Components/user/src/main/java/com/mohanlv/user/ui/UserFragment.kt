@@ -136,7 +136,13 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
                         tvRank.text = "排名: ${userInfo?.rank ?: "--"}"
                         Log.i(TAG, "积分信息加载成功: ${userInfo?.coinCount}")
                     } else {
-                        Log.e(TAG, "获取积分失败: ${body?.errorMsg}")
+                        val errorMsg = body?.errorMsg ?: ""
+                        Log.e(TAG, "获取积分失败: $errorMsg")
+                        // 如果是"请先登录"，说明本地登录状态已失效，清除本地状态
+                        if (errorMsg.contains("请先登录")) {
+                            clearLoginState()
+                            return@launch
+                        }
                         tvCoinCount.text = "--"
                     }
                 }
@@ -145,6 +151,15 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>() {
                 tvCoinCount.text = "--"
             }
         }
+    }
+
+    /**
+     * 清除登录状态（本地状态失效）
+     */
+    private fun clearLoginState() {
+        LoginState.clear()
+        SPUtils.clear()
+        updateUserInfo()
     }
 
     /**

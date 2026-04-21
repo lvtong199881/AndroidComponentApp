@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.mohanlv.reactnative.R
 import com.mohanlv.router.RouterManager
 
@@ -26,6 +27,14 @@ class RNManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        val toolbarContainer = view.findViewById<View>(R.id.toolbar_container)
+
+        // 点击关闭按钮
+        toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         // 点击"本地 Bundle 包管理"进入二级页面
         view.findViewById<View>(R.id.menu_local_bundle).setOnClickListener {
             navigateToLocalBundle()
@@ -34,6 +43,7 @@ class RNManagerFragment : Fragment() {
         // 处理 WindowInsets
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbarContainer.setPadding(0, systemBars.top, 0, 0)
             v.findViewById<View>(R.id.menu_local_bundle).setPadding(
                 systemBars.left + 16,
                 systemBars.top + 16,

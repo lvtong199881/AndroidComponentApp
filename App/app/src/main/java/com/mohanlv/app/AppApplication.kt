@@ -5,6 +5,7 @@ import com.mohanlv.base.BaseStartupTask
 import com.mohanlv.network.NetworkStartupTask
 import com.mohanlv.reactnative.ReactNativeStartupTask
 import com.mohanlv.router.RouterStartupTask
+import com.mohanlv.login.LoginValidationTask
 import com.mohanlv.startup.StartupManager
 
 class AppApplication : Application() {
@@ -17,6 +18,7 @@ class AppApplication : Application() {
         StartupManager.register(NetworkStartupTask(this))
         StartupManager.register(RouterStartupTask(this, R.id.container))
         StartupManager.register(ReactNativeStartupTask(this))
+        StartupManager.register(LoginValidationTask(this))
         
         // 启动所有初始化任务
         StartupManager.start()
