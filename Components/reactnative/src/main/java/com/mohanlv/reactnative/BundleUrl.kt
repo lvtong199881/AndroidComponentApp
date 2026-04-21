@@ -13,14 +13,14 @@ import java.net.URL
 object BundleUrl {
     
     private const val OWNER = "lvtong199881"
+    private const val REPO = "MyRNApp"
     
     enum class BuildType {
         DEBUG,
         RELEASE
     }
     
-    private const val JS_DELIVR_CDN = "https://cdn.jsdelivr.net/gh/%s/%s@%s/%s"
-    
+    private const val GITHUB_RELEASE_DOWNLOAD = "https://github.com/%s/%s/releases/download/%s/%s"
     private const val GITHUB_API_LATEST = "https://api.github.com/repos/%s/%s/releases/latest"
     
     /**
@@ -32,8 +32,7 @@ object BundleUrl {
         buildType: BuildType = BuildType.RELEASE
     ): String {
         val bundleName = "index.android.bundle"
-        val path = if (buildType == BuildType.DEBUG) "assets/debug/$bundleName" else "assets/$bundleName"
-        return JS_DELIVR_CDN.format(OWNER, repo, version, path)
+        return GITHUB_RELEASE_DOWNLOAD.format(OWNER, repo, version, bundleName)
     }
     
     /**

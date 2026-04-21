@@ -75,7 +75,12 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
             "home" -> com.mohanlv.home.ui.HomeFragment()
             "web" -> com.mohanlv.home.ui.web.WebFragment()
             "user" -> com.mohanlv.user.ui.UserFragment()
-            "rn" -> com.mohanlv.reactnative.ui.RNFragment()
+            "rn" -> {
+                val bundle = android.os.Bundle()
+                bundle.putString("repo", "MyRNApp")
+                bundle.putString("componentName", "MyRNApp")
+                com.mohanlv.reactnative.ui.RNFragment().apply { arguments = bundle }
+            }
             else -> null
         }
     }

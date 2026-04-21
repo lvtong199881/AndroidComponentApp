@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
+import com.mohanlv.reactnative.ui.BundleManagerBottomSheet
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +41,16 @@ class MainActivity : AppCompatActivity() {
         
         // 设置返回键处理
         setupBackHandler()
+        
+        // 设置悬浮按钮
+        setupFab()
+    }
+    
+    private fun setupFab() {
+        val fab = findViewById<FloatingActionButton>(R.id.fab_bundle_manager)
+        fab?.setOnClickListener {
+            BundleManagerBottomSheet().show(supportFragmentManager, "BundleManager")
+        }
     }
     
     private fun setupBackHandler() {
