@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:background="?android:attr/windowBackground">
+    android:background="@color/background">
 
-    <!-- Toolbar 区域（包含状态栏占位） -->
+    <!-- Toolbar -->
     <FrameLayout
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:background="@color/surface">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="top"
+            android:background="@color/divider"/>
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/local_bundle_manager"
-            app:titleTextColor="@android:color/white"
+            android:layout_marginTop="1dp"
+            app:title="@string/rn_manager"
+            app:titleTextColor="@color/text_primary"
             app:navigationIcon="@android:drawable/ic_menu_revert"
-            app:navigationIconTint="@android:color/white" />
+            app:navigationIconTint="@color/text_primary"/>
 
     </FrameLayout>
 
@@ -33,6 +38,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:padding="16dp" />
+        android:padding="16dp"
+        android:overScrollMode="never"/>
 
 </LinearLayout>

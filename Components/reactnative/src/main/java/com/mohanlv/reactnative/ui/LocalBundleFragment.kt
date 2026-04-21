@@ -35,21 +35,21 @@ class LocalBundleFragment : Fragment() {
 
         val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
         recyclerView = view.findViewById(R.id.rv_bundles)
-        val toolbarContainer = view.findViewById<View>(R.id.toolbar_container)
 
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // 处理 WindowInsets，防止被状态栏遮挡
-        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            toolbarContainer.setPadding(0, systemBars.top, 0, 0)
-            insets
-        }
-
+        val toolbarContainer = view.findViewById<View>(R.id.toolbar_container)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         loadBundles()
+
+        // 处理 WindowInsets，防止被状态栏遮挡
+        ViewCompat.setOnApplyWindowInsetsListener(toolbarContainer) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, systemBars.top, 0, 0)
+            insets
+        }
     }
 
     private fun loadBundles() {
