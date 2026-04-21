@@ -24,17 +24,17 @@ class LoginValidationTask(private val application: Application) : StartupTask {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun create() {
-        // 如果本地未登录，不需要校验
-        if (!LoginPrefs.isLogin) {
-            return
-        }
-
         // 恢复本地登录状态
         LoginState.restore(
             userId = LoginPrefs.userId,
             username = LoginPrefs.username ?: "",
             nickname = LoginPrefs.nickname
         )
+
+        // 如果本地未登录，不需要校验
+        if (!LoginPrefs.isLogin) {
+            return
+        }
 
         // 异步校验登录状态
         scope.launch {
@@ -43,13 +43,10 @@ class LoginValidationTask(private val application: Application) : StartupTask {
                 val response = apiService.getCoinInfo()
                 if (response.isSuccessful) {
                     val body = response.body()
-                    if (body == null || !body.isSuccess()) {
+                    if (body == null || body.needLogin()) {
                         // 登录状态无效，清除本地状态
-                        val errorMsg = body?.errorMsg ?: ""
-                        if (errorMsg.contains("请先登录") || errorMsg.contains("登录")) {
-                            Log.w(TAG, "登录状态已失效，清除本地状态")
-                            clearLoginState()
-                        }
+                        Log.w(TAG, "登录状态已失效，清除本地状态")
+                        clearLoginState()
                     }
                     // 登录有效，不需要处理
                 }
