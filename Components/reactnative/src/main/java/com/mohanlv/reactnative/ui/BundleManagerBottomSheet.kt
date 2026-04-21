@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.mohanlv.base.base.BaseDialogFragment
 import com.mohanlv.reactnative.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -20,26 +20,25 @@ import java.util.Locale
  * Bundle 管理弹窗
  * 按仓库分组显示本地存储的所有 bundle 版本
  */
-class BundleManagerBottomSheet : BottomSheetDialogFragment() {
+class BundleManagerBottomSheet : BaseDialogFragment() {
+
+    override val style: Style = Style.POPUP
+    override val animated: Boolean = true
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnRefresh: MaterialButton
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.bottom_sheet_bundle_manager, container, false)
-    }
+    override fun getLayoutId(): Int = R.layout.bottom_sheet_bundle_manager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.rv_bundles)
         btnRefresh = view.findViewById(R.id.btn_refresh)
+        val btnClose = view.findViewById<android.widget.TextView>(R.id.tv_close)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         btnRefresh.setOnClickListener { loadBundles() }
+        btnClose.setOnClickListener { dismissWithAnimation() }
 
         loadBundles()
     }
@@ -90,7 +89,7 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
     private fun showDeleteVersionDialog(repo: String, version: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.bundle_delete_confirm)
-            .setMessage("Delete $version?")
+            .setMessage(getString(R.string.bundle_delete_version_confirm, version))
             .setPositiveButton(R.string.bundle_delete) { _, _ ->
                 val deleted = doDeleteVersion(repo, version)
                 if (deleted) {
@@ -107,7 +106,7 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
     private fun deleteRepo(repo: RepoBundle) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.bundle_delete_confirm)
-            .setMessage("Delete all bundles for ${repo.repoName}?")
+            .setMessage(getString(R.string.bundle_delete_repo_confirm, repo.repoName))
             .setPositiveButton(R.string.bundle_delete) { _, _ ->
                 val deleted = deleteRepoBundle(repo.repoName)
                 if (deleted) {
@@ -137,8 +136,6 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
         val context = requireContext().applicationContext
         return File(context.getDir("react-native", android.content.Context.MODE_PRIVATE), "bundles")
     }
-
-    override fun getTheme(): Int = com.google.android.material.R.style.Theme_MaterialComponents_Light_BottomSheetDialog
 
     // ============ 数据类 ============
 
@@ -181,7 +178,7 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val repo = repos[position]
             holder.tvRepoName.text = repo.repoName
-            holder.tvVersionCount.text = "${repo.versions.size} versions"
+            holder.tvVersionCount.text = holder.itemView.context.getString(R.string.bundle_version_count, repo.versions.size)
             holder.tvTotalSize.text = formatSize(repo.totalSize)
             holder.btnDeleteRepo.setOnClickListener { onDeleteRepo(repo) }
 
@@ -212,7 +209,7 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
             val tvVersion: android.widget.TextView = view.findViewById(R.id.tv_version)
             val tvSize: android.widget.TextView = view.findViewById(R.id.tv_size)
             val tvTime: android.widget.TextView = view.findViewById(R.id.tv_time)
-            val btnDelete: MaterialButton = view.findViewById(R.id.btn_delete)
+            val btnDelete: android.widget.ImageView = view.findViewById(R.id.btn_delete)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -251,7 +248,10 @@ class BundleManagerBottomSheet : BottomSheetDialogFragment() {
 
     class EmptyAdapter : RecyclerView.Adapter<EmptyAdapter.ViewHolder>() {
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            init { view.findViewById<android.widget.TextView>(R.id.tv_empty).text = "No bundles downloaded yet" }
+            init {
+                val textView = view.findViewById<android.widget.TextView>(R.id.tv_empty)
+                textView.text = view.context.getString(R.string.bundle_empty)
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

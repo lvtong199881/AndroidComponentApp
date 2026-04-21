@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="20dp"
+    android:viewportWidth="23"
+    android:viewportHeight="20.46">
+    <!-- React Native logo: center dot + 3 crossing ellipses -->
+    <!-- Center dot -->
+    <path
+        android:fillColor="#61DAFB"
+        android:pathData="M11.5,10.23a2.05,2.05 0,1 0,0 -4.1a2.05,2.05 0,0 0,0 4.1z"/>
+    <!-- Ellipse 1 - horizontal -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#61DAFB"
+        android:strokeWidth="1.5"
+        android:pathData="M0.5,10.23 Q11.5,3.5 22.5,10.23 Q11.5,17 0.5,10.23 z"/>
+    <!-- Ellipse 2 - rotated 60deg -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#61DAFB"
+        android:strokeWidth="1.5"
+        android:pathData="M11.5,1.8 Q18.5,6 11.5,18.66 Q4.5,14.5 11.5,1.8 z"/>
+    <!-- Ellipse 3 - rotated -60deg -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#61DAFB"
+        android:strokeWidth="1.5"
+        android:pathData="M11.5,1.8 Q4.5,6 11.5,18.66 Q18.5,14.5 11.5,1.8 z"/>
+</vector>

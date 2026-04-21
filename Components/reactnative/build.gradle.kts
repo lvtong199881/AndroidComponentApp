@@ -52,5 +52,8 @@ dependencies {
     // Startup 框架
     implementation(project(":startup"))
     
+    // 依赖 base（BaseDialogFragment 等基础组件）
+    implementation(project(":base"))
+    
     testImplementation("junit:junit:4.13.2")
 }

@@ -8,4 +8,9 @@
     <string name="bundle_refresh">Refresh</string>
     <string name="bundle_loading">Loading…</string>
     <string name="bundle_empty">No bundles downloaded yet</string>
+    <string name="bundle_delete_version_confirm">Delete %1$s?</string>
+    <string name="bundle_delete_repo_confirm">Delete all bundles for %1$s?</string>
+    <string name="bundle_version_count">%1$d versions</string>
+    <string name="bundle_version_separator"> · </string>
+    <string name="close">✕</string>
 </resources>
