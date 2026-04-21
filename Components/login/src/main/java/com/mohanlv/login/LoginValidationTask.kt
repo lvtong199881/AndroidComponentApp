@@ -32,7 +32,7 @@ class LoginValidationTask(private val application: Application) : StartupTask {
 
         // 恢复本地登录状态
         LoginState.restore(
-            userId = SPUtils.userId?.toIntOrNull() ?: 0,
+            userId = SPUtils.userId,
             username = SPUtils.username ?: "",
             nickname = SPUtils.nickname
         )
@@ -56,14 +56,13 @@ class LoginValidationTask(private val application: Application) : StartupTask {
                 }
             } catch (e: Exception) {
                 // 网络错误，不清除本地状态，等用户手动刷新
-                Log.e(TAG, "登录状态校验失败: ${e.message}")
+                Log.e(TAG, "登录状态校验失败", e)
             }
         }
     }
 
     private fun clearLoginState() {
         LoginState.clear()
-        SPUtils.clear()
     }
 
     companion object {

@@ -111,8 +111,8 @@ class BundleDownloader(
                     )
                 }
             } catch (e: Exception) {
+                Log.w(TAG, "下载失败", e)
                 lastException = e
-                Log.w(TAG, "下载失败: ${e.message}")
                 retry++
                 
                 if (retry < MAX_RETRY) {

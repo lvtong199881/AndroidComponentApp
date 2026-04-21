@@ -34,9 +34,7 @@ class LoggingInterceptor : Interceptor {
             response
         } catch (e: Exception) {
             val duration = (System.nanoTime() - startTime) / 1_000_000
-            Log.e(TAG, "[错误] $method 失败 ${duration}ms $url")
-            Log.e(TAG, "     错误: ${e.javaClass.simpleName}: ${e.message}")
-            Log.e(TAG, "     堆栈: ${Log.getStackTraceString(e)}")
+            Log.e(TAG, "[错误] $method 失败 ${duration}ms $url", e)
             throw e
         }
     }

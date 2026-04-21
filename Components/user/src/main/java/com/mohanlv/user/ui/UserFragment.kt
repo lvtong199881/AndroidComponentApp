@@ -58,7 +58,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
         // 从 SPUtils 恢复登录状态
         if (SPUtils.isLogin) {
             LoginState.restore(
-                userId = SPUtils.userId?.toIntOrNull() ?: 0,
+                userId = SPUtils.userId,
                 username = SPUtils.username ?: "",
                 nickname = SPUtils.nickname
             )
@@ -148,7 +148,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "获取积分失败: ${e.message}")
+                Log.e(TAG, "获取积分失败", e)
                 tvCoinCount.text = getString(R.string.default_placeholder)
             }
         }

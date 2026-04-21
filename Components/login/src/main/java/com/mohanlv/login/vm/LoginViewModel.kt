@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
@@ -67,6 +68,7 @@ class LoginViewModel : ViewModel() {
                     _loginResult.value = LoginResult.Error("网络错误: ${response.code()}")
                 }
             } catch (e: Exception) {
+                Log.e("login", "登录失败", e)
                 val errorMsg = when {
                     e.message?.contains("Unable to resolve") == true -> "网络连接失败，请检查网络设置"
                     e.message?.contains("timeout") == true -> "请求超时，请稍后重试"
@@ -155,10 +157,14 @@ object LoginState {
         nickname = ""
         token = ""
 
-        // 清除本地持久化状态
-        SPUtils.clear()
 
-        // 通知所有监听器（清理已回收的弱引用），切到主线程
+        // 仅清除登录相关字段，保留账号历史
+        SPUtils.token = null
+        SPUtils.userId = 0
+        SPUtils.username = null
+        SPUtils.nickname = null
+        SPUtils.isLogin = false
+
         listeners.removeIf { it.get() == null }
         Handler(Looper.getMainLooper()).post {
             listeners.forEach { it.get()?.onLogout() }

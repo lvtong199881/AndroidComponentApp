@@ -2,6 +2,7 @@ package com.mohanlv.app
 
 import android.app.Application
 import com.mohanlv.base.BaseStartupTask
+import com.mohanlv.base.utils.GlobalAppContext
 import com.mohanlv.network.NetworkStartupTask
 import com.mohanlv.reactnative.ReactNativeStartupTask
 import com.mohanlv.router.RouterStartupTask
@@ -13,6 +14,7 @@ class AppApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
+        GlobalAppContext.init(this)
         // 注册各模块的初始化任务（按 priority 排序执行）
         StartupManager.register(BaseStartupTask(this))
         StartupManager.register(NetworkStartupTask(this))

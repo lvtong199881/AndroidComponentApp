@@ -124,7 +124,7 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
                     Log.e(TAG, "HTTP错误: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "加载收藏列表失败: ${e.message}")
+                Log.e(TAG, "加载收藏列表失败", e)
                 Toast.makeText(context, getString(R.string.load_failed, e.message), Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false

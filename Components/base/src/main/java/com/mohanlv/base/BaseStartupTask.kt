@@ -16,6 +16,5 @@ class BaseStartupTask(private val application: Application) : StartupTask {
     
     override fun create() {
         AppUtils.init(application)
-        SPUtils.init(application)
     }
 }

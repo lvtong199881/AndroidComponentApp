@@ -120,7 +120,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "获取 Banner/文章失败: ${e.message}")
+                Log.e(TAG, "获取 Banner/文章失败", e)
             } finally {
                 isLoading = false
                 binding.swipeRefresh.isRefreshing = false

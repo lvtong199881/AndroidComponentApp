@@ -1,6 +1,7 @@
 package com.mohanlv.base.utils
 
 import android.app.Application
+import android.util.Log
 
 /**
  * 应用工具类
@@ -26,6 +27,7 @@ object AppUtils {
             val packageInfo = getContext().packageManager.getPackageInfo(getPackageName(), 0)
             packageInfo.versionName ?: "1.0.0"
         } catch (e: Exception) {
+            Log.e("AppUtils", "获取版本号失败", e)
             "1.0.0"
         }
     }
