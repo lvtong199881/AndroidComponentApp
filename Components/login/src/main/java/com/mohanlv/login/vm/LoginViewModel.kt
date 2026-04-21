@@ -11,6 +11,8 @@ import com.mohanlv.base.utils.SPUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.os.Handler
+import android.os.Looper
 import java.lang.ref.WeakReference
 
 /**
@@ -157,9 +159,11 @@ object LoginState {
         // 清除本地持久化状态
         SPUtils.clear()
 
-        // 通知所有监听器（清理已回收的弱引用）
+        // 通知所有监听器（清理已回收的弱引用），切到主线程
         listeners.removeAll { it.get() == null }
-        listeners.forEach { it.get()?.onLogout() }
+        Handler(Looper.getMainLooper()).post {
+            listeners.forEach { it.get()?.onLogout() }
+        }
     }
 
     /**
@@ -172,9 +176,11 @@ object LoginState {
         this.nickname = nickname ?: ""
         this.token = token ?: ""
 
-        // 通知所有监听器（清理已回收的弱引用）
+        // 通知所有监听器（清理已回收的弱引用），切到主线程
         listeners.removeAll { it.get() == null }
-        listeners.forEach { it.get()?.onLoginSuccess(userId, username, nickname) }
+        Handler(Looper.getMainLooper()).post {
+            listeners.forEach { it.get()?.onLoginSuccess(userId, username, nickname) }
+        }
     }
 
     /**
