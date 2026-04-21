@@ -55,10 +55,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     SPUtils.username = result.username
 
                     showError("登录成功，欢迎 ${result.nickname ?: result.username}")
-                    // 跳转到首页
-                    RouterManager.navigate(RoutePath.HOME_CONTAINER)
                     // 关闭登录页
-                    RouterManager.popBackStack()
+                    parentFragmentManager.popBackStack()
                 }
 
                 is LoginResult.Error -> {
