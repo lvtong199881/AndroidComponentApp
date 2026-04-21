@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
 
 android {
@@ -40,3 +41,24 @@ dependencies {
 }
 
 // publishing 配置已在根项目统一管理
+
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.mohanlv"
+            artifactId = "router"
+            version = "1.0.0"
+            artifact(file("build/outputs/aar/router-release.aar")) {
+                extension = "aar"
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
+        }
+    }
+}
+

@@ -85,10 +85,10 @@ object RouterManager {
         
         val transaction = activity.supportFragmentManager.beginTransaction()
             .setCustomAnimations(
-                com.mohanlv.base.R.anim.slide_in_right,
-                com.mohanlv.base.R.anim.slide_out_left,
-                com.mohanlv.base.R.anim.slide_in_left,
-                com.mohanlv.base.R.anim.slide_out_right
+                com.mohanlv.router.R.anim.slide_in_right,
+                com.mohanlv.router.R.anim.slide_out_left,
+                com.mohanlv.router.R.anim.slide_in_left,
+                com.mohanlv.router.R.anim.slide_out_right
             )
             .add(containerId, fragment, internalPath)
         
