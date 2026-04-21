@@ -159,26 +159,16 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
      */
     private fun clearLoginState() {
         LoginState.clear()
-        SPUtils.clear()
-        // UI 更新由回调处理
+        // UI 更新由 onLogout 回调处理
     }
 
     /**
      * 退出登录
      */
     private fun logout() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                apiService.logout()
-            } catch (e: Exception) {
-                // 忽略退出接口错误
-            }
-
-            LoginState.clear()
-            SPUtils.clear()
-            Toast.makeText(context, "已退出登录", Toast.LENGTH_SHORT).show()
-            // UI 更新由回调处理
-        }
+        LoginState.logout()
+        Toast.makeText(context, "已退出登录", Toast.LENGTH_SHORT).show()
+        // UI 更新由 onLogout 回调处理
     }
 
     override fun onResume() {

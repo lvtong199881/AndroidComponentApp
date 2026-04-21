@@ -5,15 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohanlv.login.model.LoginResult
-import com.mohanlv.login.model.RegisterResult
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
-import com.mohanlv.network.model.LoginRequest
-import com.mohanlv.network.model.RegisterRequest
+import com.mohanlv.base.utils.SPUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 /**
- * 登录/注册 ViewModel
+ * 登录 ViewModel
  * 使用 WanAndroid 真实 API
  */
 class LoginViewModel : ViewModel() {
@@ -22,9 +23,6 @@ class LoginViewModel : ViewModel() {
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
-
-    private val _registerResult = MutableLiveData<RegisterResult>()
-    val registerResult: LiveData<RegisterResult> = _registerResult
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -79,64 +77,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    /**
-     * 用户注册
-     * @param username 用户名
-     * @param password 密码
-     * @param repassword 确认密码
-     */
-    fun register(username: String, password: String, repassword: String) {
-        if (username.isBlank() || password.isBlank()) {
-            _registerResult.value = RegisterResult.Error("用户名和密码不能为空")
-            return
-        }
-
-        if (password != repassword) {
-            _registerResult.value = RegisterResult.Error("两次密码输入不一致")
-            return
-        }
-
-        if (password.length < 6) {
-            _registerResult.value = RegisterResult.Error("密码长度不能少于6位")
-            return
-        }
-
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val response = apiService.register(username, password, repassword)
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null && body.isSuccess()) {
-                        val data = body.data
-                        _registerResult.value = RegisterResult.Success(
-                            userId = data?.id ?: 0,
-                            username = data?.username ?: username,
-                            nickname = data?.nickname
-                        )
-                    } else {
-                        _registerResult.value = RegisterResult.Error(
-                            body?.errorMsg ?: "注册失败"
-                        )
-                    }
-                } else {
-                    _registerResult.value = RegisterResult.Error("网络错误: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                _registerResult.value = RegisterResult.Error(e.message ?: "网络请求失败")
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    /**
-     * 检查是否已登录
-     */
-    fun checkLoginState(): Boolean {
-        return LoginState.isLoggedIn
-    }
 }
 
 /**
@@ -166,15 +106,15 @@ object LoginState {
     var token: String = ""
         private set
 
-    // 登录状态监听器列表
-    private val listeners = mutableListOf<OnLoginStateChangedListener>()
+    // 登录状态监听器列表（使用弱引用避免内存泄漏）
+    private val listeners = mutableListOf<WeakReference<OnLoginStateChangedListener>>()
 
     /**
      * 注册登录状态监听器
      */
     fun addListener(listener: OnLoginStateChangedListener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener)
+        if (listeners.none { it.get() === listener }) {
+            listeners.add(WeakReference(listener))
         }
     }
 
@@ -182,22 +122,25 @@ object LoginState {
      * 移除登录状态监听器
      */
     fun removeListener(listener: OnLoginStateChangedListener) {
-        listeners.remove(listener)
+        listeners.removeAll { it.get() === listener }
     }
 
     /**
-     * 保存登录状态并通知监听器
+     * 退出登录
+     * 调用 logout 接口，等接口返回后再清除本地状态并通知监听器
      */
-    fun saveLogin(userId: Int, username: String, nickname: String?, token: String?) {
-        this.isLoggedIn = true
-        this.userId = userId
-        this.username = username
-        this.nickname = nickname ?: ""
-        this.token = token ?: ""
+    fun logout() {
+        // 已退登则不再调接口
+        if (!isLoggedIn) return
 
-        // 通知所有监听器
-        listeners.forEach {
-            it.onLoginSuccess(userId, username, nickname)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                NetworkManager.createApi(ApiService::class.java).logout()
+            } catch (_: Exception) {
+                // 忽略退出接口错误
+            }
+            // 等接口返回后再清除本地状态
+            clear()
         }
     }
 
@@ -211,10 +154,27 @@ object LoginState {
         nickname = ""
         token = ""
 
-        // 通知所有监听器
-        listeners.forEach {
-            it.onLogout()
-        }
+        // 清除本地持久化状态
+        SPUtils.clear()
+
+        // 通知所有监听器（清理已回收的弱引用）
+        listeners.removeAll { it.get() == null }
+        listeners.forEach { it.get()?.onLogout() }
+    }
+
+    /**
+     * 保存登录状态并通知监听器
+     */
+    fun saveLogin(userId: Int, username: String, nickname: String?, token: String?) {
+        this.isLoggedIn = true
+        this.userId = userId
+        this.username = username
+        this.nickname = nickname ?: ""
+        this.token = token ?: ""
+
+        // 通知所有监听器（清理已回收的弱引用）
+        listeners.removeAll { it.get() == null }
+        listeners.forEach { it.get()?.onLoginSuccess(userId, username, nickname) }
     }
 
     /**
