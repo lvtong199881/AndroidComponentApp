@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mohanlv.base.base.BaseDialogFragment
 import com.mohanlv.reactnative.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -19,59 +20,40 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * RN 管理弹窗
- * 一级页面：功能菜单
- * 二级页面：本地 Bundle 包管理
+ * 本地 Bundle 包管理 - 二级页面
  */
-class BundleManagerBottomSheet : BaseDialogFragment() {
+class LocalBundleFragment : Fragment() {
 
-    override val style: Style = Style.POPUP
-    override val animated: Boolean = true
-
-    private lateinit var tvTitle: android.widget.TextView
-    private lateinit var tvClose: android.widget.TextView
-    private lateinit var layoutMenuList: LinearLayout
-    private lateinit var layoutBundlePage: FrameLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var btnRefresh: MaterialButton
-    private lateinit var btnBack: LinearLayout
 
-    override fun getLayoutId(): Int = R.layout.bottom_sheet_bundle_manager
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_local_bundle, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvTitle = view.findViewById(R.id.tv_title)
-        tvClose = view.findViewById(R.id.tv_close)
-        layoutMenuList = view.findViewById(R.id.layout_menu_list)
-        layoutBundlePage = view.findViewById(R.id.layout_bundle_page)
+        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
         recyclerView = view.findViewById(R.id.rv_bundles)
-        btnRefresh = view.findViewById(R.id.btn_refresh)
-        btnBack = view.findViewById(R.id.btn_back)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val toolbarContainer = view.findViewById<View>(R.id.toolbar_container)
 
-        tvClose.setOnClickListener { dismissWithAnimation() }
-        btnBack.setOnClickListener { showMenuPage() }
-
-        // 点击"本地 Bundle 包管理"进入二级页面
-        view.findViewById<View>(R.id.menu_local_bundle).setOnClickListener {
-            showBundlePage()
+        toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
         }
 
-        btnRefresh.setOnClickListener { refresh() }
-    }
+        // 处理 WindowInsets，防止被状态栏遮挡
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbarContainer.setPadding(0, systemBars.top, 0, 0)
+            insets
+        }
 
-    private fun showMenuPage() {
-        tvTitle.setText(R.string.rn_manager)
-        layoutMenuList.visibility = View.VISIBLE
-        layoutBundlePage.visibility = View.GONE
-    }
-
-    private fun showBundlePage() {
-        tvTitle.setText(R.string.local_bundle_manager)
-        layoutMenuList.visibility = View.GONE
-        layoutBundlePage.visibility = View.VISIBLE
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         loadBundles()
     }
 
@@ -82,10 +64,6 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
         } else {
             recyclerView.adapter = RepoAdapter(repos, ::deleteRepo, ::showDeleteVersionDialog, ::loadBundles)
         }
-    }
-
-    private fun refresh() {
-        loadBundles()
     }
 
     /**
@@ -130,7 +108,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
                 val deleted = doDeleteVersion(repo, version)
                 if (deleted) {
                     Toast.makeText(requireContext(), R.string.bundle_deleted, Toast.LENGTH_SHORT).show()
-                    refresh()
+                    loadBundles()
                 } else {
                     Toast.makeText(requireContext(), R.string.bundle_delete_failed, Toast.LENGTH_SHORT).show()
                 }
@@ -147,7 +125,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
                 val deleted = deleteRepoBundle(repo.repoName)
                 if (deleted) {
                     Toast.makeText(requireContext(), R.string.bundle_deleted, Toast.LENGTH_SHORT).show()
-                    refresh()
+                    loadBundles()
                 } else {
                     Toast.makeText(requireContext(), R.string.bundle_delete_failed, Toast.LENGTH_SHORT).show()
                 }
@@ -188,7 +166,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
         val lastModified: Long
     )
 
-    // ============ Repository Adapter (一级) ============
+    // ============ Repository Adapter ============
 
     class RepoAdapter(
         private val repos: List<RepoBundle>,
@@ -233,7 +211,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
         }
     }
 
-    // ============ Version Adapter (二级) ============
+    // ============ Version Adapter ============
 
     class VersionAdapter(
         private val repoName: String,
@@ -245,7 +223,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
             val tvVersion: android.widget.TextView = view.findViewById(R.id.tv_version)
             val tvSize: android.widget.TextView = view.findViewById(R.id.tv_size)
             val tvTime: android.widget.TextView = view.findViewById(R.id.tv_time)
-            val btnDelete: android.widget.ImageView = view.findViewById(R.id.btn_delete)
+            val btnDelete: com.google.android.material.button.MaterialButton = view.findViewById(R.id.btn_delete)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -298,5 +276,9 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
         override fun getItemCount() = 1
+    }
+
+    companion object {
+        const val TAG = "LocalBundleFragment"
     }
 }

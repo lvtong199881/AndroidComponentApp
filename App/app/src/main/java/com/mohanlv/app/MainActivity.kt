@@ -13,7 +13,8 @@ import androidx.core.view.WindowCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
-import com.mohanlv.reactnative.ui.BundleManagerBottomSheet
+import com.mohanlv.reactnative.ui.RNManagerFragment
+import com.mohanlv.app.R
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
@@ -95,7 +96,10 @@ class MainActivity : AppCompatActivity() {
                     MotionEvent.ACTION_UP -> {
                         if (!isDragging) {
                             // 点击事件
-                            BundleManagerBottomSheet().show(supportFragmentManager, "BundleManager")
+                                                        supportFragmentManager.beginTransaction()
+                                .replace(R.id.container, RNManagerFragment())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         true
                     }

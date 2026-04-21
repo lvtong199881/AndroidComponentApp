@@ -77,9 +77,12 @@
             android:layout_height="36dp"
             android:text="@string/bundle_delete"
             android:textSize="12sp"
-            style="@style/Widget.Material3.Button.TextButton"
+            android:textColor="#FF5252"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             app:icon="@android:drawable/ic_menu_delete"
-            app:iconSize="16dp" />
+            app:iconSize="16dp"
+            app:iconTint="#FF5252"
+            app:strokeColor="#FF5252" />
 
     </LinearLayout>
 
