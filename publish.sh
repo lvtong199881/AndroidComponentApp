@@ -2,17 +2,30 @@
 set -e
 
 # publish.sh - 组件发布脚本
-# 将组件发布到本地 Maven 仓库
-# 用法: ./publish.sh [version]
-# 示例: ./publish.sh 1.0.0
+# 将组件发布到本地 Maven 或 GitHub Packages
+# 用法: ./publish.sh [version] [--local] [--github]
+# 示例: 
+#   ./publish.sh 1.0.0 --local       # 发布到本地 Maven
+#   ./publish.sh 1.0.0 --github     # 发布到 GitHub Packages
+#   ./publish.sh 1.0.0               # 默认发布到 GitHub
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
 APP_DIR="$PROJECT_DIR/App"
 COMPONENTS_DIR="$PROJECT_DIR/Components"
 GRADLE="$APP_DIR/gradlew"
+TOKEN_FILE="$HOME/.github_token"
 
 VERSION=$1
+TARGET="github"
+
+# 解析参数
+for arg in "$@"; do
+    case $arg in
+        --local) TARGET="local" ;;
+        --github) TARGET="github" ;;
+    esac
+done
 
 # 读取 version.gradle.kts 中的版本号（如果未指定版本）
 if [ -z "$VERSION" ]; then
@@ -22,12 +35,23 @@ fi
 
 if [ -z "$VERSION" ]; then
     echo "错误: 未指定版本号"
-    echo "用法: ./publish.sh [version]"
+    echo "用法: ./publish.sh [version] [--local|--github]"
     exit 1
+fi
+
+# 设置 GitHub Token 环境变量
+if [ "$TARGET" = "github" ]; then
+    if [ -f "$TOKEN_FILE" ]; then
+        export GITHUB_TOKEN=$(cat "$TOKEN_FILE")
+    else
+        echo "错误: GitHub token 文件不存在: $TOKEN_FILE"
+        exit 1
+    fi
 fi
 
 echo "=========================================="
 echo "发布组件 v$VERSION"
+echo "目标: $TARGET"
 echo "=========================================="
 
 # 组件列表（按依赖顺序）
@@ -40,9 +64,9 @@ for component in "${COMPONENTS[@]}"; do
     # 修改 version
     sed -i.bak "s/set(\"componentVersion\", \"[^\"]*\")/set(\"componentVersion\", \"$VERSION\")/" "$PROJECT_DIR/version.gradle.kts"
 
-    # 构建 release（在 Components 目录下执行）
+    # 构建 release
     cd "$COMPONENTS_DIR"
-    "$GRADLE" :${component}:assembleRelease --no-daemon -q
+    "$GRADLE" :${component}:assembleRelease -DcomponentVersion="$VERSION" --no-daemon -q 2>&1 | grep -v "^$"
 
     if [ $? -ne 0 ]; then
         echo "✗ $component 构建失败"
@@ -52,7 +76,12 @@ for component in "${COMPONENTS[@]}"; do
     fi
 
     echo ">>> 发布 $component ..."
-    "$GRADLE" :${component}:publishMavenPublicationToMavenRepository --no-daemon -q
+    
+    if [ "$TARGET" = "github" ]; then
+        "$GRADLE" :${component}:publishMavenPublicationToGitHubPackagesRepository -DcomponentVersion="$VERSION" --no-daemon -q 2>&1 | grep -v "^$"
+    else
+        "$GRADLE" :${component}:publishMavenPublicationToLocalMavenRepository -DcomponentVersion="$VERSION" --no-daemon -q 2>&1 | grep -v "^$"
+    fi
 
     if [ $? -eq 0 ]; then
         echo "✓ $component 发布成功"
@@ -72,9 +101,4 @@ echo ""
 echo "=========================================="
 echo "发布完成！"
 echo "版本: $VERSION"
-echo "本地仓库: ~/.m2/repository/releases"
-echo ""
-echo "在 App/build.gradle.kts 中使用:"
-echo '  implementation("com.mohanlv:base:'"$VERSION"'")'
-echo '  implementation("com.mohanlv:reactnative:'"$VERSION"'")'
 echo "=========================================="
