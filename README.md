@@ -75,11 +75,22 @@ AndroidComponentApp/
     │   └── src/main/java/com/mohanlv/home/
     │       ├── ui/
     │       │   ├── HomeFragment.kt           # ⭐ Banner 轮播 + 文章列表
-    │       │   ├── container/HomeContainerFragment.kt  # Tab 容器
+    │       │   ├── container/HomeContainerFragment.kt  # Tab 容器 + RN 页面入口
     │       │   └── web/WebFragment.kt        # ⭐ 网页（支持 URL 参数）
     │       └── res/layout/
     │           ├── fragment_home.xml
     │           └── item_banner.xml
+    │
+    └── reactnative/             # React Native 组件
+        └── src/main/java/com/mohanlv/reactnative/
+            ├── ui/
+            │   ├── RNFragment.kt              # ⭐ React Native 页面容器
+            │   └── BundleManagerBottomSheet.kt  # ⭐ Bundle 管理弹窗
+            ├── BundleUrl.kt                   # Bundle URL 解析
+            ├── BundleConfig.kt                # Bundle 配置
+            ├── BundleDownloader.kt             # Bundle 下载器
+            ├── ReactNativeHelper.kt           # RN 辅助类（初始化 + Bundle 加载）
+            └── ReactNativeStartupTask.kt      # Startup 初始化任务
     │
     └── user/                      # 用户中心组件
         └── src/main/java/com/mohanlv/user/
@@ -185,7 +196,38 @@ E/Network:      堆栈: java.net.HttpRetryException: ...
 - 2秒内双击确认退出
 - 否则提示"再按一次退出"
 
-### 8. 源码/Maven 双模式切换
+### 8. React Native 热更新
+
+通过 `RNFragment` 嵌入 React Native 页面，支持从 GitHub Release 下载 Bundle 实现热更新。
+
+**特性：**
+- 自动检测最新版本
+- Bundle 异步下载，不阻塞主线程
+- 本地缓存管理（按仓库/版本存储）
+- Bundle 管理弹窗（悬浮按钮打开）
+
+**使用方式：**
+
+```kotlin
+// HomeContainerFragment 中点击 RN 页面时
+val bundle = Bundle().apply {
+    putString("repo", "MyRNApp")
+    putString("componentName", "MyRNApp")
+}
+RNFragment().apply { arguments = bundle }
+```
+
+**Bundle URL 格式：**
+```
+https://github.com/{owner}/{repo}/releases/download/{version}/index.android.bundle
+```
+
+**Bundle 存储结构：**
+```
+{app}/files/react-native/bundles/{repo}/{version}/index.android.bundle
+```
+
+### 9. 源码/Maven 双模式切换
 
 修改 `App/gradle.properties`：
 
@@ -236,6 +278,7 @@ vim App/gradle.properties
 | `login` | 登录界面、ViewModel、登录状态 | ✅ |
 | `home` | Banner 轮播、文章列表、网页查看 | ✅ |
 | `user` | 个人中心、我的收藏 | ✅ |
+| `reactnative` | React Native 热更新、Bundle 管理弹窗 | ✅ |
 
 ---
 
