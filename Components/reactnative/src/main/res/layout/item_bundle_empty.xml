@@ -9,7 +9,7 @@
         android:id="@+id/tv_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No bundles downloaded yet"
+        android:text="@string/bundle_empty"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray" />
 

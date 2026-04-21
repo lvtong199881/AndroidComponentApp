@@ -69,7 +69,7 @@ object ReactNativeHelper {
         
         if (config.version != null) {
             // 指定版本：检查本地是否存在
-            val localPath = getLocalBundlePath(app, config.version)
+            val localPath = getLocalBundlePath(app, config.repo, config.version)
             if (localPath != null) {
                 Log.d(TAG, "Using local bundle for version: ${config.version}")
                 return localPath
@@ -87,7 +87,7 @@ object ReactNativeHelper {
             return getDefaultLocalBundlePath(app)
         }
         
-        val localPath = getLocalBundlePath(app, latestVersion)
+        val localPath = getLocalBundlePath(app, config.repo, latestVersion)
         if (localPath != null) {
             Log.d(TAG, "Local version: $latestVersion, latest: $latestVersion")
             return localPath
@@ -101,8 +101,8 @@ object ReactNativeHelper {
     /**
      * 获取本地特定版本的 bundle 文件路径
      */
-    private fun getLocalBundlePath(app: Application, version: String): String? {
-        val bundleFile = File(getBundleDir(app), "$version/index.android.bundle")
+    private fun getLocalBundlePath(app: Application, repo: String, version: String): String? {
+        val bundleFile = File(getBundleDir(app), "$repo/$version/index.android.bundle")
         return if (bundleFile.exists()) bundleFile.absolutePath else null
     }
     
@@ -113,19 +113,29 @@ object ReactNativeHelper {
         val bundleDir = getBundleDir(app)
         if (!bundleDir.exists()) return ""
         
-        val versions = bundleDir.listFiles()
-            ?.filter { it.isDirectory && it.name.startsWith("v") }
-            ?.sortedWith { a, b -> compareVersion(b.name, a.name) }
-            ?: return ""
+        // 查找所有仓库目录
+        val repoDirs = bundleDir.listFiles() ?: return ""
         
-        if (versions.isNotEmpty()) {
-            val bundleFile = File(versions.first(), "index.android.bundle")
-            if (bundleFile.exists()) {
-                Log.d(TAG, "Using default local bundle: ${versions.first().name}")
-                return bundleFile.absolutePath
+        var latestFile = ""
+        var latestTime = 0L
+        
+        for (repoDir in repoDirs) {
+            if (!repoDir.isDirectory) continue
+            val versionDirs = repoDir.listFiles() ?: continue
+            for (versionDir in versionDirs) {
+                if (!versionDir.isDirectory || !versionDir.name.startsWith("v")) continue
+                val bundleFile = File(versionDir, "index.android.bundle")
+                if (bundleFile.exists() && bundleFile.lastModified() > latestTime) {
+                    latestTime = bundleFile.lastModified()
+                    latestFile = bundleFile.absolutePath
+                }
             }
         }
-        return ""
+        
+        if (latestFile.isNotEmpty()) {
+            Log.d(TAG, "Using default local bundle: $latestFile")
+        }
+        return latestFile
     }
     
     /**
@@ -140,7 +150,7 @@ object ReactNativeHelper {
         
         if (file != null) {
             // 移动到版本目录
-            val versionDir = File(getBundleDir(app), version)
+            val versionDir = File(getBundleDir(app), "${config.repo}/$version")
             versionDir.mkdirs()
             val destFile = File(versionDir, "index.android.bundle")
             file.copyTo(destFile, overwrite = true)

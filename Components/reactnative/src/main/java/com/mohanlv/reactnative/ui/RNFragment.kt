@@ -15,6 +15,8 @@ import com.mohanlv.reactnative.BundleUrl
 import com.mohanlv.reactnative.ReactNativeHelper
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * React Native 页面容器 Fragment
@@ -49,6 +51,9 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
     }
 
     private fun initReactNative() {
+        // 显示加载状态
+        viewBinding?.root?.visibility = View.VISIBLE
+        
         // 从 URL 参数获取配置，repo 和 componentName 必须有值
         val componentName = arguments?.getString(KEY_COMPONENT_NAME)
         val repo = arguments?.getString(KEY_REPO)
@@ -71,45 +76,59 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
         
         val currentActivity = activity ?: return
         
-        // 创建 ReactInstanceManager（带正确的 bundle loader）
-        reactInstanceManager = createReactInstanceManager(currentActivity.application, config)
-
-        // 创建 ReactRootView
-        reactRootView = ReactRootView(currentActivity)
-
-        // 构建初始属性
-        val initProps = Bundle().apply {
-            arguments?.keySet()?.forEach { key ->
-                if (key !in listOf(KEY_COMPONENT_NAME, KEY_REPO, KEY_VERSION, KEY_BUILD_TYPE)) {
-                    when (val value = arguments?.get(key)) {
-                        is String -> putString(key, value)
-                        is Int -> putInt(key, value)
-                        is Boolean -> putBoolean(key, value)
-                        is Double -> putDouble(key, value)
+        // 使用协程在后台加载 bundle，避免阻塞主线程
+        viewBinding?.root?.let { root ->
+            val loadingView = LayoutInflater.from(currentActivity)
+                .inflate(com.mohanlv.reactnative.R.layout.fragment_rn_loading, root, false)
+            root.addView(loadingView)
+            
+            kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+                try {
+                    // 后台解析 bundle
+                    val bundleLoader = withContext(kotlinx.coroutines.Dispatchers.IO) {
+                        ReactNativeHelper.resolveBundleLoader(config)
                     }
+                    // 移除加载视图
+                    root.removeView(loadingView)
+                    // 创建 ReactInstanceManager
+                    reactInstanceManager = createReactInstanceManager(currentActivity.application, bundleLoader)
+                    // 创建 ReactRootView
+                    reactRootView = ReactRootView(currentActivity)
+                    // 构建初始属性
+                    val initProps = Bundle().apply {
+                        arguments?.keySet()?.forEach { key ->
+                            if (key !in listOf(KEY_COMPONENT_NAME, KEY_REPO, KEY_VERSION, KEY_BUILD_TYPE)) {
+                                when (val value = arguments?.get(key)) {
+                                    is String -> putString(key, value)
+                                    is Int -> putInt(key, value)
+                                    is Boolean -> putBoolean(key, value)
+                                    is Double -> putDouble(key, value)
+                                }
+                            }
+                        }
+                    }
+                    // 启动 React Native 应用
+                    reactRootView?.startReactApplication(
+                        reactInstanceManager,
+                        componentName,
+                        initProps
+                    )
+                    root.addView(reactRootView)
+                } catch (e: Exception) {
+                    root.removeView(loadingView)
+                    android.util.Log.e("RN", "Failed to init ReactNative", e)
+                    closeFragment()
                 }
             }
         }
-
-        // 启动 React Native 应用
-        reactRootView?.startReactApplication(
-            reactInstanceManager,
-            componentName,
-            initProps
-        )
-
-        viewBinding!!.root.addView(reactRootView)
     }
     
-    private fun createReactInstanceManager(app: android.app.Application, config: BundleConfig): ReactInstanceManager {
-        // 获取 bundle loader（内部自动处理下载/版本检测）
-        val jsBundleLoader = ReactNativeHelper.resolveBundleLoader(config)
-        
+    private fun createReactInstanceManager(app: android.app.Application, bundleLoader: com.facebook.react.bridge.JSBundleLoader): ReactInstanceManager {
         return ReactInstanceManager.builder()
             .setCurrentActivity(activity)
             .setApplication(app)
             .setJSMainModulePath("index")
-            .setJSBundleLoader(jsBundleLoader)
+            .setJSBundleLoader(bundleLoader)
             .addPackage(MainReactPackage())
             .setUseDeveloperSupport(false)
             .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
