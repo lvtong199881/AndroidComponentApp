@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.WebSettings
+import android.view.KeyEvent
 import android.webkit.WebView
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.databinding.FragmentWebBinding
@@ -28,6 +29,23 @@ class WebFragment : BaseFragment<FragmentWebBinding>() {
         // 获取 URL 参数
         arguments?.getString("url")?.let { url ->
             binding.webView.loadUrl(url)
+        }
+    }
+
+    override fun initEvent() {
+        super.initEvent()
+        // 拦截 WebView 的返回键
+        binding.webView.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
+                    true
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
         }
     }
     

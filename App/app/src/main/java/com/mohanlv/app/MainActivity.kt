@@ -43,10 +43,10 @@ class MainActivity : AppCompatActivity() {
         
         RouterManager.currentActivity = this
 
-        // 始终跳转到首页
+        // 始终跳转到首页（不添加到返回栈，初始页面不需要）
         if (savedInstanceState == null) {
             Log.e(TAG, "跳转到 HomeContainerFragment")
-            RouterManager.navigate(RoutePath.HOME_CONTAINER)
+            RouterManager.navigate(RoutePath.HOME_CONTAINER, addToBackStack = false)
         }
         
         // 设置返回键处理
@@ -95,11 +95,15 @@ class MainActivity : AppCompatActivity() {
                     }
                     MotionEvent.ACTION_UP -> {
                         if (!isDragging) {
-                            // 点击事件
-                                                        supportFragmentManager.beginTransaction()
-                                .replace(R.id.container, RNManagerFragment())
-                                .addToBackStack(null)
-                                .commit()
+                            // 点击事件，隐藏首页容器，显示 RN 管理页面
+                            val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
+                            currentFragment?.let {
+                                supportFragmentManager.beginTransaction()
+                                    .hide(it)
+                                    .add(R.id.container, RNManagerFragment(), "rn_manager")
+                                    .addToBackStack(null)
+                                    .commit()
+                            }
                         }
                         true
                     }
@@ -112,9 +116,20 @@ class MainActivity : AppCompatActivity() {
     private fun setupBackHandler() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                // 获取当前容器中的 Fragment
+                val containerFragment = supportFragmentManager.findFragmentById(R.id.container)
+                val currentTag = containerFragment?.tag
+                
+                if (currentTag != RoutePath.HOME_CONTAINER) {
+                    // 非首页 Fragment，尝试 pop
+                    if (supportFragmentManager.backStackEntryCount > 0) {
+                        supportFragmentManager.popBackStack()
+                    }
+                    return
+                }
+                // 首页 Fragment，双击退出逻辑
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastBackTime < DOUBLE_CLICK_INTERVAL) {
-                    // 双击确认退出
                     finish()
                 } else {
                     lastBackTime = currentTime

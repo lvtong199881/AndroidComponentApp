@@ -16,6 +16,10 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
     private val fragments = mutableMapOf<String, Fragment>()
     private var currentFragmentTag: String? = null
 
+    companion object {
+        private const val KEY_SELECTED_TAG = "selected_tag"
+    }
+
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHomeContainerBinding {
         return FragmentHomeContainerBinding.inflate(inflater, container, false)
     }
@@ -23,10 +27,34 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setupBottomNavigation()
+
+        // 恢复保存的选中状态（避免 popBackStack 后状态丢失）
+        savedInstanceState?.getString(KEY_SELECTED_TAG)?.let { tag ->
+            currentFragmentTag = tag
+            val menuItemId = when (tag) {
+                "home" -> R.id.nav_home
+                "web" -> R.id.nav_web
+                "user" -> R.id.nav_user
+                "rn" -> R.id.nav_rn
+                else -> R.id.nav_home
+            }
+            binding.bottomNavigation.selectedItemId = menuItemId
+            // 恢复 Fragment 显示状态
+            fragments[tag]?.let {
+                childFragmentManager.beginTransaction().show(it).commit()
+            }
+            return
+        }
+
+        switchFragment("home")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        currentFragmentTag?.let { outState.putString(KEY_SELECTED_TAG, it) }
     }
 
     private fun setupBottomNavigation() {
-        // 直接使用 XML 中定义好的 menu
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val tag = when (item.itemId) {
                 R.id.nav_home -> "home"
@@ -39,7 +67,6 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
             true
         }
 
-        // 默认显示第一个
         switchFragment("home")
     }
 
@@ -49,12 +76,10 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
         val fragmentManager = childFragmentManager
         val transaction = fragmentManager.beginTransaction()
 
-        // 隐藏当前 Fragment
         currentFragmentTag?.let { currentTag ->
             fragments[currentTag]?.let { transaction.hide(it) }
         }
 
-        // 显示或添加目标 Fragment
         var targetFragment = fragments[tag]
         if (targetFragment == null) {
             targetFragment = createFragment(tag)
