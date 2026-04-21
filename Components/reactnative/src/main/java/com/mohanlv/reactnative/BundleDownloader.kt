@@ -45,12 +45,12 @@ class BundleDownloader(
         
         // 检查本地文件是否存在
         if (localFile.exists()) {
-            Log.d(TAG, "Local bundle found: ${localFile.absolutePath}")
+            Log.d(TAG, "本地 bundle 已存在: ${localFile.absolutePath}")
             return@withContext localFile
         }
         
         // 本地不存在，下载
-        Log.d(TAG, "Local bundle not found, downloading from: $bundleUrl")
+        Log.d(TAG, "本地 bundle 不存在，开始下载: $bundleUrl")
         return@withContext download()
     }
     
@@ -70,7 +70,7 @@ class BundleDownloader(
         
         while (retry < MAX_RETRY) {
             try {
-                Log.d(TAG, "Downloading bundle (attempt ${retry + 1}/$MAX_RETRY)...")
+                Log.d(TAG, "正在下载 bundle (第 ${retry + 1} 次/$MAX_RETRY)...")
                 
                 val url = URL(bundleUrl)
                 val connection = url.openConnection() as HttpURLConnection
@@ -99,7 +99,7 @@ class BundleDownloader(
                     
                     // 原子性重命名
                     if (tempFile.renameTo(localFile)) {
-                        Log.i(TAG, "Bundle downloaded successfully: ${localFile.absolutePath}")
+                        Log.i(TAG, "Bundle 下载成功: ${localFile.absolutePath}")
                         return localFile
                     } else {
                         throw IllegalStateException("Failed to rename temp file to bundle")
@@ -112,19 +112,19 @@ class BundleDownloader(
                 }
             } catch (e: Exception) {
                 lastException = e
-                Log.w(TAG, "Download failed: ${e.message}")
+                Log.w(TAG, "下载失败: ${e.message}")
                 retry++
                 
                 if (retry < MAX_RETRY) {
                     // 指数退避
                     val backoff = (1000L * (1 shl (retry - 1))).coerceAtMost(10000L)
-                    Log.d(TAG, "Retrying in ${backoff}ms...")
+                    Log.d(TAG, "${backoff}ms 后重试...")
                     Thread.sleep(backoff)
                 }
             }
         }
         
-        Log.e(TAG, "Bundle download failed after $MAX_RETRY attempts", lastException)
+        Log.e(TAG, "Bundle 下载失败，已重试 $MAX_RETRY 次", lastException)
         return null
     }
     

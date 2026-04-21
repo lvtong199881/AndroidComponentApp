@@ -21,7 +21,7 @@ class LoggingInterceptor : Interceptor {
         val url = request.url.toString()
         val method = request.method
         
-        Log.i(TAG, "[REQ] $method $url")
+        Log.i(TAG, "[请求] $method $url")
         
         val startTime = System.nanoTime()
         
@@ -29,12 +29,12 @@ class LoggingInterceptor : Interceptor {
             val response = chain.proceed(request)
             val duration = (System.nanoTime() - startTime) / 1_000_000
             
-            Log.i(TAG, "[RES] ${response.code} ${duration}ms $url")
+            Log.i(TAG, "[响应] ${response.code} ${duration}ms $url")
             
             response
         } catch (e: Exception) {
             val duration = (System.nanoTime() - startTime) / 1_000_000
-            Log.e(TAG, "[ERR] $method ERROR ${duration}ms $url")
+            Log.e(TAG, "[错误] $method 失败 ${duration}ms $url")
             Log.e(TAG, "     错误: ${e.javaClass.simpleName}: ${e.message}")
             Log.e(TAG, "     堆栈: ${Log.getStackTraceString(e)}")
             throw e

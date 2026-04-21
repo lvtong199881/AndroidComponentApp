@@ -116,7 +116,7 @@ class RNFragment : Fragment(), DefaultHardwareBackBtnHandler {
                     root.addView(reactRootView)
                 } catch (e: Exception) {
                     root.removeView(loadingView)
-                    android.util.Log.e("RN", "Failed to init ReactNative", e)
+                    android.util.Log.e("RN", "ReactNative 初始化失败", e)
                     closeFragment()
                 }
             }

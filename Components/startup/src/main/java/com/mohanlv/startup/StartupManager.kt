@@ -18,11 +18,11 @@ object StartupManager {
      */
     fun register(task: StartupTask) {
         if (isInitialized) {
-            Log.w(TAG, "StartupManager already initialized, ignoring register of ${task.name}")
+            Log.w(TAG, "StartupManager 已初始化，忽略注册任务: ${task.name}")
             return
         }
         tasks.add(task)
-        Log.d(TAG, "Registered startup task: ${task.name} (priority: ${task.priority})")
+        Log.d(TAG, "注册启动任务: ${task.name} (优先级: ${task.priority})")
     }
     
     /**
@@ -30,26 +30,26 @@ object StartupManager {
      */
     fun start() {
         if (isInitialized) {
-            Log.w(TAG, "StartupManager already started")
+            Log.w(TAG, "StartupManager 已启动")
             return
         }
         
         // 按优先级排序
         tasks.sortBy { it.priority }
         
-        Log.i(TAG, "Starting ${tasks.size} startup tasks...")
+        Log.i(TAG, "正在启动 ${tasks.size} 个任务...")
         
         tasks.forEach { task ->
             try {
-                Log.d(TAG, "Executing task: ${task.name}")
+                Log.d(TAG, "执行任务: ${task.name}")
                 task.create()
-                Log.d(TAG, "Task completed: ${task.name}")
+                Log.d(TAG, "任务完成: ${task.name}")
             } catch (e: Exception) {
-                Log.e(TAG, "Task failed: ${task.name}", e)
+                Log.e(TAG, "任务执行失败: ${task.name}", e)
             }
         }
         
-        Log.i(TAG, "All startup tasks completed")
+        Log.i(TAG, "所有任务执行完成")
         isInitialized = true
     }
 }
