@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,29 +19,59 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Bundle 管理弹窗
- * 按仓库分组显示本地存储的所有 bundle 版本
+ * RN 管理弹窗
+ * 一级页面：功能菜单
+ * 二级页面：本地 Bundle 包管理
  */
 class BundleManagerBottomSheet : BaseDialogFragment() {
 
     override val style: Style = Style.POPUP
     override val animated: Boolean = true
 
+    private lateinit var tvTitle: android.widget.TextView
+    private lateinit var tvClose: android.widget.TextView
+    private lateinit var layoutMenuList: LinearLayout
+    private lateinit var layoutBundlePage: FrameLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnRefresh: MaterialButton
+    private lateinit var btnBack: LinearLayout
 
     override fun getLayoutId(): Int = R.layout.bottom_sheet_bundle_manager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tvTitle = view.findViewById(R.id.tv_title)
+        tvClose = view.findViewById(R.id.tv_close)
+        layoutMenuList = view.findViewById(R.id.layout_menu_list)
+        layoutBundlePage = view.findViewById(R.id.layout_bundle_page)
         recyclerView = view.findViewById(R.id.rv_bundles)
         btnRefresh = view.findViewById(R.id.btn_refresh)
-        val btnClose = view.findViewById<android.widget.TextView>(R.id.tv_close)
+        btnBack = view.findViewById(R.id.btn_back)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        btnRefresh.setOnClickListener { loadBundles() }
-        btnClose.setOnClickListener { dismissWithAnimation() }
 
+        tvClose.setOnClickListener { dismissWithAnimation() }
+        btnBack.setOnClickListener { showMenuPage() }
+
+        // 点击"本地 Bundle 包管理"进入二级页面
+        view.findViewById<View>(R.id.menu_local_bundle).setOnClickListener {
+            showBundlePage()
+        }
+
+        btnRefresh.setOnClickListener { refresh() }
+    }
+
+    private fun showMenuPage() {
+        tvTitle.setText(R.string.rn_manager)
+        layoutMenuList.visibility = View.VISIBLE
+        layoutBundlePage.visibility = View.GONE
+    }
+
+    private fun showBundlePage() {
+        tvTitle.setText(R.string.local_bundle_manager)
+        layoutMenuList.visibility = View.GONE
+        layoutBundlePage.visibility = View.VISIBLE
         loadBundles()
     }
 
@@ -50,6 +82,10 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
         } else {
             recyclerView.adapter = RepoAdapter(repos, ::deleteRepo, ::showDeleteVersionDialog, ::loadBundles)
         }
+    }
+
+    private fun refresh() {
+        loadBundles()
     }
 
     /**
@@ -94,7 +130,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
                 val deleted = doDeleteVersion(repo, version)
                 if (deleted) {
                     Toast.makeText(requireContext(), R.string.bundle_deleted, Toast.LENGTH_SHORT).show()
-                    loadBundles()
+                    refresh()
                 } else {
                     Toast.makeText(requireContext(), R.string.bundle_delete_failed, Toast.LENGTH_SHORT).show()
                 }
@@ -111,7 +147,7 @@ class BundleManagerBottomSheet : BaseDialogFragment() {
                 val deleted = deleteRepoBundle(repo.repoName)
                 if (deleted) {
                     Toast.makeText(requireContext(), R.string.bundle_deleted, Toast.LENGTH_SHORT).show()
-                    loadBundles()
+                    refresh()
                 } else {
                     Toast.makeText(requireContext(), R.string.bundle_delete_failed, Toast.LENGTH_SHORT).show()
                 }

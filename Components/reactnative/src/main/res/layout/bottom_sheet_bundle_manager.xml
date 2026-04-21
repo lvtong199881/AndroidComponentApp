@@ -23,10 +23,11 @@
             android:contentDescription="@null" />
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/bundle_manager"
+            android:text="@string/rn_manager"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#333333"
@@ -50,23 +51,121 @@
         android:layout_height="1dp"
         android:background="#EEEEEE" />
 
-    <!-- Bundle 列表 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_bundles"
+    <!-- 功能菜单列表 -->
+    <LinearLayout
+        android:id="@+id/layout_menu_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp" />
+        android:orientation="vertical"
+        android:layout_marginTop="12dp">
 
-    <!-- 底部刷新按钮 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_refresh"
+        <!-- 本地 Bundle 包管理 -->
+        <LinearLayout
+            android:id="@+id/menu_local_bundle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_archive"
+                app:tint="?attr/colorPrimary"
+                android:contentDescription="@null" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/local_bundle_manager"
+                    android:textSize="16sp"
+                    android:textColor="#333333" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/local_bundle_manager_desc"
+                    android:textSize="12sp"
+                    android:textColor="#999999" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_media_play"
+                app:tint="#CCCCCC"
+                android:contentDescription="@null" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 二级页面：Bundle 列表（初始隐藏） -->
+    <FrameLayout
+        android:id="@+id/layout_bundle_page"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/bundle_refresh"
-        android:textSize="16sp"
-        style="@style/Widget.Material3.Button" />
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <!-- 返回按钮 -->
+        <LinearLayout
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="?attr/colorPrimary"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary"
+                android:layout_marginStart="4dp" />
+
+        </LinearLayout>
+
+        <!-- Bundle 列表 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_bundles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+
+        <!-- 底部刷新按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/bundle_refresh"
+            android:textSize="16sp"
+            style="@style/Widget.Material3.Button" />
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -5,6 +5,10 @@
     <string name="bundle_deleted">Bundle deleted</string>
     <string name="bundle_delete_failed">Failed to delete bundle</string>
     <string name="bundle_manager">Bundle Manager</string>
+    <string name="rn_manager">RN 管理</string>
+    <string name="local_bundle_manager">本地 Bundle 包管理</string>
+    <string name="local_bundle_manager_desc">管理本地存储的 React Native 热更新 Bundle</string>
+    <string name="back">返回</string>
     <string name="bundle_refresh">Refresh</string>
     <string name="bundle_loading">Loading…</string>
     <string name="bundle_empty">No bundles downloaded yet</string>
