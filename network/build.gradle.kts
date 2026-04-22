@@ -110,3 +110,8 @@ kapt {
         arg("initCollectorModuleName", "network")
     }
 }
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
