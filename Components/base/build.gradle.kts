@@ -47,6 +47,9 @@ dependencies {
     // Startup 框架
     api(project(":startup"))
     
+    // 日志模块
+    api(project(":logger"))
+    
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
     api(project(":router"))
     api(project(":network"))

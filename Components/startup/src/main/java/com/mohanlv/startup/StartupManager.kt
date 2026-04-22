@@ -18,7 +18,7 @@ object StartupManager {
             return
         }
         tasks.add(task)
-        logD("注册启动任务: ${task.name} (优先级: ${task.priority})")
+        log("注册启动任务: ${task.name} (优先级: ${task.priority})")
     }
     
     /**
@@ -33,19 +33,19 @@ object StartupManager {
         // 按优先级排序
         tasks.sortBy { it.priority }
         
-        logI("正在启动 ${tasks.size} 个任务...")
+        log("正在启动 ${tasks.size} 个任务...")
         
         tasks.forEach { task ->
             try {
-                logD("执行任务: ${task.name}")
+                log("执行任务: ${task.name}")
                 task.create()
-                logD("任务完成: ${task.name}")
+                log("任务完成: ${task.name}")
             } catch (e: Exception) {
                 logE("任务执行失败: ${task.name}", e)
             }
         }
         
-        logI("所有任务执行完成")
+        log("所有任务执行完成")
         isInitialized = true
     }
 }

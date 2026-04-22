@@ -35,6 +35,9 @@ dependencies {
     // Startup 框架
     api(project(":startup"))
     
+    // 日志模块
+    api(project(":logger"))
+    
     // Retrofit + OkHttp
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")

@@ -32,7 +32,7 @@ object ReactNativeHelper {
         this.application = application
         this.reactNativeHost = reactNativeHost
         this.initialized = true
-        logD("ReactNativeHelper::已初始化")
+        log("ReactNativeHelper::已初始化")
     }
     
     fun isInitialized(): Boolean = initialized
@@ -50,10 +50,10 @@ object ReactNativeHelper {
         val bundlePath = resolveBundlePath(app, config)
         
         return if (bundlePath.isNotEmpty() && File(bundlePath).exists()) {
-            logD("ReactNativeHelper::从文件加载 bundle: $bundlePath")
+            log("ReactNativeHelper::从文件加载 bundle: $bundlePath")
             JSBundleLoader.createFileLoader(bundlePath)
         } else {
-            logD("ReactNativeHelper::从 assets 加载 bundle (降级方案)")
+            log("ReactNativeHelper::从 assets 加载 bundle (降级方案)")
             JSBundleLoader.createAssetLoader(app, "index.android.bundle", false)
         }
     }
@@ -68,12 +68,12 @@ object ReactNativeHelper {
             // 指定版本：检查本地是否存在
             val localPath = getLocalBundlePath(app, config.repo, config.version)
             if (localPath != null) {
-                logD("ReactNativeHelper::使用本地 bundle，版本: ${config.version}")
+                log("ReactNativeHelper::使用本地 bundle，版本: ${config.version}")
                 return localPath
             }
             
             // 本地不存在，下载
-            logD("ReactNativeHelper::正在下载 bundle，版本: ${config.version}")
+            log("ReactNativeHelper::正在下载 bundle，版本: ${config.version}")
             return downloadBundle(app, config)
         }
         
@@ -86,12 +86,12 @@ object ReactNativeHelper {
         
         val localPath = getLocalBundlePath(app, config.repo, latestVersion)
         if (localPath != null) {
-            logD("ReactNativeHelper::本地版本: $latestVersion，最新版本: $latestVersion")
+            log("ReactNativeHelper::本地版本: $latestVersion，最新版本: $latestVersion")
             return localPath
         }
         
         // 需要下载新版本
-        logD("ReactNativeHelper::正在下载最新版本: $latestVersion")
+        log("ReactNativeHelper::正在下载最新版本: $latestVersion")
         return downloadBundle(app, config.copy(version = latestVersion))
     }
     
@@ -130,7 +130,7 @@ object ReactNativeHelper {
         }
         
         if (latestFile.isNotEmpty()) {
-            logD("ReactNativeHelper::使用最新本地 bundle: $latestFile")
+            log("ReactNativeHelper::使用最新本地 bundle: $latestFile")
         }
         return latestFile
     }
@@ -152,7 +152,7 @@ object ReactNativeHelper {
             val destFile = File(versionDir, "index.android.bundle")
             file.copyTo(destFile, overwrite = true)
             file.delete()
-            logD("ReactNativeHelper::Bundle 已保存至: ${destFile.absolutePath}")
+            log("ReactNativeHelper::Bundle 已保存至: ${destFile.absolutePath}")
             return destFile.absolutePath
         }
         

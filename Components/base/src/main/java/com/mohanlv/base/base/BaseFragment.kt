@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.mohanlv.base.utils.logI
+import com.mohanlv.base.utils.log
 
 /**
  * 基础 Fragment
@@ -35,7 +35,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected open fun initView(savedInstanceState: Bundle?) {}
     protected open fun initData() {}
     protected open fun initEvent() {
-        logI("BaseFragment::initEvent")
+        log("BaseFragment::initEvent")
     }
     protected open fun showLoading() {}
     protected open fun hideLoading() {}

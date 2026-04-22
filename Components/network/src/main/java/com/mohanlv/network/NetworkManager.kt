@@ -39,14 +39,14 @@ object NetworkManager {
         override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
             val host = url.host.replace("www.", "")
             cookieStore[host] = cookies
-            logD("NetworkManager::保存 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
+            log("NetworkManager::保存 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
         }
 
         override fun loadForRequest(url: HttpUrl): List<Cookie> {
             val host = url.host.replace("www.", "")
             val cookies = cookieStore[host] ?: emptyList()
             if (cookies.isNotEmpty()) {
-                logD("NetworkManager::发送 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
+                log("NetworkManager::发送 cookies for $host: ${cookies.joinToString { "${it.name}=${it.value}" }}")
             }
             return cookies
         }

@@ -1,6 +1,7 @@
 package com.mohanlv.network.interceptor
 
-import com.mohanlv.network.logI
+
+import com.mohanlv.network.log
 import com.mohanlv.network.logE
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -18,7 +19,7 @@ class LoggingInterceptor : Interceptor {
         val url = request.url.toString()
         val method = request.method
         
-        logI("LoggingInterceptor::[请求] $method $url")
+        log("LoggingInterceptor::[请求] $method $url")
         
         val startTime = System.nanoTime()
         
@@ -26,7 +27,7 @@ class LoggingInterceptor : Interceptor {
             val response = chain.proceed(request)
             val duration = (System.nanoTime() - startTime) / 1_000_000
             
-            logI("LoggingInterceptor::[响应] ${response.code} ${duration}ms $url")
+            log("LoggingInterceptor::[响应] ${response.code} ${duration}ms $url")
             
             response
         } catch (e: Exception) {

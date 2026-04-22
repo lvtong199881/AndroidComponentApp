@@ -54,7 +54,7 @@ object BundleUrl {
     suspend fun getLatestVersion(repo: String): String? = withContext(Dispatchers.IO) {
         try {
             val apiUrl = GITHUB_API_LATEST.format(OWNER, repo)
-            logD("BundleUrl::正在获取最新版本信息: $apiUrl")
+            log("BundleUrl::正在获取最新版本信息: $apiUrl")
             
             val url = URL(apiUrl)
             val connection = url.openConnection() as HttpURLConnection
@@ -71,7 +71,7 @@ object BundleUrl {
                 val tagName = json.optString("tag_name", "")
                 
                 if (tagName.isNotEmpty()) {
-                    logD("BundleUrl::最新版本: $tagName")
+                    log("BundleUrl::最新版本: $tagName")
                     return@withContext tagName
                 }
             } else {

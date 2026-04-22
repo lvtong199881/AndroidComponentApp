@@ -1,6 +1,7 @@
 package com.mohanlv.reactnative
 
 import android.content.Context
+import com.mohanlv.reactnative.logE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -43,12 +44,12 @@ class BundleDownloader(
         
         // 检查本地文件是否存在
         if (localFile.exists()) {
-            logD("BundleDownloader::本地 bundle 已存在: ${localFile.absolutePath}")
+            log("BundleDownloader::本地 bundle 已存在: ${localFile.absolutePath}")
             return@withContext localFile
         }
         
         // 本地不存在，下载
-        logD("BundleDownloader::本地 bundle 不存在，开始下载: $bundleUrl")
+        log("BundleDownloader::本地 bundle 不存在，开始下载: $bundleUrl")
         return@withContext download()
     }
     
@@ -69,7 +70,7 @@ class BundleDownloader(
         
         while (retry < maxRetry) {
             try {
-                logD("BundleDownloader::正在下载 bundle (第 ${retry + 1} 次/$maxRetry)...")
+                log("BundleDownloader::正在下载 bundle (第 ${retry + 1} 次/$maxRetry)...")
                 
                 val url = URL(bundleUrl)
                 val connection = url.openConnection() as HttpURLConnection
@@ -98,7 +99,7 @@ class BundleDownloader(
                     
                     // 原子性重命名
                     if (tempFile.renameTo(localFile)) {
-                        logI("BundleDownloader::Bundle 下载成功: ${localFile.absolutePath}")
+                        log("BundleDownloader::Bundle 下载成功: ${localFile.absolutePath}")
                         return localFile
                     } else {
                         throw IllegalStateException("Failed to rename temp file to bundle")
@@ -110,7 +111,7 @@ class BundleDownloader(
                     )
                 }
             } catch (e: Exception) {
-                logW("BundleDownloader::下载失败 (第 ${retry + 1} 次)", e)
+                logE("BundleDownloader::下载失败 (第 ${retry + 1} 次)", e)
                 lastException = e
                 retry++
                 // 无需等待，立即重试
