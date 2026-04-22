@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
     id("maven-publish")
 }
 
@@ -39,7 +40,18 @@ dependencies {
     implementation(project(":base"))
     implementation(project(":reactnative"))
     implementation(project(":websdk"))
+    
+    // 路由注解
+    compileOnly("com.mohanlv:router-annotation:0.0.4")
+    kapt("com.mohanlv:router-annotator:0.0.4")
     testImplementation("junit:junit:4.13.2")
+}
+
+kapt {
+    arguments {
+        arg("routerCollectorPackage", "com.mohanlv.home")
+        arg("routerCollectorModuleName", "home")
+    }
 }
 
 // publishing 配置已在根项目统一管理

@@ -17,10 +17,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/allAnnotator")
-        }
     }
 }
 

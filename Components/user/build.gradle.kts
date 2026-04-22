@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
     id("maven-publish")
 }
 
@@ -39,9 +40,19 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation(project(":base"))
     implementation(project(":login"))
+    
+    // 路由注解
+    compileOnly("com.mohanlv:router-annotation:0.0.4")
+    kapt("com.mohanlv:router-annotator:0.0.4")
     testImplementation("junit:junit:4.13.2")
 }
 
+kapt {
+    arguments {
+        arg("routerCollectorPackage", "com.mohanlv.user")
+        arg("routerCollectorModuleName", "user")
+    }
+}
 
 
 val target = project.findProperty("target")?.toString() ?: "local"

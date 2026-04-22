@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "com.mohanlv.app"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

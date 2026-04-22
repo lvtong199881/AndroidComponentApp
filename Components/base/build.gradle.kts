@@ -47,7 +47,7 @@ dependencies {
     
     // Startup 框架
     api(project(":startup"))
-    kapt("com.mohanlv:init-annotator:0.0.1")
+    kapt("com.mohanlv:init-annotator:0.0.4")
     
     // 日志模块
     api(project(":logger"))

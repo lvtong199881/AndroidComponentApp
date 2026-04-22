@@ -47,7 +47,9 @@ dependencies {
     implementation(project(":router"))
     testImplementation("junit:junit:4.13.2")
 
-    kapt("com.mohanlv:init-annotator:0.0.1")
+    kapt("com.mohanlv:init-annotator:0.0.4")
+    compileOnly("com.mohanlv:router-annotation:0.0.4")
+    kapt("com.mohanlv:router-annotator:0.0.4")
 }
 
 
@@ -108,5 +110,7 @@ kapt {
     arguments {
         arg("initCollectorPackage", "com.mohanlv.login")
         arg("initCollectorModuleName", "login")
+        arg("routerCollectorPackage", "com.mohanlv.login")
+        arg("routerCollectorModuleName", "login")
     }
 }

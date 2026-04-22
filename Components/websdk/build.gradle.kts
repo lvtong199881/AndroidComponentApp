@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
     id("maven-publish")
 }
 
@@ -38,4 +39,15 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.webkit:webkit:1.9.0")
     implementation(project(":base"))
+    
+    // 路由注解
+    compileOnly("com.mohanlv:router-annotation:0.0.4")
+    kapt("com.mohanlv:router-annotator:0.0.4")
+}
+
+kapt {
+    arguments {
+        arg("routerCollectorPackage", "com.mohanlv.websdk")
+        arg("routerCollectorModuleName", "websdk")
+    }
 }

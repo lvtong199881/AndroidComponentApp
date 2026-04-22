@@ -2,7 +2,6 @@ package com.mohanlv.router
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -23,20 +22,33 @@ object RouterManager {
         if (isInitialized) return
         isInitialized = true
         
-        // 使用 APT 生成的路由表注册所有路由
-        RouteTable.registerAll(this)
+        // 使用 ServiceLoader 加载所有 RouteCollector 实现类并注册路由
+        loadRouteCollectors()
     }
     
     /**
-     * 内部注册方法，供生成的 RouteTable 调用
-     * 路径不包含 scheme
+     * 内部注册方法，供 RouteCollector 调用
+     * @param clazz Fragment class
      */
-    fun registerInternal(path: String, provider: () -> Fragment) {
+    fun registerInternal(path: String, clazz: Class<out Fragment>) {
+        routes[path] = { clazz.getDeclaredConstructor().newInstance() }
+    }
+    
+    /**
+     * 注册路由（供外部调用）
+     */
+    fun register(path: String, provider: () -> Fragment) {
         routes[path] = provider
     }
     
-    fun register(path: String, provider: () -> Fragment) {
-        routes[path] = provider
+    /**
+     * 加载所有 RouteCollector 实现类并注册路由
+     */
+    private fun loadRouteCollectors() {
+        val serviceLoader = java.util.ServiceLoader.load(RouteCollector::class.java)
+        for (collector in serviceLoader) {
+            collector.register(this)
+        }
     }
     
     /**
