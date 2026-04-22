@@ -1,0 +1,23 @@
+package com.mohanlv.logger
+
+import android.app.Application
+import com.mohanlv.startup.StartupTask
+import java.io.File
+
+/**
+ * Logger 模块的初始化任务
+ */
+class LoggerStartupTask(private val application: Application) : StartupTask {
+    
+    override val name: String = "LoggerStartupTask"
+    
+    override val priority: Int = 100  // 在 BaseStartupTask 之后执行
+    
+    override fun create() {
+        LoggerConfig.logDir = File(
+            application.filesDir,
+            "logs"
+        )
+        Logger.init()
+    }
+}

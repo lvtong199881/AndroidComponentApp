@@ -29,5 +29,6 @@ include(":home")
 include(":base")
 include(":user")
 include(":reactnative")
+include(":logger")
 
 rootProject.name = "Components"

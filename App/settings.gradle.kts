@@ -29,6 +29,7 @@ include(":login")
 include(":home")
 include(":reactnative")
 include(":user")
+include(":logger")
 
 // 应用组件依赖配置（自动切换源码/Maven 模式）
 apply(from = "dependencies-config.gradle.kts")
