@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
     id("maven-publish")
 }
 
@@ -52,6 +53,7 @@ dependencies {
     
     // Startup 框架
     implementation(project(":startup"))
+    kapt(project(":init-annotator"))
     
     // 依赖 base（BaseDialogFragment 等基础组件）
     implementation(project(":base"))
@@ -107,5 +109,19 @@ publishing {
                 password = token
             }
         }
+    }
+}
+
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.reactnative")
+        arg("initCollectorModuleName", "reactnative")
+    }
+}
+
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.reactnative")
+        arg("initCollectorModuleName", "reactnative")
     }
 }

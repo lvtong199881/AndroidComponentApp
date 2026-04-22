@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
     id("maven-publish")
 }
 
@@ -36,6 +37,7 @@ dependencies {
     
     // Startup 框架
     implementation(project(":startup"))
+    kapt(project(":init-annotator"))
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -90,5 +92,19 @@ publishing {
                 password = token
             }
         }
+    }
+}
+
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.router")
+        arg("initCollectorModuleName", "router")
+    }
+}
+
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.router")
+        arg("initCollectorModuleName", "router")
     }
 }
