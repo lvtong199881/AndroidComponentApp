@@ -58,13 +58,12 @@ object Logger {
         
         // 打印到 Logcat
         if (LoggerConfig.printToLogcat) {
-            val logMessage = "$tag: $message"
             when (level) {
-                LogEntry.Level.VERBOSE -> Log.v(tag, logMessage)
-                LogEntry.Level.DEBUG -> Log.d(tag, logMessage)
-                LogEntry.Level.INFO -> Log.i(tag, logMessage)
-                LogEntry.Level.WARN -> Log.w(tag, logMessage)
-                LogEntry.Level.ERROR -> Log.e(tag, logMessage, throwable)
+                LogEntry.Level.VERBOSE -> Log.v(tag, message)
+                LogEntry.Level.DEBUG -> Log.d(tag, message)
+                LogEntry.Level.INFO -> Log.i(tag, message)
+                LogEntry.Level.WARN -> Log.w(tag, message)
+                LogEntry.Level.ERROR -> Log.e(tag, message, throwable)
             }
         }
         
