@@ -53,9 +53,9 @@ dependencies {
     
     // Startup 框架
     implementation(project(":startup"))
-    kapt("com.mohanlv:init-annotator:0.0.4")
-    compileOnly("com.mohanlv:router-annotation:0.0.4")
-    kapt("com.mohanlv:router-annotator:0.0.4")
+    kapt("com.mohanlv:init-annotator:0.0.6")
+    compileOnly("com.mohanlv:router-annotation:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.6")
     
     // 依赖 base（BaseDialogFragment 等基础组件）
     implementation(project(":base"))

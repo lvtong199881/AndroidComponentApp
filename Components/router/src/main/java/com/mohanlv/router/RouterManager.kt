@@ -3,6 +3,7 @@ package com.mohanlv.router
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import java.util.concurrent.ConcurrentHashMap
@@ -12,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap
  * 支持 oneandroid:// scheme，支持外部唤起和内部跳转
  */
 object RouterManager {
+    
+    private const val TAG = "RouterManager"
     
     // 内部注册表，key 为路径（不含 scheme）
     private val routes = ConcurrentHashMap<String, () -> Fragment>()
@@ -47,7 +50,14 @@ object RouterManager {
     private fun loadRouteCollectors() {
         val serviceLoader = java.util.ServiceLoader.load(RouteCollector::class.java)
         for (collector in serviceLoader) {
-            collector.register(this)
+            for ((path, className) in collector.getRoutes()) {
+                try {
+                    val clazz = Class.forName(className).asSubclass(Fragment::class.java)
+                    registerInternal(path, clazz)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to register route: $path -> $className", e)
+                }
+            }
         }
     }
     
