@@ -57,6 +57,8 @@ dependencies {
     implementation("$componentGroupId:home:$componentVersion")
     implementation("$componentGroupId:reactnative:$componentVersion")
     implementation("$componentGroupId:logger:$componentVersion")
+    implementation("$componentGroupId:user:$componentVersion")
+    implementation("$componentGroupId:websdk:$componentVersion")
     // =======================================================
     
     // Lifecycle

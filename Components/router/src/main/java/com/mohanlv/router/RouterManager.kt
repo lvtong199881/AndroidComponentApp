@@ -155,7 +155,8 @@ object RouterManager {
     }
     
     fun getFragment(path: String): Fragment? {
-        return routes[path]?.invoke()
+        val internalPath = extractInternalPath(path)
+        return routes[internalPath]?.invoke()
     }
     
     fun isRouteExists(path: String): Boolean {

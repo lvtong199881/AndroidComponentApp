@@ -99,7 +99,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
     private fun createFragment(tag: String): Fragment? {
         return when (tag) {
             "home" -> com.mohanlv.home.ui.HomeFragment()
-            "web" -> com.mohanlv.home.ui.web.WebFragment()
+            "web" -> RouterManager.getFragment(RoutePath.WEB_VIEW)
             "user" -> RouterManager.getFragment(RoutePath.USER)
             "rn" -> {
                 val bundle = android.os.Bundle()
