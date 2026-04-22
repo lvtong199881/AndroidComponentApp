@@ -53,7 +53,7 @@ dependencies {
     
     // Startup 框架
     implementation(project(":startup"))
-    kapt(project(":init-annotator"))
+    kapt("com.mohanlv:init-annotator:0.0.1")
     
     // 依赖 base（BaseDialogFragment 等基础组件）
     implementation(project(":base"))

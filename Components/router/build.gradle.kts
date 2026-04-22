@@ -37,7 +37,7 @@ dependencies {
     
     // Startup 框架
     implementation(project(":startup"))
-    kapt(project(":init-annotator"))
+    kapt("com.mohanlv:init-annotator:0.0.1")
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -92,13 +92,6 @@ publishing {
                 password = token
             }
         }
-    }
-}
-
-kapt {
-    arguments {
-        arg("initCollectorPackage", "com.mohanlv.router")
-        arg("initCollectorModuleName", "router")
     }
 }
 

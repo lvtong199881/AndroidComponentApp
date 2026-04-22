@@ -17,6 +17,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/allAnnotator")
+        }
     }
 }
 
@@ -31,6 +35,5 @@ include(":user")
 include(":reactnative")
 include(":logger")
 include(":websdk")
-include(":init-annotator")
 
 rootProject.name = "Components"

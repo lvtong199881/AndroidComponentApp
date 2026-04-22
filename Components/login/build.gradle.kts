@@ -47,7 +47,7 @@ dependencies {
     implementation(project(":router"))
     testImplementation("junit:junit:4.13.2")
 
-    kapt(project(":init-annotator"))
+    kapt("com.mohanlv:init-annotator:0.0.1")
 }
 
 
