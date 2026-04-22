@@ -3,7 +3,7 @@ package com.mohanlv.reactnative.ui
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
+import com.mohanlv.reactnative.logE
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -100,7 +100,7 @@ class RNView @JvmOverloads constructor(
                 showContent()
 
             } catch (e: Exception) {
-                Log.e(TAG, "ReactNative 初始化失败", e)
+                logE("RNView::ReactNative 初始化失败", e)
                 showError()
             }
         }
@@ -151,9 +151,5 @@ class RNView @JvmOverloads constructor(
     override fun invokeDefaultOnBackPressed() {
         val activity = context as? androidx.appcompat.app.AppCompatActivity ?: return
         activity.onBackPressedDispatcher.onBackPressed()
-    }
-
-    companion object {
-        private const val TAG = "RNView"
     }
 }

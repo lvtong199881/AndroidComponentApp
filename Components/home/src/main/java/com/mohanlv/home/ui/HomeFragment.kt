@@ -1,7 +1,6 @@
 package com.mohanlv.home.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.databinding.FragmentHomeBinding
+import com.mohanlv.home.logE
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
 import com.mohanlv.network.model.Article
@@ -40,10 +40,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private lateinit var articleAdapter: ArticleAdapter
 
     private var autoScrollTimer: Timer? = null
-
-    companion object {
-        private const val TAG = "HomeFragment"
-    }
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(inflater, container, false)
@@ -120,7 +116,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "获取 Banner/文章失败", e)
+                logE("HomeFragment::获取 Banner/文章失败", e)
             } finally {
                 isLoading = false
                 binding.swipeRefresh.isRefreshing = false

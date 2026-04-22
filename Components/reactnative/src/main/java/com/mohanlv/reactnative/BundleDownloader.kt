@@ -1,7 +1,6 @@
 package com.mohanlv.reactnative
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -22,8 +21,6 @@ class BundleDownloader(
 ) {
     
     companion object {
-        private const val TAG = "RN"
-        
         // 默认远端 bundle URL（可通过配置修改）
         const val DEFAULT_BUNDLE_URL = "https://your-cdn.com/bundle/index.android.bundle"
         
@@ -46,12 +43,12 @@ class BundleDownloader(
         
         // 检查本地文件是否存在
         if (localFile.exists()) {
-            Log.d(TAG, "本地 bundle 已存在: ${localFile.absolutePath}")
+            logD("BundleDownloader::本地 bundle 已存在: ${localFile.absolutePath}")
             return@withContext localFile
         }
         
         // 本地不存在，下载
-        Log.d(TAG, "本地 bundle 不存在，开始下载: $bundleUrl")
+        logD("BundleDownloader::本地 bundle 不存在，开始下载: $bundleUrl")
         return@withContext download()
     }
     
@@ -72,7 +69,7 @@ class BundleDownloader(
         
         while (retry < maxRetry) {
             try {
-                Log.d(TAG, "正在下载 bundle (第 ${retry + 1} 次/$maxRetry)...")
+                logD("BundleDownloader::正在下载 bundle (第 ${retry + 1} 次/$maxRetry)...")
                 
                 val url = URL(bundleUrl)
                 val connection = url.openConnection() as HttpURLConnection
@@ -101,7 +98,7 @@ class BundleDownloader(
                     
                     // 原子性重命名
                     if (tempFile.renameTo(localFile)) {
-                        Log.i(TAG, "Bundle 下载成功: ${localFile.absolutePath}")
+                        logI("BundleDownloader::Bundle 下载成功: ${localFile.absolutePath}")
                         return localFile
                     } else {
                         throw IllegalStateException("Failed to rename temp file to bundle")
@@ -113,14 +110,14 @@ class BundleDownloader(
                     )
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "下载失败 (第 ${retry + 1} 次)", e)
+                logW("BundleDownloader::下载失败 (第 ${retry + 1} 次)", e)
                 lastException = e
                 retry++
                 // 无需等待，立即重试
             }
         }
         
-        Log.e(TAG, "Bundle 下载失败，已重试 $maxRetry 次", lastException)
+        logE("BundleDownloader::Bundle 下载失败，已重试 $maxRetry 次", lastException)
         return null
     }
     
@@ -138,7 +135,7 @@ class BundleDownloader(
         val localFile = getLocalBundleFile()
         if (!localFile.exists()) return@withContext true
         
-        // TODO: 实现版本比对逻辑
+        // TODO: 比对版本或 hash
         return@withContext false
     }
 }

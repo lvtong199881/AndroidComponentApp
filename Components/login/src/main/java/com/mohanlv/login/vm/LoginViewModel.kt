@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import com.mohanlv.login.logE
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
@@ -64,11 +64,11 @@ class LoginViewModel : ViewModel() {
                         )
                     }
                 } else {
-                    Log.e("LoginViewModel", "登录失败，响应码: ${response.code()}")
+                    logE("LoginViewModel::登录失败，响应码: ${response.code()}")
                     _loginResult.value = LoginResult.Error("网络错误: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e("login", "登录失败", e)
+                logE("LoginViewModel::登录失败", e)
                 val errorMsg = when {
                     e.message?.contains("Unable to resolve") == true -> "网络连接失败，请检查网络设置"
                     e.message?.contains("timeout") == true -> "请求超时，请稍后重试"

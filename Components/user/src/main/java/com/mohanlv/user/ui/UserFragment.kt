@@ -1,7 +1,8 @@
 package com.mohanlv.user.ui
 
 import android.os.Bundle
-import android.util.Log
+import com.mohanlv.user.logI
+import com.mohanlv.user.logE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,10 +34,6 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
         container: ViewGroup?
     ): FragmentUserCenterBinding {
         return FragmentUserCenterBinding.inflate(inflater, container, false)
-    }
-
-    companion object {
-        private const val TAG = "UserFragment"
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -97,9 +94,9 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                         val userInfo = body.data
                         binding.tvCoinCount.text = userInfo?.coinCount?.toString() ?: getString(R.string.default_placeholder)
                         binding.tvRank.text = getString(R.string.rank_format, userInfo?.rank ?: getString(R.string.default_placeholder))
-                        Log.i(TAG, "积分信息加载成功: ${userInfo?.coinCount}")
+                        logI("UserFragment::积分信息加载成功: ${userInfo?.coinCount}")
                     } else {
-                        Log.e(TAG, "获取积分失败: ${body?.errorMsg}")
+                        logE("UserFragment::获取积分失败: ${body?.errorMsg}")
                         if (body?.needLogin() == true) {
                             clearLoginState()
                             return@launch
@@ -108,7 +105,7 @@ class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChan
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "获取积分失败", e)
+                logE("UserFragment::获取积分失败", e)
                 binding.tvCoinCount.text = getString(R.string.default_placeholder)
             }
         }

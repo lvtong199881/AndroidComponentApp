@@ -1,7 +1,6 @@
 package com.mohanlv.login
 
 import android.app.Application
-import android.util.Log
 import com.mohanlv.login.vm.LoginState
 import com.mohanlv.network.NetworkManager
 import com.mohanlv.network.api.ApiService
@@ -45,23 +44,19 @@ class LoginValidationTask(private val application: Application) : StartupTask {
                     val body = response.body()
                     if (body == null || body.needLogin()) {
                         // 登录状态无效，清除本地状态
-                        Log.w(TAG, "登录状态已失效，清除本地状态")
+                        logW("LoginValidationTask::登录状态已失效，清除本地状态")
                         clearLoginState()
                     }
                     // 登录有效，不需要处理
                 }
             } catch (e: Exception) {
                 // 网络错误，不清除本地状态，等用户手动刷新
-                Log.e(TAG, "登录状态校验失败", e)
+                logE("LoginValidationTask::登录状态校验失败", e)
             }
         }
     }
 
     private fun clearLoginState() {
         LoginState.clear()
-    }
-
-    companion object {
-        private const val TAG = "LoginValidationTask"
     }
 }

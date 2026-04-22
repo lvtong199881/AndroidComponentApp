@@ -1,12 +1,12 @@
 package com.mohanlv.base.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.mohanlv.base.utils.logI
 
 /**
  * 基础 Fragment
@@ -35,7 +35,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected open fun initView(savedInstanceState: Bundle?) {}
     protected open fun initData() {}
     protected open fun initEvent() {
-        Log.i(TAG, "initEvent")
+        logI("BaseFragment::initEvent")
     }
     protected open fun showLoading() {}
     protected open fun hideLoading() {}

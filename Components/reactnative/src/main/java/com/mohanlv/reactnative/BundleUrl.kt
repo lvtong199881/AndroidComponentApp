@@ -1,6 +1,5 @@
 package com.mohanlv.reactnative
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -55,7 +54,7 @@ object BundleUrl {
     suspend fun getLatestVersion(repo: String): String? = withContext(Dispatchers.IO) {
         try {
             val apiUrl = GITHUB_API_LATEST.format(OWNER, repo)
-            Log.d(TAG, "正在获取最新版本信息: $apiUrl")
+            logD("BundleUrl::正在获取最新版本信息: $apiUrl")
             
             val url = URL(apiUrl)
             val connection = url.openConnection() as HttpURLConnection
@@ -72,17 +71,15 @@ object BundleUrl {
                 val tagName = json.optString("tag_name", "")
                 
                 if (tagName.isNotEmpty()) {
-                    Log.d(TAG, "最新版本: $tagName")
+                    logD("BundleUrl::最新版本: $tagName")
                     return@withContext tagName
                 }
             } else {
-                Log.w(TAG, "获取最新版本失败: ${connection.responseCode}")
+                logW("BundleUrl::获取最新版本失败: ${connection.responseCode}")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "获取最新版本异常", e)
+            logE("BundleUrl::获取最新版本异常", e)
         }
         return@withContext null
     }
-    
-    private const val TAG = "RN"
 }

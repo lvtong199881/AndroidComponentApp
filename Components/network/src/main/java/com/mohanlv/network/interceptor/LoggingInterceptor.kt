@@ -1,6 +1,7 @@
 package com.mohanlv.network.interceptor
 
-import android.util.Log
+import com.mohanlv.network.logI
+import com.mohanlv.network.logE
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -11,17 +12,13 @@ import java.io.IOException
  */
 class LoggingInterceptor : Interceptor {
 
-    companion object {
-        private const val TAG = "Network"
-    }
-
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val url = request.url.toString()
         val method = request.method
         
-        Log.i(TAG, "[请求] $method $url")
+        logI("LoggingInterceptor::[请求] $method $url")
         
         val startTime = System.nanoTime()
         
@@ -29,12 +26,12 @@ class LoggingInterceptor : Interceptor {
             val response = chain.proceed(request)
             val duration = (System.nanoTime() - startTime) / 1_000_000
             
-            Log.i(TAG, "[响应] ${response.code} ${duration}ms $url")
+            logI("LoggingInterceptor::[响应] ${response.code} ${duration}ms $url")
             
             response
         } catch (e: Exception) {
             val duration = (System.nanoTime() - startTime) / 1_000_000
-            Log.e(TAG, "[错误] $method 失败 ${duration}ms $url", e)
+            logE("LoggingInterceptor::[错误] $method 失败 ${duration}ms $url", e)
             throw e
         }
     }

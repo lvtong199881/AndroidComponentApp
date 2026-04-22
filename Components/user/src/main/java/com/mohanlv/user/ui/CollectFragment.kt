@@ -1,7 +1,6 @@
 package com.mohanlv.user.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.user.R
 import com.mohanlv.user.databinding.FragmentCollectBinding
+import com.mohanlv.user.logE
 import kotlinx.coroutines.launch
 
 /**
@@ -31,10 +31,6 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
     private val articles = mutableListOf<Article>()
     private var currentPage = 0
     private var isLoading = false
-
-    companion object {
-        private const val TAG = "CollectFragment"
-    }
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentCollectBinding {
         return FragmentCollectBinding.inflate(inflater, container, false)
@@ -118,13 +114,13 @@ class CollectFragment : BaseFragment<FragmentCollectBinding>() {
                             binding.layoutEmpty.visibility = if (articles.isEmpty()) View.VISIBLE else View.GONE
                         }
                     } else {
-                        Log.e(TAG, "API错误: ${body?.errorMsg}")
+                        logE("CollectFragment::API错误: ${body?.errorMsg}")
                     }
                 } else {
-                    Log.e(TAG, "HTTP错误: ${response.code()}")
+                    logE("CollectFragment::HTTP错误: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "加载收藏列表失败", e)
+                logE("CollectFragment::加载收藏列表失败", e)
                 Toast.makeText(context, getString(R.string.load_failed, e.message), Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false
