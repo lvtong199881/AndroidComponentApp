@@ -8,6 +8,7 @@ import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.R
 import com.mohanlv.home.databinding.FragmentHomeContainerBinding
 import com.mohanlv.router.RoutePath
+import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
 
 @Route(path = RoutePath.HOME_CONTAINER, description = "首页容器")
@@ -99,7 +100,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
         return when (tag) {
             "home" -> com.mohanlv.home.ui.HomeFragment()
             "web" -> com.mohanlv.home.ui.web.WebFragment()
-            "user" -> com.mohanlv.user.ui.UserFragment()
+            "user" -> RouterManager.getFragment(RoutePath.USER)
             "rn" -> {
                 val bundle = android.os.Bundle()
                 bundle.putString("repo", "MyRNApp")
