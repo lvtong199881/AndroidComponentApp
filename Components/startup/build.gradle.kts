@@ -38,6 +38,16 @@ dependencies {
 
 
 val target = project.findProperty("target")?.toString() ?: "local"
+
+tasks.register<Exec>("generateStartupTable") {
+    workingDir(rootDir)
+    commandLine("python3", "generate_startup.py")
+    outputs.cacheIf { true }
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateStartupTable")
+}
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
 if (target == "github") {

@@ -6,9 +6,12 @@ import com.mohanlv.logger.LoggerConfig
 import com.mohanlv.startup.StartupTask
 import java.io.File
 
+import com.mohanlv.startup.annotation.InitTask
+
 /**
  * Logger 模块的初始化任务
  */
+@InitTask(key = "logger", priority = 100)
 class LoggerStartupTask(private val application: Application) : StartupTask {
     
     override val name: String = "LoggerStartupTask"

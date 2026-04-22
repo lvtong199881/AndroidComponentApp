@@ -10,10 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
+import com.mohanlv.startup.annotation.InitTask
+
 /**
  * 登录状态校验任务
  * 在应用启动时校验本地登录状态是否有效
  */
+@InitTask(key = "login", priority = 250)
 class LoginValidationTask(private val application: Application) : StartupTask {
 
     override val name: String = "LoginValidationTask"

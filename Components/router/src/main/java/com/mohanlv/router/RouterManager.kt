@@ -17,12 +17,10 @@ object RouterManager {
     // 内部注册表，key 为路径（不含 scheme）
     private val routes = ConcurrentHashMap<String, () -> Fragment>()
     private var isInitialized = false
-    private var containerId: Int = 0
     var currentActivity: FragmentActivity? = null
     
-    fun init(context: Context, containerId: Int = 0) {
+    fun init(context: Context) {
         if (isInitialized) return
-        this.containerId = containerId
         isInitialized = true
         
         // 使用 APT 生成的路由表注册所有路由
@@ -90,7 +88,7 @@ object RouterManager {
                 com.mohanlv.router.R.anim.slide_in_left,
                 com.mohanlv.router.R.anim.slide_out_right
             )
-            .add(containerId, fragment, internalPath)
+            .add(android.R.id.content, fragment, internalPath)
         
         if (addToBackStack) {
             transaction.addToBackStack(internalPath)

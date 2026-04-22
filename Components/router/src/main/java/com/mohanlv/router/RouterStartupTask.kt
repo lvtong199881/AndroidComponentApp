@@ -3,19 +3,19 @@ package com.mohanlv.router
 import android.app.Application
 import com.mohanlv.startup.StartupTask
 
+import com.mohanlv.startup.annotation.InitTask
+
 /**
  * Router 模块的初始化任务
  */
-class RouterStartupTask(
-    private val application: Application,
-    private val containerId: Int
-) : StartupTask {
+@InitTask(key = "router", priority = 300)
+class RouterStartupTask(private val application: Application) : StartupTask {
     
     override val name: String = "RouterStartupTask"
     
-    override val priority: Int = 200  // 在 Network 之后执行
+    override val priority: Int = 300
     
     override fun create() {
-        RouterManager.init(application, containerId)
+        RouterManager.init(application)
     }
 }
