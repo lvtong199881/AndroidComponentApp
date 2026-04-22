@@ -3,7 +3,7 @@ package com.mohanlv.app
 import android.app.Application
 import com.mohanlv.base.BaseStartupTask
 import com.mohanlv.base.utils.GlobalAppContext
-import com.mohanlv.logger.LoggerStartupTask
+import com.mohanlv.base.LoggerStartupTask
 import com.mohanlv.network.NetworkStartupTask
 import com.mohanlv.reactnative.ReactNativeStartupTask
 import com.mohanlv.router.RouterStartupTask

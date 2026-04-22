@@ -1,6 +1,8 @@
-package com.mohanlv.logger
+package com.mohanlv.base
 
 import android.app.Application
+import com.mohanlv.logger.Logger
+import com.mohanlv.logger.LoggerConfig
 import com.mohanlv.startup.StartupTask
 import java.io.File
 
