@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home">Home</string>
+    <string name="web">Web</string>
+    <string name="my">My</string>
+    <string name="rn">RN</string>
+</resources>

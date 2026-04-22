@@ -11,9 +11,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
-APP_DIR="$PROJECT_DIR/App"
-COMPONENTS_DIR="$PROJECT_DIR/Components"
-GRADLE="$APP_DIR/gradlew"
+GRADLE="$PROJECT_DIR/gradlew"
 TOKEN_FILE="$HOME/.github_token"
 
 VERSION=$1
@@ -55,7 +53,7 @@ echo "目标: $TARGET"
 echo "=========================================="
 
 # 组件列表（按依赖顺序）
-COMPONENTS=("startup" "router" "network" "base" "login" "home" "reactnative" "user")
+COMPONENTS=("startup" "router" "network" "base" "login" "home" "reactnative" "user" "logger" "websdk")
 
 for component in "${COMPONENTS[@]}"; do
     echo ""
@@ -65,13 +63,13 @@ for component in "${COMPONENTS[@]}"; do
     sed -i.bak "s/set(\"componentVersion\", \"[^\"]*\")/set(\"componentVersion\", \"$VERSION\")/" "$PROJECT_DIR/version.gradle.kts"
 
     # 构建 release
-    cd "$COMPONENTS_DIR"
+    cd "$PROJECT_DIR"
     "$GRADLE" :${component}:assembleRelease -DcomponentVersion="$VERSION" --no-daemon -q 2>&1 | grep -v "^$"
 
     if [ $? -ne 0 ]; then
         echo "✗ $component 构建失败"
         cd "$PROJECT_DIR"
-        mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts"
+        mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts" 2>/dev/null || true
         exit 1
     fi
 
@@ -88,13 +86,13 @@ for component in "${COMPONENTS[@]}"; do
     else
         echo "✗ $component 发布失败"
         cd "$PROJECT_DIR"
-        mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts"
+        mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts" 2>/dev/null || true
         exit 1
     fi
 
     # 恢复 version.gradle.kts
     cd "$PROJECT_DIR"
-    mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts"
+    mv "$PROJECT_DIR/version.gradle.kts.bak" "$PROJECT_DIR/version.gradle.kts" 2>/dev/null || true
 done
 
 echo ""

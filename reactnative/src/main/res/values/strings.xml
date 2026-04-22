@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bundle_delete_confirm">Delete this bundle?</string>
+    <string name="bundle_delete">Delete</string>
+    <string name="bundle_deleted">Bundle deleted</string>
+    <string name="bundle_delete_failed">Failed to delete bundle</string>
+    <string name="local_bundle_manager">Local Bundle Manager</string>
+    <string name="local_bundle_manager_desc">Manage locally stored React Native hot-update bundles</string>
+    <string name="rn_manager">RN Manager</string>
+    <string name="bundle_loading">Loading…</string>
+    <string name="bundle_empty">No bundles downloaded yet</string>
+    <string name="bundle_delete_version_confirm">Delete %1$s?</string>
+    <string name="bundle_delete_repo_confirm">Delete all bundles for %1$s?</string>
+    <string name="bundle_version_count">%1$d versions</string>
+    <string name="bundle_version_separator"> · </string>
+    <string name="bundle_download_failed">Bundle download failed</string>
+    <string name="retry">Retry</string>
+</resources>

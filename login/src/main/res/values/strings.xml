@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WanAndroid</string>
+    <string name="wanandroid_url">wanandroid.com</string>
+    <string name="login">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="no_account">No account? Register →</string>
+    <string name="login_tip">Tip: Use your wanandroid.com account to login</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 默认值 -->
+    <string name="default_placeholder">--</string>
+    <string name="user_id_format">ID: %1$d</string>
+    <string name="rank_format">排名: %1$s</string>
+
+    <!-- 用户中心 -->
+    <string name="points">积分</string>
+    <string name="rank">排名</string>
+    <string name="my_collect">我的收藏</string>
+    <string name="my_share">我的分享</string>
+    <string name="settings">设置</string>
+    <string name="logout">退出登录</string>
+    <string name="not_logged_in">未登录</string>
+    <string name="login_prompt">登录后查看个人中心和更多功能</string>
+    <string name="go_login">去 登 录</string>
+
+    <!-- 收藏 -->
+    <string name="no_collect">暂无收藏</string>
+    <string name="logout_success">已退出登录</string>
+    <string name="please_login_first">请先登录</string>
+    <string name="load_failed">加载失败: %1$s</string>
+</resources>

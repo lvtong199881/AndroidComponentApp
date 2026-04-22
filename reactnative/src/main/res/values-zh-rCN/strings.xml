@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bundle_delete_confirm">确定删除此 Bundle？</string>
+    <string name="bundle_delete">删除</string>
+    <string name="bundle_deleted">Bundle 已删除</string>
+    <string name="bundle_delete_failed">删除 Bundle 失败</string>
+    <string name="local_bundle_manager">本地 Bundle 包管理</string>
+    <string name="local_bundle_manager_desc">管理本地存储的 React Native 热更新 Bundle</string>
+    <string name="rn_manager">RN 管理</string>
+    <string name="bundle_loading">加载中…</string>
+    <string name="bundle_empty">暂无下载的 Bundle</string>
+    <string name="bundle_delete_version_confirm">确定删除 %1$s？</string>
+    <string name="bundle_delete_repo_confirm">确定删除 %1$s 的所有 Bundle？</string>
+    <string name="bundle_version_count">%1$d 个版本</string>
+    <string name="bundle_version_separator"> · </string>
+    <string name="bundle_download_failed">Bundle 下载失败</string>
+    <string name="retry">重试</string>
+</resources>

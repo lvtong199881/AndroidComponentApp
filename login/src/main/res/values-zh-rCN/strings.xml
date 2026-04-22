@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">玩Android</string>
+    <string name="wanandroid_url">wanandroid.com</string>
+    <string name="login">登录</string>
+    <string name="username_hint">用户名</string>
+    <string name="password_hint">密码</string>
+    <string name="login_button">登 录</string>
+    <string name="no_account">还没有账号？去注册 →</string>
+    <string name="login_tip">提示：使用 wanandroid.com 网站账号登录</string>
+</resources>
