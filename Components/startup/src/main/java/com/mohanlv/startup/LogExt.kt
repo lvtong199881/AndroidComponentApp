@@ -4,8 +4,8 @@ import android.util.Log
 
 private const val TAG = "Startup"
 
-internal fun log(message: String) {
-    Log.i(TAG, message)
+internal fun Any.log(message: String = "") {
+    Log.i(TAG, "$message with $this")
 }
 
 internal fun logW(message: String) {

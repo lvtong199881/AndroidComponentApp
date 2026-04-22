@@ -4,8 +4,8 @@ import com.mohanlv.logger.Logger
 
 private const val TAG = "Login"
 
-internal fun log(message: String) {
-    Logger.i(TAG, message)
+internal fun Any.log(message: String = "") {
+    Logger.i(TAG, "$message with $this")
 }
 
 internal fun logW(message: String) {
