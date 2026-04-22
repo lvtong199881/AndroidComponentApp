@@ -13,4 +13,6 @@
     <string name="bundle_delete_repo_confirm">Delete all bundles for %1$s?</string>
     <string name="bundle_version_count">%1$d versions</string>
     <string name="bundle_version_separator"> · </string>
+    <string name="bundle_download_failed">Bundle download failed</string>
+    <string name="retry">Retry</string>
 </resources>

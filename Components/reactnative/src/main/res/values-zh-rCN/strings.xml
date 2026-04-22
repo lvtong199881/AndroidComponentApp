@@ -13,4 +13,6 @@
     <string name="bundle_delete_repo_confirm">确定删除 %1$s 的所有 Bundle？</string>
     <string name="bundle_version_count">%1$d 个版本</string>
     <string name="bundle_version_separator"> · </string>
+    <string name="bundle_download_failed">Bundle 下载失败</string>
+    <string name="retry">重试</string>
 </resources>

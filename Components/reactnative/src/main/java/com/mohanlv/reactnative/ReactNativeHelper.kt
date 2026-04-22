@@ -145,7 +145,7 @@ object ReactNativeHelper {
         val version = config.version ?: return ""
         val bundleUrl = BundleUrl.getBundleUrl(config.repo, version, config.buildType)
         
-        val downloader = BundleDownloader(app, bundleUrl, "index.android.bundle")
+        val downloader = BundleDownloader(app, bundleUrl, "index.android.bundle", config.maxRetry)
         val file = runBlocking { downloader.getLocalBundle() }
         
         if (file != null) {

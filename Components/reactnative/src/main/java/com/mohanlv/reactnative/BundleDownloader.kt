@@ -17,7 +17,8 @@ import java.net.URL
 class BundleDownloader(
     private val context: Context,
     private val bundleUrl: String,
-    private val bundleFileName: String = "index.android.bundle"
+    private val bundleFileName: String = "index.android.bundle",
+    private val maxRetry: Int = DEFAULT_MAX_RETRY
 ) {
     
     companion object {
@@ -26,8 +27,8 @@ class BundleDownloader(
         // 默认远端 bundle URL（可通过配置修改）
         const val DEFAULT_BUNDLE_URL = "https://your-cdn.com/bundle/index.android.bundle"
         
-        // 最大重试次数
-        private const val MAX_RETRY = 3
+        // 默认最大重试次数
+        const val DEFAULT_MAX_RETRY = 3
         
         // 连接超时（毫秒）
         private const val CONNECT_TIMEOUT = 30000
@@ -63,14 +64,15 @@ class BundleDownloader(
     
     /**
      * 下载 bundle 到本地
+     * @return 下载成功的文件，失败返回 null
      */
     private fun download(): File? {
         var retry = 0
         var lastException: Exception? = null
         
-        while (retry < MAX_RETRY) {
+        while (retry < maxRetry) {
             try {
-                Log.d(TAG, "正在下载 bundle (第 ${retry + 1} 次/$MAX_RETRY)...")
+                Log.d(TAG, "正在下载 bundle (第 ${retry + 1} 次/$maxRetry)...")
                 
                 val url = URL(bundleUrl)
                 val connection = url.openConnection() as HttpURLConnection
@@ -111,20 +113,14 @@ class BundleDownloader(
                     )
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "下载失败", e)
+                Log.w(TAG, "下载失败 (第 ${retry + 1} 次)", e)
                 lastException = e
                 retry++
-                
-                if (retry < MAX_RETRY) {
-                    // 指数退避
-                    val backoff = (1000L * (1 shl (retry - 1))).coerceAtMost(10000L)
-                    Log.d(TAG, "${backoff}ms 后重试...")
-                    Thread.sleep(backoff)
-                }
+                // 无需等待，立即重试
             }
         }
         
-        Log.e(TAG, "Bundle 下载失败，已重试 $MAX_RETRY 次", lastException)
+        Log.e(TAG, "Bundle 下载失败，已重试 $maxRetry 次", lastException)
         return null
     }
     
@@ -143,7 +139,6 @@ class BundleDownloader(
         if (!localFile.exists()) return@withContext true
         
         // TODO: 实现版本比对逻辑
-        // 可以通过比对 bundle 的 hash 或版本号来判断是否需要更新
         return@withContext false
     }
 }
