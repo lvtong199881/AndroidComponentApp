@@ -5,3 +5,6 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.2.10" apply false
     id("org.jetbrains.kotlin.kapt") version "2.2.10" apply false
 }
+
+// 应用发布配置
+apply(from = "publish.gradle.kts")

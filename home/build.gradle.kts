@@ -77,35 +77,6 @@ if (target == "github") {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "home"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact(file("build/outputs/aar/home-release.aar")) {
-                extension = "aar"
-            }
-        }
-    }
-    
-    repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-            credentials {
-                username = "lvtong199881"
-                password = token
-            }
-        }
-    }
-}
 
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
