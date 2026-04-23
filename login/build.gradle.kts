@@ -60,51 +60,7 @@ dependencies {
 val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
-if (target == "github") {
-    (publishing as ExtensionAware).extensions.configure<PublishingExtension> {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-                val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-                credentials {
-                    username = "lvtong199881"
-                    password = token
-                }
-            }
-        }
-    }
-}
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "login"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact(file("build/outputs/aar/login-release.aar")) {
-                extension = "aar"
-            }
-        }
-    }
-    
-    repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-            credentials {
-                username = "lvtong199881"
-                password = token
-            }
-        }
-    }
-}
 
 kapt {
     arguments {
