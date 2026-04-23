@@ -325,7 +325,7 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher_round"
+                android:src="@drawable/ic_placeholder_avatar"
                 android:alpha="0.6"/>
 
             <TextView
