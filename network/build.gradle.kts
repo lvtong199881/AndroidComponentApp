@@ -51,16 +51,27 @@ dependencies {
 }
 
 // publishing 配置已在根项目统一管理
-// GitHub Packages 仓库配置通过根项目 publish.gradle.kts 管理
 
-kapt {
-    arguments {
-        arg("initCollectorPackage", "com.mohanlv.network")
-        arg("initCollectorModuleName", "network")
+
+
+val target = project.findProperty("target")?.toString() ?: "local"
+val tokenFile = System.getProperty("user.home") + "/.github_token"
+
+if (target == "github") {
+    (publishing as ExtensionAware).extensions.configure<PublishingExtension> {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+                val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+                credentials {
+                    username = "lvtong199881"
+                    password = token
+                }
+            }
+        }
     }
 }
 
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
-}
+
+// publishing 配置已迁移到根项目 publish.gradle.kts
