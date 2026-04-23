@@ -64,3 +64,27 @@ val tokenFile = System.getProperty("user.home") + "/.github_token"
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
 }
+
+// 发布配置
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.mohanlv"
+            artifactId = "user"
+            version = System.getProperty("componentVersion", "1.0.0")
+            artifact("$buildDir/outputs/aar/user-release.aar") {
+                extension = "aar"
+            }
+            pom {
+                name.set("user")
+                description.set("Android Component: user")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
+        }
+    }
+}
