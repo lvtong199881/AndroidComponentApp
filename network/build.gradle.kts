@@ -78,7 +78,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "network"
-            version = System.getProperty("componentVersion", "1.0.0")
+            val moduleVersion = project.findProperty("network.version")?.toString() ?: "1.0.0"
+version = moduleVersion
             artifact(file("build/outputs/aar/network-release.aar")) {
                 extension = "aar"
             }

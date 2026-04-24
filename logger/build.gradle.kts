@@ -41,7 +41,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "logger"
-            version = System.getProperty("componentVersion", "1.0.0")
+            val moduleVersion = project.findProperty("logger.version")?.toString() ?: "1.0.0"
+version = moduleVersion
             artifact(file("build/outputs/aar/logger-release.aar")) {
                 extension = "aar"
             }
