@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mohanlv.router"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

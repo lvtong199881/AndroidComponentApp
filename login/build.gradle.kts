@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mohanlv.login"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
