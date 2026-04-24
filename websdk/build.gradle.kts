@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mohanlv.websdk"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -64,8 +64,9 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "websdk"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact("$buildDir/outputs/aar/websdk-release.aar") {
+            val moduleVersion = project.findProperty("websdk.version")?.toString() ?: "1.0.0"
+version = moduleVersion
+            artifact(file("build/outputs/aar/websdk-release.aar")) {
                 extension = "aar"
             }
             pom {

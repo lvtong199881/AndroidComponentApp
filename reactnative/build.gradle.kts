@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mohanlv.reactnative"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -69,6 +69,36 @@ val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.mohanlv"
+            artifactId = "reactnative"
+            val moduleVersion = project.findProperty("reactnative.version")?.toString() ?: "1.0.0"
+version = moduleVersion
+            artifact(file("build/outputs/aar/reactnative-release.aar")) {
+                extension = "aar"
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "LocalMaven"
+            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            val tokenFile = System.getProperty("user.home") + "/.github_token"
+            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+            credentials {
+                username = "lvtong199881"
+                password = token
+            }
+        }
+    }
+}
 
 kapt {
     arguments {

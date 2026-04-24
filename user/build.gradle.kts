@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mohanlv.user"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -71,8 +71,9 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "user"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact("$buildDir/outputs/aar/user-release.aar") {
+            val moduleVersion = project.findProperty("user.version")?.toString() ?: "1.0.0"
+version = moduleVersion
+            artifact(file("build/outputs/aar/user-release.aar")) {
                 extension = "aar"
             }
             pom {
