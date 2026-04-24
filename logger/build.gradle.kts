@@ -36,6 +36,13 @@ dependencies {
     api(project(":startup"))
 }
 
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
+
+// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -46,23 +53,16 @@ version = moduleVersion
             artifact(file("build/outputs/aar/logger-release.aar")) {
                 extension = "aar"
             }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-            credentials {
-                username = "lvtong199881"
-                password = token
+            pom {
+                name.set("logger")
+                description.set("Android Component: logger")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
             }
         }
     }
-}
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
 }

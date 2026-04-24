@@ -68,21 +68,6 @@ dependencies {
 val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
-if (target == "github") {
-    (publishing as ExtensionAware).extensions.configure<PublishingExtension> {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-                val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-                credentials {
-                    username = "lvtong199881"
-                    password = token
-                }
-            }
-        }
-    }
-}
 
 publishing {
     publications {
@@ -127,4 +112,28 @@ kapt {
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
+}
+
+// 发布配置
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.mohanlv"
+            artifactId = "reactnative"
+            version = System.getProperty("componentVersion", "1.0.0")
+            artifact("$buildDir/outputs/aar/reactnative-release.aar") {
+                extension = "aar"
+            }
+            pom {
+                name.set("reactnative")
+                description.set("Android Component: reactnative")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
+        }
+    }
 }
