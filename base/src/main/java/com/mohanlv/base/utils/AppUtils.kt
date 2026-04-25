@@ -55,3 +55,5 @@ object AppUtils {
 // CI verification v11: retry on 409 conflict
 
 // CI verification v12: fix 409 retry with PIPESTATUS and grep detection
+
+// CI verification v13: use max-version python script across all API calls
