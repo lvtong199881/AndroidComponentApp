@@ -1,11 +1,17 @@
 package com.mohanlv.shortvideo
 
-import android.util.Log
+import com.mohanlv.logger.Logger
+
+private const val TAG = "ShortVideo"
+
+internal fun Any.log(message: String = "") {
+    Logger.i(TAG, "$message with $this")
+}
+
+internal fun logW(message: String) {
+    Logger.w(TAG, message)
+}
 
 internal fun logE(message: String, throwable: Throwable? = null) {
-    if (throwable != null) {
-        Log.e("ShortVideo", message, throwable)
-    } else {
-        Log.e("ShortVideo", message)
-    }
+    Logger.e(TAG, message, throwable)
 }
