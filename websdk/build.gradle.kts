@@ -38,6 +38,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.webkit:webkit:1.9.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("com.mohanlv:base:1.2.3")
     implementation("com.mohanlv:router:1.2.3")
 
