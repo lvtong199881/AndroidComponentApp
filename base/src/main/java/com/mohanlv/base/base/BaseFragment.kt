@@ -18,29 +18,34 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     private var _binding: VB? = null
     protected val binding: VB get() = _binding!!
-    
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = inflateBinding(inflater, container)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
         initData()
         initEvent()
     }
-    
+
     protected abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     protected open fun initView(savedInstanceState: Bundle?) {}
     protected open fun initData() {}
     protected open fun initEvent() {
         log("BaseFragment::initEvent")
     }
+
     protected open fun showLoading() {}
     protected open fun hideLoading() {}
     protected open fun showError(msg: String) {}
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
