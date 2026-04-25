@@ -208,9 +208,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add app/build.gradle.kts
-          git commit -m "chore: update components to v${VERSION}
-
-Updated modules: ${CHANGED_MODULES}"
+          git commit -m "chore: update components to v${VERSION}"
           git push
           
           echo "✓ ComponentHostApp updated"
