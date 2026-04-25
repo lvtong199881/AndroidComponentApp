@@ -29,6 +29,14 @@ jobs:
       - name: Get changed modules
         id: changed
         run: |
+          # 非 main 分支的 push 直接跳过
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "changed-modules=" >> $GITHUB_OUTPUT
+            echo "SKIP=true" >> $GITHUB_OUTPUT
+            echo "Not main branch, skipping"
+            exit 0
+          fi
+          
           # 获取相对于上一个 main commit 的变更文件
           CHANGED_FILES=$(git diff --name-only origin/main^..origin/main)
           echo "Changed files:"
