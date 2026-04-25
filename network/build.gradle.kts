@@ -34,14 +34,17 @@ dependencies {
     api("androidx.core:core-ktx:1.12.0")
     
     // Startup 框架
-    api(libs.startup)
+    api("com.mohanlv:startup:1.0.10")
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 日志模块
-    api(libs.logger)
+    api("com.mohanlv:logger:1.0.10")
     
     // Retrofit + OkHttp
-    api(libs.bundles.network-bundle)
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.squareup.retrofit2:converter-gson:2.9.0")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api("com.squareup.okhttp3:logging-interceptor:4.12.0")
     testImplementation("junit:junit:4.13.2")
 }
 

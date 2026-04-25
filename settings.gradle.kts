@@ -17,6 +17,17 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = java.io.File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
+            }
+        }
     }
 }
 

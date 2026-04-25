@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    api(libs.startup)
+    api("com.mohanlv:startup:1.0.10")
 }
 
 
