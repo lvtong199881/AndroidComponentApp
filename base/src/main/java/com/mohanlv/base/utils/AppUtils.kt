@@ -6,21 +6,21 @@ import android.app.Application
  * 应用工具类
  */
 object AppUtils {
-    
+
     private var application: Application? = null
-    
+
     fun init(app: Application) {
         application = app
     }
-    
+
     fun getApplication(): Application {
         return application ?: throw IllegalStateException("AppUtils not initialized")
     }
-    
+
     fun getContext() = getApplication().applicationContext
-    
+
     fun getPackageName(): String = getContext().packageName
-    
+
     fun getVersionName(): String {
         return try {
             val packageInfo = getContext().packageManager.getPackageInfo(getPackageName(), 0)
