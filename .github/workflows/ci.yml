@@ -1,0 +1,208 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout Components
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Get changed modules
+        id: changed
+        run: |
+          # 获取相对于上一个 main commit 的变更文件
+          CHANGED_FILES=$(git diff --name-only origin/main^..origin/main)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          MODULES=(
+            "startup"
+            "logger"
+            "router"
+            "network"
+            "base"
+            "login"
+            "reactnative"
+            "websdk"
+            "shortvideo"
+            "user"
+            "home"
+          )
+          
+          CHANGED_MODULES=""
+          for module in "${MODULES[@]}"; do
+            if echo "$CHANGED_FILES" | grep -q "^${module}/"; then
+              CHANGED_MODULES="${CHANGED_MODULES},${module}"
+            fi
+          done
+          
+          CHANGED_MODULES=${CHANGED_MODULES#,}
+          echo "changed-modules=${CHANGED_MODULES}" >> $GITHUB_OUTPUT
+          echo "has-changes=${CHANGED_MODULES:+true}" >> $GITHUB_OUTPUT
+
+      - name: Determine version
+        id: version
+        run: |
+          PREV_TAG=$(git tag --sort=-v:refname | grep '^v' | head -1 || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            VERSION="1.0.0"
+          else
+            BASE_VERSION=${PREV_TAG#v}
+            LAST_NUM=$(echo $BASE_VERSION | awk -F'.' '{print $3}')
+            NEW_LAST_NUM=$((LAST_NUM + 1))
+            VERSION=$(echo $BASE_VERSION | awk -F'.' -v n="$NEW_LAST_NUM" '{OFS="."; $3=n; print}')
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get commit log
+        id: commits
+        run: |
+          LOG=$(git log --oneline origin/main^..origin/main | sed 's/^/  - /')
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo "$LOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Build and publish changed modules
+        id: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CHANGED="${{ steps.changed.outputs.changed-modules }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          if [ -z "$CHANGED" ]; then
+            echo "No modules changed, skip publish"
+            echo "SKIP=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "SKIP=false" >> $GITHUB_OUTPUT
+          echo "========================================"
+          echo "Publishing modules: $CHANGED"
+          echo "Version: $VERSION"
+          echo "========================================"
+          
+          # 发布顺序（按依赖拓扑排序）
+          ORDER=(
+            "startup"
+            "logger"
+            "router"
+            "network"
+            "base"
+            "login"
+            "reactnative"
+            "websdk"
+            "shortvideo"
+            "user"
+            "home"
+          )
+          
+          IFS=',' read -ra CHANGED_ARRAY <<< "$CHANGED"
+          
+          for module in "${ORDER[@]}"; do
+            SHOULD_BUILD=0
+            for changed in "${CHANGED_ARRAY[@]}"; do
+              if [ "$changed" = "$module" ]; then
+                SHOULD_BUILD=1
+                break
+              fi
+            done
+            
+            if [ "$SHOULD_BUILD" = "0" ]; then
+              continue
+            fi
+            
+            echo ""
+            echo ">>> Building :${module}:assembleRelease"
+            ./gradlew :${module}:assembleRelease \
+              -P${module}.version=${VERSION} \
+              --no-daemon \
+              -q
+            
+            if [ $? -ne 0 ]; then
+              echo "✗ $module build failed"
+              exit 1
+            fi
+            
+            echo ">>> Publishing $module"
+            ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository \
+              -P${module}.version=${VERSION} \
+              --no-daemon \
+              -q
+            
+            if [ $? -eq 0 ]; then
+              echo "✓ $module published"
+            else
+              echo "✗ $module publish failed"
+              exit 1
+            fi
+          done
+
+      - name: Create GitHub Release
+        if: steps.build.outputs.SKIP != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## Changes
+            
+            ${{ steps.commits.outputs.log }}
+            
+            ## Modules Published
+            
+            ${{ steps.changed.outputs.changed-modules }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update ComponentHostApp
+        if: steps.build.outputs.SKIP != 'true'
+        run: |
+          CHANGED_MODULES="${{ steps.changed.outputs.changed-modules }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          echo "========================================"
+          echo "Updating ComponentHostApp to v${VERSION}"
+          echo "Changed modules: $CHANGED_MODULES"
+          echo "========================================"
+          
+          cd ..
+          git clone https://github.com/lvtong199881/ComponentHostApp.git
+          cd ComponentHostApp
+          git checkout main
+          
+          for module in $(echo "$CHANGED_MODULES" | tr ',' ' '); do
+            echo "Updating com.mohanlv:${module} to ${VERSION}"
+            sed -i.bak "s/com\.mohanlv:${module}:[0-9.]*/com.mohanlv:${module}:${VERSION}/g" app/build.gradle.kts
+          done
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts
+          git commit -m "chore: update components to v${VERSION}
+
+Updated modules: ${CHANGED_MODULES}"
+          git push
+          
+          echo "✓ ComponentHostApp updated"
