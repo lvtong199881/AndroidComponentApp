@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  * 短视频页面
  * 使用 ViewPager2 竖向滑动展示视频
  */
-@Route(path = RoutePath.SHORT_VIDEO, description = "短视频")
+@Route(path = "oneandroid://shortvideo/main", description = "短视频")
 class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
 
     private val videos = mutableListOf<Video>()

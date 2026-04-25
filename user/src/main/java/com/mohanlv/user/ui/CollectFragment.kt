@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 /**
  * 我的收藏页面
  */
-@Route(path = RoutePath.COLLECT_LIST, description = "我的收藏")
+@Route(path = "oneandroid://user/collect", description = "我的收藏")
 class CollectFragment : BaseFragment<FragmentCollectBinding>() {
 
     private val apiService = NetworkManager.createApi(ApiService::class.java)

@@ -37,14 +37,24 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation(project(":base"))
+    // 源码依赖
     implementation(project(":reactnative"))
     implementation(project(":websdk"))
     implementation(project(":shortvideo"))
 
+    // maven依赖
+    implementation("com.mohanlv:base:1.1.1")
+    implementation("com.mohanlv:network:1.1.1")
+    implementation("com.mohanlv:router:1.0.10")
+    // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.squareup.retrofit2:converter-gson:2.9.0")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api("com.google.code.gson:gson:2.10.1")
+
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
     testImplementation("junit:junit:4.13.2")
 }
 

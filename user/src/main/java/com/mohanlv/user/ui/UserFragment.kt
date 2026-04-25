@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
  * 个人中心页面
  * 显示用户信息和积分
  */
-@Route(path = RoutePath.USER, description = "个人中心")
+@Route(path = "oneandroid://home/user", description = "个人中心")
 class UserFragment : BaseFragment<FragmentUserCenterBinding>(), OnLoginStateChangedListener {
 
     private val apiService = NetworkManager.createApi(ApiService::class.java)

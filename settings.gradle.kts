@@ -33,10 +33,10 @@ dependencyResolutionManagement {
 
 // 组件模块（独立的 Gradle 项目）
 // 基础组件（已发布到 Maven，本地不再编译）
-// include(":startup")
-// include(":router")
-// include(":network")
-// include(":logger")
+include(":startup")
+include(":router")
+include(":network")
+include(":logger")
 include(":login")
 include(":home")
 include(":base")

@@ -52,7 +52,7 @@ dependencies {
     implementation("com.mohanlv:router:1.0.10")
     implementation("com.mohanlv:startup:1.0.10")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
     implementation("com.mohanlv:base:0.0.5")
     
     testImplementation("junit:junit:4.13.2")

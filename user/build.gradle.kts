@@ -40,10 +40,13 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation(project(":base"))
     implementation(project(":login"))
+    implementation("com.mohanlv:network:1.1.1")
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.google.code.gson:gson:2.10.1")
     
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
     testImplementation("junit:junit:4.13.2")
 }
 

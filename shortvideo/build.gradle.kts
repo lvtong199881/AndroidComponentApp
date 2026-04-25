@@ -39,14 +39,15 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation("com.mohanlv:base:0.0.5")
+    implementation("com.mohanlv:base:1.1.1")
     implementation("com.mohanlv:router:1.0.10")
-    implementation("com.mohanlv:network:1.0.1")
-    implementation("com.mohanlv:logger:1.0.10")
+    api("com.google.code.gson:gson:2.10.1")
+    implementation("com.mohanlv:network:1.1.1")
+    implementation("com.mohanlv:logger:1.1.1")
 
     // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
 
     // Retrofit for Pexels API
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

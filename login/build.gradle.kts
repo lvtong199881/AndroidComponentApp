@@ -42,14 +42,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.mohanlv:base:0.0.5")
-    implementation("com.mohanlv:network:1.0.1")
+    implementation("com.mohanlv:base:1.1.1")
+    implementation("com.mohanlv:network:1.1.1")
     implementation("com.mohanlv:router:1.0.10")
+    api("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
 
     kapt("com.mohanlv:init-annotator:0.0.6")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
 }
 
 val tokenFile = System.getProperty("user.home") + "/.github_token"
@@ -89,5 +90,7 @@ kapt {
     arguments {
         arg("initCollectorPackage", "com.mohanlv.login")
         arg("initCollectorModuleName", "login")
+        arg("routerCollectorPackage", "com.mohanlv.login")
+        arg("routerCollectorModuleName", "login")
     }
 }

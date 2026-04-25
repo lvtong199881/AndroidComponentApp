@@ -15,7 +15,7 @@ import com.mohanlv.login.model.LoginResult
 import com.mohanlv.login.vm.LoginState
 import com.mohanlv.login.vm.LoginViewModel
 
-@Route(path = RoutePath.LOGIN, description = "登录页面")
+@Route(path = "oneandroid://login/main", description = "登录页面")
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()

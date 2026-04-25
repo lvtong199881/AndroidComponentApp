@@ -42,7 +42,7 @@ dependencies {
     
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
 }
 
 kapt {

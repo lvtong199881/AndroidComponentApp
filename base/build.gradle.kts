@@ -46,15 +46,15 @@ dependencies {
     implementation("io.coil-kt:coil:2.5.0")
     
     // Startup 框架
-    api("com.mohanlv:startup:1.0.10")
+    api("com.mohanlv:startup:1.2.0")
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 日志模块
-    api("com.mohanlv:logger:1.0.10")
+    api("com.mohanlv:logger:1.2.0")
     
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
-    api("com.mohanlv:router:1.0.10")
-    api("com.mohanlv:network:1.0.1")
+    api("com.mohanlv:router:1.2.0")
+    api("com.mohanlv:network:1.2.0")
     
     testImplementation("junit:junit:4.13.2")
 }

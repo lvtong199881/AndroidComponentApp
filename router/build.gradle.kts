@@ -40,8 +40,7 @@ dependencies {
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 路由注解处理器
-    implementation("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    api("com.mohanlv:router-annotation:0.0.6")
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -91,8 +90,6 @@ kapt {
     arguments {
         arg("initCollectorPackage", "com.mohanlv.router")
         arg("initCollectorModuleName", "router")
-        arg("routerCollectorPackage", "com.mohanlv.router")
-        arg("routerCollectorModuleName", "router")
     }
 }
 

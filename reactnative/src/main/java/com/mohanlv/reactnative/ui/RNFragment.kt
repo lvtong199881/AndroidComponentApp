@@ -14,7 +14,7 @@ import com.mohanlv.router.annotation.Route
 /**
  * React Native 页面容器 Fragment
  */
-@Route(path = RoutePath.RN, description = "React Native 页面")
+@Route(path = "oneandroid://common/rn", description = "React Native 页面")
 class RNFragment : Fragment() {
 
     private var viewBinding: FragmentRnBinding? = null
