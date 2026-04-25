@@ -5,4 +5,11 @@
     <string name="short_video_empty">No videos available</string>
     <string name="share">Share</string>
     <string name="author_prefix">@%s</string>
+    <string name="default_time">00:00</string>
+    <string name="like_count">0</string>
+    <string name="comment_count">0</string>
+    <string name="share_desc">Share video</string>
+    <string name="comment_desc">View comments</string>
+    <string name="like_desc">Like video</string>
+    <string name="play_icon_desc">Play video</string>
 </resources>
