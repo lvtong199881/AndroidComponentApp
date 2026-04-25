@@ -90,19 +90,7 @@ jobs:
 
             # 将响应写入临时文件，避免 shell pipe 问题
             curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "$API_URL" > /tmp/api_response.json
-
-            LATEST_VERSION=$(python3 -c "
-import json
-try:
-    with open('/tmp/api_response.json') as f:
-        data = json.load(f)
-    if isinstance(data, list) and len(data) > 0:
-        print(data[0].get('name', ''))
-    else:
-        print('')
-except:
-    print('')
-" 2>/dev/null)
+            LATEST_VERSION=$(python3 -c "import json; data=json.load(open(\"/tmp/api_response.json\")); print(data[0].get('name','') if isinstance(data,list) and len(data)>0 else '')" 2>/dev/null || echo "")
 
             if [ -z "$LATEST_VERSION" ]; then
               NEW_VERSION="1.0.0"
