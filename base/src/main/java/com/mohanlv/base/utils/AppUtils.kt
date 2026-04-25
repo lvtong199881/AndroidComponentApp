@@ -47,3 +47,5 @@ object AppUtils {
 // CI verification v7: test inline except Python script
 
 // CI verification v8: simple Python parser without try-except
+
+// CI verification v9: handle both list and error dict responses
