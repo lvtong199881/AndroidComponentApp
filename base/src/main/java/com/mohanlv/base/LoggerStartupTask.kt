@@ -13,11 +13,11 @@ import com.mohanlv.startup.annotation.InitTask
  */
 @InitTask(key = "logger", priority = 100)
 class LoggerStartupTask(private val application: Application) : StartupTask {
-    
+
     override val name: String = "LoggerStartupTask"
-    
+
     override val priority: Int = 100  // 在 BaseStartupTask 之后执行
-    
+
     override fun create() {
         LoggerConfig.logDir = File(
             application.filesDir,
