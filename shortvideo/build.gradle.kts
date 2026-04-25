@@ -39,10 +39,10 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation(project(":base"))
-    implementation(project(":router"))
-    implementation(project(":network"))
-    implementation(project(":logger"))
+    implementation(libs.base)
+    implementation(libs.router)
+    implementation(libs.network)
+    implementation(libs.logger)
 
     // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")

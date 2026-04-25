@@ -34,19 +34,14 @@ dependencies {
     api("androidx.core:core-ktx:1.12.0")
     
     // Startup 框架
-    api(project(":startup"))
+    api(libs.startup)
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 日志模块
-    api(project(":logger"))
+    api(libs.logger)
     
     // Retrofit + OkHttp
-    api("com.squareup.retrofit2:retrofit:2.9.0")
-    api("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    api(libs.bundles.network-bundle)
     testImplementation("junit:junit:4.13.2")
 }
 

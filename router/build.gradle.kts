@@ -36,7 +36,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     
     // Startup 框架
-    implementation(project(":startup"))
+    implementation(libs.startup)
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 路由注解处理器

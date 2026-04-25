@@ -49,16 +49,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
     // 依赖 router（获取 @Route 注解）
-    implementation(project(":router"))
-    
-    // Startup 框架
-    implementation(project(":startup"))
-    kapt("com.mohanlv:init-annotator:0.0.6")
+    implementation(libs.router)
+    implementation(libs.startup)
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.6")
-    
-    // 依赖 base（BaseDialogFragment 等基础组件）
-    implementation(project(":base"))
+    implementation(libs.base)
     
     testImplementation("junit:junit:4.13.2")
 }

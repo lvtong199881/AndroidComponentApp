@@ -42,9 +42,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation(project(":base"))
-    implementation(project(":network"))
-    implementation(project(":router"))
+    implementation(libs.base)
+    implementation(libs.network)
+    implementation(libs.router)
     testImplementation("junit:junit:4.13.2")
 
     kapt("com.mohanlv:init-annotator:0.0.6")
