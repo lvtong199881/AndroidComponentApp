@@ -9,7 +9,7 @@ import coil.transform.RoundedCornersTransformation
  * 使用 Coil 加载图片
  */
 object ImageLoader {
-    
+
     /**
      * 加载网络图片
      */
@@ -20,7 +20,7 @@ object ImageLoader {
             error(android.R.drawable.ic_menu_gallery)
         }
     }
-    
+
     /**
      * 加载圆角图片
      */
