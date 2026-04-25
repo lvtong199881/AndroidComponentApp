@@ -49,3 +49,5 @@ object AppUtils {
 // CI verification v8: simple Python parser without try-except
 
 // CI verification v9: handle both list and error dict responses
+
+// CI verification v10: move GITHUB_TOKEN to job env level
