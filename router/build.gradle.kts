@@ -46,13 +46,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
-// publishing 配置已在根项目统一管理
-
-
-
-val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 
 publishing {
     publications {
@@ -60,9 +54,19 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "router"
             val moduleVersion = project.findProperty("router.version")?.toString() ?: "1.0.0"
-version = moduleVersion
-            artifact(file("build/outputs/aar/router-release.aar")) {
+            version = moduleVersion
+            artifact("$buildDir/outputs/aar/router-release.aar") {
                 extension = "aar"
+            }
+            pom {
+                name.set("router")
+                description.set("Android Component: router")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
             }
         }
     }
@@ -75,11 +79,9 @@ version = moduleVersion
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
             credentials {
                 username = "lvtong199881"
-                password = token
+                password = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
             }
         }
     }
@@ -97,28 +99,4 @@ kapt {
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "router"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact("$buildDir/outputs/aar/router-release.aar") {
-                extension = "aar"
-            }
-            pom {
-                name.set("router")
-                description.set("Android Component: router")
-                licenses {
-                    license {
-                        name.set("MIT")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-            }
-        }
-    }
 }

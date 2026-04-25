@@ -52,14 +52,10 @@ dependencies {
     kapt("com.mohanlv:router-annotator:0.0.6")
 }
 
-
 // publishing 配置已在根项目统一管理
-
-
 
 val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 
 publishing {
     publications {
@@ -67,7 +63,7 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "login"
             val moduleVersion = project.findProperty("login.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            version = moduleVersion
             artifact(file("build/outputs/aar/login-release.aar")) {
                 extension = "aar"
             }
@@ -104,28 +100,4 @@ kapt {
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "login"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact("$buildDir/outputs/aar/login-release.aar") {
-                extension = "aar"
-            }
-            pom {
-                name.set("login")
-                description.set("Android Component: login")
-                licenses {
-                    license {
-                        name.set("MIT")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-            }
-        }
-    }
 }

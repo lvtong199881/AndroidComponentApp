@@ -54,29 +54,16 @@ kapt {
     }
 }
 
-// publishing 配置已在根项目统一管理
-
-
-
-val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
-
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "home"
             val moduleVersion = project.findProperty("home.version")?.toString() ?: "1.0.0"
-version = moduleVersion
-            artifact(file("build/outputs/aar/home-release.aar")) {
+            version = moduleVersion
+            artifact("$buildDir/outputs/aar/home-release.aar") {
                 extension = "aar"
             }
             pom {
@@ -91,4 +78,24 @@ version = moduleVersion
             }
         }
     }
+    
+    repositories {
+        maven {
+            name = "LocalMaven"
+            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+            }
+        }
+    }
+}
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
 }
