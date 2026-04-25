@@ -37,11 +37,8 @@ jobs:
             exit 0
           fi
           
-          # 获取相对于上一个 main commit 的变更文件
-          CHANGED_FILES=$(git diff --name-only origin/main^..origin/main)
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-          
+          # 找出变更的 module（通过 git log 对比 merge 前后的 commit）
+          # merge commit 的第二父节点是 develop 分支的 HEAD
           MODULES=(
             "startup"
             "logger"
@@ -55,6 +52,21 @@ jobs:
             "user"
             "home"
           )
+          
+          # 获取 merge commit 的第二父节点（develop 分支的 commit）
+          SECOND_PARENT=$(git rev-parse main^2 2>/dev/null || echo "")
+          echo "Second parent: $SECOND_PARENT"
+          
+          if [ -n "$SECOND_PARENT" ]; then
+            # 有 merge commit，找出 develop 分支相对 main^ 的变更文件
+            CHANGED_FILES=$(git diff --name-only main^..main^2)
+          else
+            # 没有 merge commit（普通 push），直接用 diff
+            CHANGED_FILES=$(git diff --name-only main^..main)
+          fi
+          
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
           
           CHANGED_MODULES=""
           for module in "${MODULES[@]}"; do
