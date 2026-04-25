@@ -53,3 +53,5 @@ object AppUtils {
 // CI verification v10: move GITHUB_TOKEN to job env level
 
 // CI verification v11: retry on 409 conflict
+
+// CI verification v12: fix 409 retry with PIPESTATUS and grep detection
