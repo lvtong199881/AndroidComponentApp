@@ -35,3 +35,5 @@ object AppUtils {
 // CI verification: test per-module versioning
 
 // CI verification v2: test file-based API response parsing
+
+// CI verification v3: test squash merge commit detection
