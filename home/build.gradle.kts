@@ -37,14 +37,27 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation(project(":base"))
+    // 源码依赖
     implementation(project(":reactnative"))
     implementation(project(":websdk"))
-    
+    implementation(project(":shortvideo"))
+
+    // maven依赖
+    implementation("com.mohanlv:base:1.2.3")
+    implementation("com.mohanlv:network:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
+    implementation("com.mohanlv:logger:1.2.3")
+    // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.squareup.retrofit2:converter-gson:2.9.0")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api("com.google.code.gson:gson:2.10.1")
+
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
     testImplementation("junit:junit:4.13.2")
+    implementation("io.coil-kt:coil:2.5.0")
 }
 
 kapt {
@@ -54,29 +67,16 @@ kapt {
     }
 }
 
-// publishing 配置已在根项目统一管理
-
-
-
-val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
 
-
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "home"
             val moduleVersion = project.findProperty("home.version")?.toString() ?: "1.0.0"
-version = moduleVersion
-            artifact(file("build/outputs/aar/home-release.aar")) {
+            version = moduleVersion
+            artifact("$buildDir/outputs/aar/home-release.aar") {
                 extension = "aar"
             }
             pom {
@@ -91,4 +91,20 @@ version = moduleVersion
             }
         }
     }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+            }
+        }
+    }
+}
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
 }

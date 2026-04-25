@@ -18,6 +18,7 @@ class ArticleAdapter(
 
     class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.tvTitle)
+
         val authorText: TextView = itemView.findViewById(R.id.tvAuthor)
         val dateText: TextView = itemView.findViewById(R.id.tvDate)
     }

@@ -33,6 +33,9 @@ object RoutePath {
     
     // React Native
     const val RN = "oneandroid://common/rn"
+
+    // 短视频
+    const val SHORT_VIDEO = "oneandroid://shortvideo/main"
     
     /**
      * 从完整 URL 中提取路径

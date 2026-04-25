@@ -43,15 +43,15 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.databinding:viewbinding:9.1.0")
-    implementation("io.coil-kt:coil:2.5.0")
+    api("io.coil-kt:coil:2.5.0")
     
     // Startup 框架
     api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
-    
+
     // 日志模块
     api(project(":logger"))
-    
+
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
     api(project(":router"))
     api(project(":network"))
@@ -66,7 +66,7 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "base"
             val moduleVersion = project.findProperty("base.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            version = moduleVersion
             artifact(file("build/outputs/aar/base-release.aar")) {
                 extension = "aar"
             }
@@ -79,6 +79,23 @@ version = moduleVersion
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                listOf("startup", "logger", "router", "network").forEach { name ->
+                    deps.appendNode("dependency").apply {
+                        appendNode("groupId", "com.mohanlv")
+                        appendNode("artifactId", name)
+                        appendNode("version", project.findProperty("${name}.version"))
+                        appendNode("scope", "compile")
+                    }
+                }
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "io.coil-kt")
+                    appendNode("artifactId", "coil")
+                    appendNode("version", "2.5.0")
+                    appendNode("scope", "compile")
                 }
             }
         }

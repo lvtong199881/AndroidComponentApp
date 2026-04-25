@@ -48,11 +48,12 @@ object RouterManager {
      * 加载所有 RouteCollector 实现类并注册路由
      */
     private fun loadRouteCollectors() {
-        val serviceLoader = java.util.ServiceLoader.load(RouteCollector::class.java)
+        // 使用 RouterManager 的 classloader，避免 includeBuild 模式下的 classloader 隔离问题
+        val serviceLoader = java.util.ServiceLoader.load(RouteCollector::class.java, RouterManager::class.java.classLoader)
         for (collector in serviceLoader) {
             for ((path, className) in collector.getRoutes()) {
                 try {
-                    val clazz = Class.forName(className).asSubclass(Fragment::class.java)
+                    val clazz = Class.forName(className, true, RouterManager::class.java.classLoader).asSubclass(Fragment::class.java)
                     registerInternal(path, clazz)
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to register route: $path -> $className", e)

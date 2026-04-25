@@ -12,7 +12,7 @@ import com.mohanlv.websdk.databinding.FragmentWebBinding
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
 
-@Route(path = RoutePath.WEB_VIEW, description = "网页")
+@Route(path = "oneandroid://common/webview", description = "网页")
 class WebFragment : BaseFragment<FragmentWebBinding>() {
 
     companion object {

@@ -35,6 +35,7 @@ dependencies {
     
     // Startup 框架
     api(project(":startup"))
+    api("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 日志模块
@@ -43,10 +44,10 @@ dependencies {
     // Retrofit + OkHttp
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    api("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
 }
 
@@ -69,6 +70,37 @@ version = moduleVersion
                     license {
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                listOf(
+                    "startup" to project.findProperty("startup.version"),
+                    "logger" to project.findProperty("logger.version")
+                ).forEach { (artifact, version) ->
+                    deps.appendNode("dependency").apply {
+                        appendNode("groupId", "com.mohanlv")
+                        appendNode("artifactId", artifact)
+                        appendNode("version", version)
+                        appendNode("scope", "compile")
+                    }
+                }
+                // External compile dependencies (from mavenCentral/Google)
+                listOf(
+                    "com.squareup.retrofit2:retrofit:2.9.0",
+                    "com.squareup.retrofit2:converter-gson:2.9.0",
+                    "com.squareup.okhttp3:okhttp:4.12.0",
+                    "com.squareup.okhttp3:logging-interceptor:4.12.0",
+                    "com.google.code.gson:gson:2.10.1",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+                ).forEach { coord ->
+                    val parts = coord.split(":")
+                    deps.appendNode("dependency").apply {
+                        appendNode("groupId", parts[0])
+                        appendNode("artifactId", parts[1])
+                        appendNode("version", parts[2])
+                        appendNode("scope", "compile")
                     }
                 }
             }

@@ -26,7 +26,7 @@ import java.util.TimerTask
 /**
  * 首页
  */
-@Route(path = RoutePath.HOME, description = "首页")
+@Route(path = "oneandroid://home/main", description = "首页")
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val apiService = NetworkManager.createApi(ApiService::class.java)
@@ -49,6 +49,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         super.initView(savedInstanceState)
         setupRecyclerView()
         setupSwipeRefresh()
+        setupShortVideoEntrance()
+    }
+
+    private fun setupShortVideoEntrance() {
+        binding.cardShortVideo.setOnClickListener {
+            RouterManager.navigate("oneandroid://shortvideo/main")
+        }
     }
 
     override fun initData() {
