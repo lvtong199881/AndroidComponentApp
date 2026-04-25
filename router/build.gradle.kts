@@ -39,8 +39,8 @@ dependencies {
     api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
     
-    // 路由注解处理器
-    api("com.mohanlv:router-annotation:0.0.6")
+    // 路由注解处理器（KAPT）
+    kapt("com.mohanlv:router-annotator:0.0.6")
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -80,10 +80,6 @@ publishing {
     }
     
     repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")

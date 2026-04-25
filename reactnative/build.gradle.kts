@@ -49,7 +49,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
     // 依赖 router（获取 @Route 注解）
-    implementation("com.mohanlv:router:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
     implementation("com.mohanlv:startup:1.2.3")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.5")
@@ -85,10 +85,6 @@ publishing {
     }
     
     repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")

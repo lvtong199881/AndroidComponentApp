@@ -45,7 +45,7 @@ dependencies {
     // maven依赖
     implementation("com.mohanlv:base:1.2.3")
     implementation("com.mohanlv:network:1.2.3")
-    implementation("com.mohanlv:router:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
     implementation("com.mohanlv:logger:1.2.3")
     // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
     api("com.squareup.retrofit2:retrofit:2.9.0")
@@ -92,10 +92,6 @@ publishing {
     }
     
     repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")

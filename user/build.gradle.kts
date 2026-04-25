@@ -41,7 +41,7 @@ dependencies {
     implementation("com.mohanlv:base:1.2.3")
     implementation(project(":login"))
     implementation("com.mohanlv:network:1.2.3")
-    implementation("com.mohanlv:router:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
     implementation("com.mohanlv:logger:1.2.3")
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.google.code.gson:gson:2.10.1")

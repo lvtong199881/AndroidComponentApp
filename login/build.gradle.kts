@@ -44,7 +44,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.mohanlv:base:1.2.3")
     implementation("com.mohanlv:network:1.2.3")
-    implementation("com.mohanlv:router:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
     implementation("com.mohanlv:startup:1.2.3")
     implementation("com.mohanlv:logger:1.2.3")
     api("com.google.code.gson:gson:2.10.1")
@@ -71,10 +71,6 @@ publishing {
     }
     
     repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
