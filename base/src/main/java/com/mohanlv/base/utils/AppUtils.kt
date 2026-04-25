@@ -45,3 +45,5 @@ object AppUtils {
 // CI verification v6: test compact base64 Python script
 
 // CI verification v7: test inline except Python script
+
+// CI verification v8: simple Python parser without try-except
