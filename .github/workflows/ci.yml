@@ -152,12 +152,31 @@ jobs:
 
             echo ">>> Publishing $module v${VERSION}"
             ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${VERSION} --no-daemon -q
-
-            if [ $? -eq 0 ]; then
-              echo "✓ $module v${VERSION} published"
+            
+            if [ $? -ne 0 ]; then
+              # 如果 409，检查是否是因为版本已存在，如果是则获取实际最新版本号后重新发布
+              echo "!! Publish failed, checking if version conflict..."
+              ACTUAL_LATEST=$(python3 /tmp/get_version.py /tmp/api_response.json 2>/dev/null || echo "")
+              if [ -n "$ACTUAL_LATEST" ] && [ "$ACTUAL_LATEST" != "$VERSION" ]; then
+                echo "!! Detected version conflict. Latest actual version is $ACTUAL_LATEST"
+                LAST_NUM=$(echo $ACTUAL_LATEST | awk -F'.' '{print $3}')
+                RETRY_VERSION=$(echo $ACTUAL_LATEST | awk -F'.' -v n="$((LAST_NUM + 1))" '{OFS="."; $3=n; print}')
+                echo ">>> Retrying with version $RETRY_VERSION"
+                ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${RETRY_VERSION} --no-daemon -q
+                if [ $? -eq 0 ]; then
+                  echo "✓ $module v${RETRY_VERSION} published (retry successful)"
+                  # 更新 BUILD_VERSIONS 中的版本号
+                  BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${RETRY_VERSION}/")
+                else
+                  echo "✗ $module publish retry failed"
+                  exit 1
+                fi
+              else
+                echo "✗ $module publish failed"
+                exit 1
+              fi
             else
-              echo "✗ $module publish failed"
-              exit 1
+              echo "✓ $module v${VERSION} published"
             fi
           done
 

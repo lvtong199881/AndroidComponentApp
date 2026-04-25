@@ -51,3 +51,5 @@ object AppUtils {
 // CI verification v9: handle both list and error dict responses
 
 // CI verification v10: move GITHUB_TOKEN to job env level
+
+// CI verification v11: retry on 409 conflict
