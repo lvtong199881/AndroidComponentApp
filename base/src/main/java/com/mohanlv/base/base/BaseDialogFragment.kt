@@ -60,8 +60,12 @@ abstract class BaseDialogFragment : DialogFragment() {
                     setGravity(Gravity.CENTER)
                     setDimAmount(0.4f)
                 }
+
                 Style.POPUP -> {
-                    setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+                    setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT
+                    )
                     setGravity(Gravity.BOTTOM)
                     setDimAmount(0.5f)
                 }
@@ -77,7 +81,12 @@ abstract class BaseDialogFragment : DialogFragment() {
         // 应用进入动画
         if (animated) {
             dialog?.window?.decorView?.let { view ->
-                view.startAnimation(AnimationUtils.loadAnimation(requireContext(), getEnterAnimRes()))
+                view.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        requireContext(),
+                        getEnterAnimRes()
+                    )
+                )
             }
         }
     }
@@ -102,11 +111,13 @@ abstract class BaseDialogFragment : DialogFragment() {
         if (animated) {
             dialog?.window?.decorView?.let { view ->
                 val exitAnim = AnimationUtils.loadAnimation(requireContext(), getExitAnimRes())
-                exitAnim.setAnimationListener(object : android.view.animation.Animation.AnimationListener {
+                exitAnim.setAnimationListener(object :
+                    android.view.animation.Animation.AnimationListener {
                     override fun onAnimationStart(animation: android.view.animation.Animation?) {}
                     override fun onAnimationEnd(animation: android.view.animation.Animation?) {
                         dismiss()
                     }
+
                     override fun onAnimationRepeat(animation: android.view.animation.Animation?) {}
                 })
                 view.startAnimation(exitAnim)
@@ -120,11 +131,13 @@ abstract class BaseDialogFragment : DialogFragment() {
         if (animated && isAdded && dialog?.window?.decorView != null) {
             dialog?.window?.decorView?.let { view ->
                 val exitAnim = AnimationUtils.loadAnimation(requireContext(), getExitAnimRes())
-                exitAnim.setAnimationListener(object : android.view.animation.Animation.AnimationListener {
+                exitAnim.setAnimationListener(object :
+                    android.view.animation.Animation.AnimationListener {
                     override fun onAnimationStart(animation: android.view.animation.Animation?) {}
                     override fun onAnimationEnd(animation: android.view.animation.Animation?) {
                         super@BaseDialogFragment.dismiss()
                     }
+
                     override fun onAnimationRepeat(animation: android.view.animation.Animation?) {}
                 })
                 view.startAnimation(exitAnim)
