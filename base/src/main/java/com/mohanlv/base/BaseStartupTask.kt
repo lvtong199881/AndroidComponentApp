@@ -10,11 +10,11 @@ import com.mohanlv.base.utils.AppUtils
  */
 @InitTask(key = "base", priority = 0)
 class BaseStartupTask(private val application: Application) : StartupTask {
-    
+
     override val name: String = "BaseStartupTask"
-    
+
     override val priority: Int = 0  // 最先执行
-    
+
     override fun create() {
         AppUtils.init(application)
     }
