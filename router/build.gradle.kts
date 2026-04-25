@@ -36,7 +36,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     
     // Startup 框架
-    api("com.mohanlv:startup:1.2.0")
+    api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 路由注解处理器
@@ -65,6 +65,15 @@ publishing {
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "com.mohanlv")
+                    appendNode("artifactId", "startup")
+                    appendNode("version", project.findProperty("startup.version"))
+                    appendNode("scope", "compile")
                 }
             }
         }

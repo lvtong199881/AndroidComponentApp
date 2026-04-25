@@ -46,15 +46,15 @@ dependencies {
     implementation("io.coil-kt:coil:2.5.0")
     
     // Startup 框架
-    api("com.mohanlv:startup:1.2.0")
+    api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
-    
+
     // 日志模块
-    api("com.mohanlv:logger:1.2.0")
-    
+    api(project(":logger"))
+
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
-    api("com.mohanlv:router:1.2.2")
-    api("com.mohanlv:network:1.2.0")
+    api(project(":router"))
+    api(project(":network"))
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -78,6 +78,17 @@ publishing {
                     license {
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                listOf("startup", "logger", "router", "network").forEach { name ->
+                    deps.appendNode("dependency").apply {
+                        appendNode("groupId", "com.mohanlv")
+                        appendNode("artifactId", name)
+                        appendNode("version", project.findProperty("${name}.version"))
+                        appendNode("scope", "compile")
                     }
                 }
             }

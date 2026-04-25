@@ -1,4 +1,4 @@
 // version.gradle.kts - 组件版本配置
 ext {
-    set("componentVersion", "1.2.2")
+    set("componentVersion", "1.2.3")
 }

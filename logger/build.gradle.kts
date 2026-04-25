@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    api("com.mohanlv:startup:1.0.10")
+    api(project(":startup"))
 }
 
 
@@ -61,6 +61,15 @@ version = moduleVersion
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "com.mohanlv")
+                    appendNode("artifactId", "startup")
+                    appendNode("version", project.findProperty("startup.version") ?: "1.2.3")
+                    appendNode("scope", "compile")
                 }
             }
         }
