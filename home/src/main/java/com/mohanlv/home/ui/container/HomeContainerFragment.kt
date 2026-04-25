@@ -11,7 +11,7 @@ import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
 
-@Route(path = RoutePath.HOME_CONTAINER, description = "首页容器")
+@Route(path = "oneandroid://home/container", description = "首页容器")
 class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
 
     private val fragments = mutableMapOf<String, Fragment>()

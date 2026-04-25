@@ -36,23 +36,16 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     
     // Startup 框架
-    implementation(project(":startup"))
+    api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
     
-    // 路由注解处理器
-    implementation("com.mohanlv:router-annotation:0.0.6")
+    // 路由注解处理器（KAPT）
     kapt("com.mohanlv:router-annotator:0.0.6")
     
     testImplementation("junit:junit:4.13.2")
 }
 
-// publishing 配置已在根项目统一管理
-
-
-
-val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 
 publishing {
     publications {
@@ -60,52 +53,7 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "router"
             val moduleVersion = project.findProperty("router.version")?.toString() ?: "1.0.0"
-version = moduleVersion
-            artifact(file("build/outputs/aar/router-release.aar")) {
-                extension = "aar"
-            }
-        }
-    }
-    
-    repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
-            credentials {
-                username = "lvtong199881"
-                password = token
-            }
-        }
-    }
-}
-
-kapt {
-    arguments {
-        arg("initCollectorPackage", "com.mohanlv.router")
-        arg("initCollectorModuleName", "router")
-        arg("routerCollectorPackage", "com.mohanlv.router")
-        arg("routerCollectorModuleName", "router")
-    }
-}
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "router"
-            version = System.getProperty("componentVersion", "1.0.0")
+            version = moduleVersion
             artifact("$buildDir/outputs/aar/router-release.aar") {
                 extension = "aar"
             }
@@ -119,6 +67,38 @@ publishing {
                     }
                 }
             }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "com.mohanlv")
+                    appendNode("artifactId", "startup")
+                    appendNode("version", project.findProperty("startup.version"))
+                    appendNode("scope", "compile")
+                }
+            }
         }
     }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+            }
+        }
+    }
+}
+
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.router")
+        arg("initCollectorModuleName", "router")
+    }
+}
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
 }

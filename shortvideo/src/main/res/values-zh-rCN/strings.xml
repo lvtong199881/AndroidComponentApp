@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="short_video">短视频</string>
+    <string name="short_video_desc">观看热门视频</string>
+    <string name="short_video_empty">暂无视频</string>
+    <string name="share">分享</string>
+    <string name="author_prefix">@%s</string>
+    <string name="default_time">00:00</string>
+    <string name="like_count">0</string>
+    <string name="comment_count">0</string>
+    <string name="share_desc">分享视频</string>
+    <string name="comment_desc">查看评论</string>
+    <string name="like_desc">点赞视频</string>
+    <string name="play_icon_desc">播放视频</string>
+</resources>

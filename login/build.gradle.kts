@@ -42,24 +42,20 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation(project(":base"))
-    implementation(project(":network"))
-    implementation(project(":router"))
+    implementation("com.mohanlv:base:1.2.3")
+    implementation("com.mohanlv:network:1.2.3")
+    implementation("com.mohanlv:router:1.2.4")
+    implementation("com.mohanlv:startup:1.2.3")
+    implementation("com.mohanlv:logger:1.2.3")
+    api("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
 
     kapt("com.mohanlv:init-annotator:0.0.6")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.6")
+    kapt("com.mohanlv:router-annotator:0.0.5")
 }
 
-
-// publishing 配置已在根项目统一管理
-
-
-
-val target = project.findProperty("target")?.toString() ?: "local"
 val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 
 publishing {
     publications {
@@ -67,7 +63,7 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "login"
             val moduleVersion = project.findProperty("login.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            version = moduleVersion
             artifact(file("build/outputs/aar/login-release.aar")) {
                 extension = "aar"
             }
@@ -75,10 +71,6 @@ version = moduleVersion
     }
     
     repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri(System.getProperty("user.home") + "/.m2/repository/releases")
-        }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
@@ -98,34 +90,5 @@ kapt {
         arg("initCollectorModuleName", "login")
         arg("routerCollectorPackage", "com.mohanlv.login")
         arg("routerCollectorModuleName", "login")
-    }
-}
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
-}
-
-// 发布配置
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.mohanlv"
-            artifactId = "login"
-            version = System.getProperty("componentVersion", "1.0.0")
-            artifact("$buildDir/outputs/aar/login-release.aar") {
-                extension = "aar"
-            }
-            pom {
-                name.set("login")
-                description.set("Android Component: login")
-                licenses {
-                    license {
-                        name.set("MIT")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-            }
-        }
     }
 }

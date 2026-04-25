@@ -63,6 +63,15 @@ version = moduleVersion
                     }
                 }
             }
+            pom.withXml {
+                val deps = asNode().appendNode("dependencies")
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "com.mohanlv")
+                    appendNode("artifactId", "startup")
+                    appendNode("version", project.findProperty("startup.version") ?: "1.2.3")
+                    appendNode("scope", "compile")
+                }
+            }
         }
     }
 }

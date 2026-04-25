@@ -18,15 +18,6 @@ subprojects {
                             password = token
                         }
                     }
-                    maven {
-                        name = "LocalMaven"
-                        val repoUrl = if (project.version.toString().endsWith("SNAPSHOT")) {
-                            "${System.getProperty("user.home")}/.m2/repository/snapshots"
-                        } else {
-                            "${System.getProperty("user.home")}/.m2/repository/releases"
-                        }
-                        url = uri(repoUrl)
-                    }
                 }
             }
         }
