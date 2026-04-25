@@ -49,11 +49,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
     // 依赖 router（获取 @Route 注解）
-    implementation(libs.router)
-    implementation(libs.startup)
+    implementation("com.mohanlv:router:1.0.10")
+    implementation("com.mohanlv:startup:1.0.10")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.6")
-    implementation(libs.base)
+    implementation("com.mohanlv:base:0.0.5")
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -101,14 +101,7 @@ publishing {
 
 kapt {
     arguments {
-        arg("initCollectorPackage", "com.mohanlv.reactnative")
-        arg("initCollectorModuleName", "reactnative")
         arg("routerCollectorPackage", "com.mohanlv.reactnative")
         arg("routerCollectorModuleName", "reactnative")
     }
-}
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
 }

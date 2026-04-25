@@ -39,10 +39,10 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation(libs.base)
-    implementation(libs.router)
-    implementation(libs.network)
-    implementation(libs.logger)
+    implementation("com.mohanlv:base:0.0.5")
+    implementation("com.mohanlv:router:1.0.10")
+    implementation("com.mohanlv:network:1.0.1")
+    implementation("com.mohanlv:logger:1.0.10")
 
     // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")
@@ -102,9 +102,4 @@ publishing {
             }
         }
     }
-}
-
-// 显式声明发布任务依赖 assembleRelease
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
 }

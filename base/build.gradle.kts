@@ -46,15 +46,15 @@ dependencies {
     implementation("io.coil-kt:coil:2.5.0")
     
     // Startup 框架
-    api(libs.startup)
+    api("com.mohanlv:startup:1.0.10")
     kapt("com.mohanlv:init-annotator:0.0.6")
     
     // 日志模块
-    api(libs.logger)
+    api("com.mohanlv:logger:1.0.10")
     
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
-    api(libs.router)
-    api(libs.network)
+    api("com.mohanlv:router:1.0.10")
+    api("com.mohanlv:network:1.0.1")
     
     testImplementation("junit:junit:4.13.2")
 }
@@ -66,7 +66,7 @@ publishing {
             groupId = "com.mohanlv"
             artifactId = "base"
             val moduleVersion = project.findProperty("base.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            version = moduleVersion
             artifact(file("build/outputs/aar/base-release.aar")) {
                 extension = "aar"
             }
