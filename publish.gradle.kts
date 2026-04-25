@@ -11,11 +11,9 @@ subprojects {
                     maven {
                         name = "GitHubPackages"
                         url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-                        val tokenFile = System.getProperty("user.home") + "/.github_token"
-                        val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
                         credentials {
                             username = "lvtong199881"
-                            password = token
+                            password = System.getenv("GITHUB_TOKEN") ?: ""
                         }
                     }
                 }
