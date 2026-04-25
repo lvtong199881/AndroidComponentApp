@@ -38,8 +38,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.webkit:webkit:1.9.0")
-    implementation(project(":base"))
-    
+    implementation("com.mohanlv:base:1.1.1")
+    implementation("com.mohanlv:router:1.0.10")
+
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.5")

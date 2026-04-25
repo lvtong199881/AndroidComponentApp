@@ -46,6 +46,7 @@ dependencies {
     implementation("com.mohanlv:base:1.1.1")
     implementation("com.mohanlv:network:1.1.1")
     implementation("com.mohanlv:router:1.0.10")
+    implementation("com.mohanlv:logger:1.0.10")
     // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")

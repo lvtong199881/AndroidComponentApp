@@ -53,7 +53,7 @@ dependencies {
     api("com.mohanlv:logger:1.2.0")
     
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
-    api("com.mohanlv:router:1.2.0")
+    api("com.mohanlv:router:1.2.2")
     api("com.mohanlv:network:1.2.0")
     
     testImplementation("junit:junit:4.13.2")

@@ -49,11 +49,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
     // 依赖 router（获取 @Route 注解）
-    implementation("com.mohanlv:router:1.0.10")
-    implementation("com.mohanlv:startup:1.0.10")
+    implementation("com.mohanlv:router:1.2.2")
+    implementation("com.mohanlv:startup:1.2.0")
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.5")
-    implementation("com.mohanlv:base:0.0.5")
+    implementation("com.mohanlv:base:1.1.1")
+    implementation("com.mohanlv:logger:1.2.0")
     
     testImplementation("junit:junit:4.13.2")
 }
