@@ -49,6 +49,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         super.initView(savedInstanceState)
         setupRecyclerView()
         setupSwipeRefresh()
+        setupShortVideoEntrance()
+    }
+
+    private fun setupShortVideoEntrance() {
+        binding.cardShortVideo.setOnClickListener {
+            RouterManager.navigate(RoutePath.SHORT_VIDEO)
+        }
     }
 
     override fun initData() {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="short_video">Short Video</string>
+    <string name="short_video_desc">Watch trending videos</string>
+    <string name="short_video_empty">No videos available</string>
+    <string name="share">Share</string>
+    <string name="author_prefix">@%s</string>
+</resources>

@@ -31,5 +31,6 @@ include(":user")
 include(":reactnative")
 include(":logger")
 include(":websdk")
+include(":shortvideo")
 
 rootProject.name = "Components"

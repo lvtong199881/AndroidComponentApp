@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mohanlv.home"
+    namespace = "com.mohanlv.shortvideo"
     compileSdk = 35
 
     defaultConfig {
@@ -21,12 +21,12 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
@@ -36,22 +36,30 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation(project(":base"))
-    implementation(project(":reactnative"))
-    implementation(project(":websdk"))
-    implementation(project(":shortvideo"))
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    // 路由注解
+    implementation(project(":base"))
+    implementation(project(":router"))
+    implementation(project(":network"))
+    implementation(project(":logger"))
+
+    // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.6")
+
+    // Retrofit for Pexels API
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
     testImplementation("junit:junit:4.13.2")
 }
 
 kapt {
     arguments {
-        arg("routerCollectorPackage", "com.mohanlv.home")
-        arg("routerCollectorModuleName", "home")
+        arg("routerCollectorPackage", "com.mohanlv.shortvideo")
+        arg("routerCollectorModuleName", "shortvideo")
     }
 }
 
@@ -61,15 +69,15 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
-            artifactId = "home"
-            val moduleVersion = project.findProperty("home.version")?.toString() ?: "1.0.0"
+            artifactId = "shortvideo"
+            val moduleVersion = project.findProperty("shortvideo.version")?.toString() ?: "1.0.0"
             version = moduleVersion
-            artifact("$buildDir/outputs/aar/home-release.aar") {
+            artifact("$buildDir/outputs/aar/shortvideo-release.aar") {
                 extension = "aar"
             }
             pom {
-                name.set("home")
-                description.set("Android Component: home")
+                name.set("shortvideo")
+                description.set("Android Component: shortvideo")
                 licenses {
                     license {
                         name.set("MIT")
@@ -79,7 +87,7 @@ publishing {
             }
         }
     }
-    
+
     repositories {
         maven {
             name = "LocalMaven"

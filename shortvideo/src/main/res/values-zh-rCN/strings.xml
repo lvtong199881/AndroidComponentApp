@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="short_video">短视频</string>
+    <string name="short_video_desc">观看热门视频</string>
+    <string name="short_video_empty">暂无视频</string>
+    <string name="share">分享</string>
+    <string name="author_prefix">@%s</string>
+</resources>
