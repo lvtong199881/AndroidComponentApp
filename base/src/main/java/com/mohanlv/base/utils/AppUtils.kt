@@ -37,3 +37,5 @@ object AppUtils {
 // CI verification v2: test file-based API response parsing
 
 // CI verification v3: test squash merge commit detection
+
+// CI verification v4: test bash -c Python invocation
