@@ -57,6 +57,7 @@ dependencies {
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.5")
     testImplementation("junit:junit:4.13.2")
+    implementation("io.coil-kt:coil:2.5.0")
 }
 
 kapt {

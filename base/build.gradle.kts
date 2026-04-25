@@ -43,7 +43,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.databinding:viewbinding:9.1.0")
-    implementation("io.coil-kt:coil:2.5.0")
+    api("io.coil-kt:coil:2.5.0")
     
     // Startup 框架
     api(project(":startup"))
@@ -90,6 +90,12 @@ publishing {
                         appendNode("version", project.findProperty("${name}.version"))
                         appendNode("scope", "compile")
                     }
+                }
+                deps.appendNode("dependency").apply {
+                    appendNode("groupId", "io.coil-kt")
+                    appendNode("artifactId", "coil")
+                    appendNode("version", "2.5.0")
+                    appendNode("scope", "compile")
                 }
             }
         }
