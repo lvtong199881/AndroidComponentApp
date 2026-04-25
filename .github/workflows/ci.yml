@@ -53,13 +53,13 @@ jobs:
             "home"
           )
 
-          # 获取 merge commit 的第二父节点（develop 分支的 commit）
-          SECOND_PARENT=$(git rev-parse main^2 2>/dev/null || echo "")
-
-          if [ -n "$SECOND_PARENT" ]; then
-            CHANGED_FILES=$(git diff --name-only main^..main^2)
+          # 检测 squash merge：获取 main 分支的前一个 commit（merge 前状态）
+          PREV_MAIN=$(git rev-parse main~1 2>/dev/null || git rev-parse main^1 2>/dev/null || echo "")
+          
+          if [ -n "$PREV_MAIN" ]; then
+            CHANGED_FILES=$(git diff --name-only $PREV_MAIN..main)
           else
-            CHANGED_FILES=$(git diff --name-only main^..main)
+            CHANGED_FILES=""
           fi
 
           CHANGED_MODULES=""
@@ -110,7 +110,12 @@ jobs:
       - name: Get commit log
         id: commits
         run: |
-          LOG=$(git log --oneline origin/main^..origin/main | sed 's/^/  - /')
+          PREV_MAIN=$(git rev-parse main~1 2>/dev/null || git rev-parse main^1 2>/dev/null || echo "")
+          if [ -n "$PREV_MAIN" ]; then
+            LOG=$(git log --oneline $PREV_MAIN..main | sed 's/^/  - /')
+          else
+            LOG=$(git log --oneline -10 main | sed 's/^/  - /')
+          fi
           echo "log<<EOF" >> $GITHUB_OUTPUT
           echo "$LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
