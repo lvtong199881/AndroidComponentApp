@@ -31,3 +31,5 @@ object AppUtils {
         }
     }
 }
+
+// CI verification: test per-module versioning
