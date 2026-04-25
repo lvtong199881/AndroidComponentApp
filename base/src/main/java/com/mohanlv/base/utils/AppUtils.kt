@@ -43,3 +43,5 @@ object AppUtils {
 // CI verification v5: test base64-encoded Python script
 
 // CI verification v6: test compact base64 Python script
+
+// CI verification v7: test inline except Python script
