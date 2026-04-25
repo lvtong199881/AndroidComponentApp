@@ -30,7 +30,7 @@ jobs:
 
       - name: Write Python version parser
         run: |
-          echo 'aW1wb3J0IGpzb24sIHN5cw0KdHJ5OgogICAgd2l0aCBvcGVuKHN5cy5hcmd2WzFdKSBhcyBmOgogICAgICAgIGRhdGEgPSBqc29uLmxvYWQoZikKICAgIGlmIGlzaW5zdGFuY2UoZGF0YSwgbGlzdCkgYW5kIGxlbihkYXRhKSA+IDA6CiAgICAgICAgICAgIHByaW50KGRhdGFbMF0uZ2V0KCduYW1lJywgJycpKQogICAgZWxzZToKICAgICAgICBwcmludCgnJykKZXhjZXB0OgogICAgcHJpbnQoJycp' | base64 -d > /tmp/get_version.py
+          echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKIHdpdGggb3BlbihzeXMuYXJndlsxXSlhcyBmOmQ9anNvbi5sb2FkKGYpCiBpZiBpc2luc3RhbmNlKGQsbGlzdClhbmQgbGVuKGQpPjA6cHJpbnQoZFswXS5nZXQoJ25hbWUnLCcnKSkKZWxzZTpwcmludCgnJykKZXhjZXB0OnByaW50KCcnKQo=' | base64 -d > /tmp/get_version.py
 
       - name: Detect changed modules and compute versions
         id: detect
