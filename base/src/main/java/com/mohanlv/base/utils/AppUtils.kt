@@ -61,3 +61,5 @@ object AppUtils {
 // CI verification v14: fix tag name format for GitHub Release
 
 // CI verification v15: add token to git clone URL in ComponentHostApp update
+
+// CI verification v16: retest CI after network retry
