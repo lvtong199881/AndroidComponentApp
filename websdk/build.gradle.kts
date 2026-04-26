@@ -39,7 +39,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.webkit:webkit:1.9.0")
     implementation("com.google.android.material:material:1.11.0")
-    implementation("com.mohanlv:base:1.2.3")
+    implementation("com.mohanlv:base:1.2.25")
     implementation("com.mohanlv:router:1.2.4")
 
     // 路由注解
