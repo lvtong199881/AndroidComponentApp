@@ -65,3 +65,5 @@ object AppUtils {
 // CI verification v16: retest CI after network retry
 
 // CI verification v17: comment out ComponentHostApp update (cross-repo token issue)
+
+// CI verification v18: re-enable ComponentHostApp update with GITHUB_TOKEN cross-repo
