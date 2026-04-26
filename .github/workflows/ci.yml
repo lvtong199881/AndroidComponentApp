@@ -123,8 +123,9 @@ jobs:
             ./gradlew :${module}:assembleRelease -P${module}.version=${VERSION} --no-daemon -q
 
             if [ $? -ne 0 ]; then
-              echo "✗ $module build failed"
-              exit 1
+              echo "!! $module build failed, adding to failed list"
+              FAILED_MODULES="${FAILED_MODULES},${module}"
+              continue
             fi
 
             echo ">>> Publishing $module v${VERSION}"
@@ -209,8 +210,9 @@ jobs:
                   set -e
                 fi
               else
-                echo "✗ $module publish failed (exit ${PUBLISH_EXIT})"
-                exit 1
+                echo "!! $module publish failed (exit ${PUBLISH_EXIT}), adding to failed list"
+                FAILED_MODULES="${FAILED_MODULES},${module}"
+                continue
               fi
             else
               echo "✓ $module v${VERSION} published"
