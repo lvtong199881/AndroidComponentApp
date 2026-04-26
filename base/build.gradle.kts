@@ -21,16 +21,16 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     buildFeatures {
         viewBinding = true
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -44,7 +44,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.databinding:viewbinding:9.1.0")
     api("io.coil-kt:coil:2.5.0")
-    
+
     // Startup 框架
     api(project(":startup"))
     kapt("com.mohanlv:init-annotator:0.0.6")
@@ -55,8 +55,13 @@ dependencies {
     // 核心基础 SDK（通过 api() 传递依赖，供业务模块使用）
     api(project(":router"))
     api(project(":network"))
-    
+
     testImplementation("junit:junit:4.13.2")
+}
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
 }
 
 // 发布配置
@@ -65,12 +70,11 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "base"
-            val moduleVersion = project.findProperty("base.version")?.toString() ?: "1.0.0"
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
             artifact(file("build/outputs/aar/base-release.aar")) {
                 extension = "aar"
             }
-            
             pom {
                 name.set("base")
                 description.set("Android Component: base")
@@ -87,7 +91,7 @@ publishing {
                     deps.appendNode("dependency").apply {
                         appendNode("groupId", "com.mohanlv")
                         appendNode("artifactId", name)
-                        appendNode("version", project.findProperty("${name}.version"))
+                        appendNode("version", project.findProperty("$name.version"))
                         appendNode("scope", "compile")
                     }
                 }
@@ -100,6 +104,19 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
+            }
+        }
+    }
 }
 
 kapt {
@@ -107,8 +124,4 @@ kapt {
         arg("initCollectorPackage", "com.mohanlv.base")
         arg("initCollectorModuleName", "base")
     }
-}
-
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
 }

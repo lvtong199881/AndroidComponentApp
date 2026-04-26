@@ -20,25 +20,20 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    
+
     testImplementation("junit:junit:4.13.2")
 }
-
-val target = project.findProperty("target")?.toString() ?: "local"
-val tokenFile = System.getProperty("user.home") + "/.github_token"
-
-
 
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
@@ -51,8 +46,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "startup"
-            val moduleVersion = project.findProperty("startup.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
+            version = moduleVersion
             artifact(file("build/outputs/aar/startup-release.aar")) {
                 extension = "aar"
             }
@@ -64,6 +59,19 @@ version = moduleVersion
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
                 }
             }
         }

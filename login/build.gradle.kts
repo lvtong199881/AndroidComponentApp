@@ -21,14 +21,14 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
-    
+
     buildFeatures { viewBinding = true }
 }
 
@@ -55,26 +55,44 @@ dependencies {
     kapt("com.mohanlv:router-annotator:0.0.5")
 }
 
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
+
+// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "login"
-            val moduleVersion = project.findProperty("login.version")?.toString() ?: "1.0.0"
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
             artifact(file("build/outputs/aar/login-release.aar")) {
                 extension = "aar"
             }
+            pom {
+                name.set("login")
+                description.set("Android Component: login")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
         }
     }
-    
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
             credentials {
                 username = "lvtong199881"
-                password = System.getenv("GITHUB_TOKEN") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
             }
         }
     }

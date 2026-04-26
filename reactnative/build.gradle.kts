@@ -21,12 +21,12 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
@@ -35,19 +35,19 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
-    
+
     // React Native Core
     api("com.facebook.react:react-android:0.76.9")
-    
+
     // Hermes Engine (required for JS execution)
     api("com.facebook.react:hermes-android:0.76.9")
-    
+
     // SoLoader for native library loading
     api("com.facebook.soloader:soloader:0.11.0")
-    
+
     // Kotlin Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    
+
     // 依赖 router（获取 @Route 注解）
     implementation("com.mohanlv:router:1.2.4")
     implementation("com.mohanlv:startup:1.2.19")
@@ -55,20 +55,31 @@ dependencies {
     kapt("com.mohanlv:router-annotator:0.0.5")
     implementation("com.mohanlv:base:1.2.25")
     implementation("com.mohanlv:logger:1.2.12")
-    
+
     testImplementation("junit:junit:4.13.2")
 }
 
-val tokenFile = System.getProperty("user.home") + "/.github_token"
+kapt {
+    arguments {
+        arg("routerCollectorPackage", "com.mohanlv.reactnative")
+        arg("routerCollectorModuleName", "reactnative")
+    }
+}
 
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
+
+// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "reactnative"
-            val moduleVersion = project.findProperty("reactnative.version")?.toString() ?: "1.0.0"
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
-            artifact("$buildDir/outputs/aar/reactnative-release.aar") {
+            artifact(file("build/outputs/aar/reactnative-release.aar")) {
                 extension = "aar"
             }
             pom {
@@ -83,22 +94,17 @@ publishing {
             }
         }
     }
-    
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
             credentials {
                 username = "lvtong199881"
-                password = System.getenv("GITHUB_TOKEN") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
             }
         }
-    }
-}
-
-kapt {
-    arguments {
-        arg("routerCollectorPackage", "com.mohanlv.reactnative")
-        arg("routerCollectorModuleName", "reactnative")
     }
 }

@@ -54,7 +54,6 @@ kapt {
     }
 }
 
-
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
@@ -66,8 +65,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "websdk"
-            val moduleVersion = project.findProperty("websdk.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
+            version = moduleVersion
             artifact(file("build/outputs/aar/websdk-release.aar")) {
                 extension = "aar"
             }
@@ -79,6 +78,19 @@ version = moduleVersion
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
                 }
             }
         }
