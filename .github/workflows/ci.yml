@@ -235,12 +235,17 @@ jobs:
               exit 1
             fi
             echo "Updated BUILD_VERSIONS for release: $BUILD_VERSIONS"
+            echo "$BUILD_VERSIONS" > /tmp/final_build_versions.txt
           fi
 
       - name: Create GitHub Release
         id: create-release
         run: |
-          BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
+          if [ -f /tmp/final_build_versions.txt ]; then
+            BUILD_VERSIONS=$(cat /tmp/final_build_versions.txt)
+          else
+            BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
+          fi
           if echo "$BUILD_VERSIONS" | grep -q ','; then
             TAG_NAME=$(echo "$BUILD_VERSIONS" | tr ',' '\n' | while read entry; do
               MODULE=$(echo "$entry" | cut -d: -f1)
