@@ -59,3 +59,5 @@ object AppUtils {
 // CI verification v13: use max-version python script across all API calls
 
 // CI verification v14: fix tag name format for GitHub Release
+
+// CI verification v15: add token to git clone URL in ComponentHostApp update

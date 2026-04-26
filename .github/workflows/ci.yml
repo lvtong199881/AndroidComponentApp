@@ -236,7 +236,7 @@ jobs:
           echo "========================================"
 
           cd ..
-          git clone https://github.com/lvtong199881/ComponentHostApp.git
+          git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/lvtong199881/ComponentHostApp.git"
           cd ComponentHostApp
           git checkout main
 
