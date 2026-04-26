@@ -120,9 +120,12 @@ jobs:
             VERSION="${module_entry#*:}"
             echo ""
             echo ">>> Building :${module}:assembleRelease (version: ${VERSION})"
+            set +e
             ./gradlew :${module}:assembleRelease -P${module}.version=${VERSION} --no-daemon -q
+            BUILD_EXIT=$?
+            set -e
 
-            if [ $? -ne 0 ]; then
+            if [ ${BUILD_EXIT} -ne 0 ]; then
               echo "!! $module build failed, adding to failed list"
               FAILED_MODULES="${FAILED_MODULES},${module}"
               continue
