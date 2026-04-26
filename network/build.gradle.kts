@@ -21,26 +21,26 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
 }
 
 dependencies {
     api("androidx.core:core-ktx:1.12.0")
-    
+
     // Startup 框架
     api(project(":startup"))
     api("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:init-annotator:0.0.6")
-    
+
     // 日志模块
     api(project(":logger"))
-    
+
     // Retrofit + OkHttp
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -51,18 +51,29 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
+kapt {
+    arguments {
+        arg("initCollectorPackage", "com.mohanlv.network")
+        arg("initCollectorModuleName", "network")
+    }
+}
+
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
+
 // 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "network"
-            val moduleVersion = project.findProperty("network.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
+            version = moduleVersion
             artifact(file("build/outputs/aar/network-release.aar")) {
                 extension = "aar"
             }
-            
             pom {
                 name.set("network")
                 description.set("Android Component: network")
@@ -106,15 +117,17 @@ version = moduleVersion
             }
         }
     }
-}
-
-kapt {
-    arguments {
-        arg("initCollectorPackage", "com.mohanlv.network")
-        arg("initCollectorModuleName", "network")
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
+            }
+        }
     }
-}
-
-tasks.withType<PublishToMavenRepository>().configureEach {
-    dependsOn(tasks.named("assembleRelease"))
 }

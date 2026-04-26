@@ -21,12 +21,12 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
@@ -45,7 +45,7 @@ dependencies {
     implementation("com.mohanlv:logger:1.2.12")
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.google.code.gson:gson:2.10.1")
-    
+
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:0.0.6")
     kapt("com.mohanlv:router-annotator:0.0.5")
@@ -59,12 +59,6 @@ kapt {
     }
 }
 
-
-val target = project.findProperty("target")?.toString() ?: "local"
-val tokenFile = System.getProperty("user.home") + "/.github_token"
-
-
-
 // 显式声明发布任务依赖 assembleRelease
 tasks.withType<PublishToMavenRepository>().configureEach {
     dependsOn(tasks.named("assembleRelease"))
@@ -76,8 +70,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "user"
-            val moduleVersion = project.findProperty("user.version")?.toString() ?: "1.0.0"
-version = moduleVersion
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
+            version = moduleVersion
             artifact(file("build/outputs/aar/user-release.aar")) {
                 extension = "aar"
             }
@@ -89,6 +83,19 @@ version = moduleVersion
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            credentials {
+                username = "lvtong199881"
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
                 }
             }
         }

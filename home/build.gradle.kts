@@ -21,12 +21,12 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
@@ -67,16 +67,14 @@ kapt {
     }
 }
 
-val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "home"
-            val moduleVersion = project.findProperty("home.version")?.toString() ?: "1.0.0"
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
-            artifact("$buildDir/outputs/aar/home-release.aar") {
+            artifact(file("build/outputs/aar/home-release.aar")) {
                 extension = "aar"
             }
             pom {
@@ -91,14 +89,16 @@ publishing {
             }
         }
     }
-    
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
             credentials {
                 username = "lvtong199881"
-                password = System.getenv("GITHUB_TOKEN") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
             }
         }
     }

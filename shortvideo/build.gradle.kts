@@ -64,16 +64,20 @@ kapt {
     }
 }
 
-val tokenFile = System.getProperty("user.home") + "/.github_token"
+// 显式声明发布任务依赖 assembleRelease
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.named("assembleRelease"))
+}
 
+// 发布配置
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
             artifactId = "shortvideo"
-            val moduleVersion = project.findProperty("shortvideo.version")?.toString() ?: "1.0.0"
+            val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
-            artifact("$buildDir/outputs/aar/shortvideo-release.aar") {
+            artifact(file("build/outputs/aar/shortvideo-release.aar")) {
                 extension = "aar"
             }
             pom {
@@ -88,14 +92,16 @@ publishing {
             }
         }
     }
-
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
             credentials {
                 username = "lvtong199881"
-                password = System.getenv("GITHUB_TOKEN") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: run {
+                    val tokenFile = File(System.getProperty("user.home"), ".github_token")
+                    if (tokenFile.exists()) tokenFile.readText().trim() else ""
+                }
             }
         }
     }
