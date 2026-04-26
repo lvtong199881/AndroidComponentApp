@@ -75,3 +75,5 @@ object AppUtils {
 // CI verification v21: fix ${secrets.COMPONENT_HOST_APP_TOKEN} syntax
 
 // CI verification v22: fix env block for COMPONENT_HOST_APP_TOKEN
+
+// CI verification v23: publish all modules when no changes detected
