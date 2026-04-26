@@ -83,7 +83,7 @@ jobs:
             API_URL="https://api.github.com/users/lvtong199881/packages/maven/${PACKAGE_NAME}/versions?per_page=100"
             echo "DEBUG: Calling API for $module..."
             echo "DEBUG: API_URL=$API_URL"
-            curl -s -v -H "Authorization: Bearer ${GITHUB_TOKEN}" "$API_URL" > /tmp/api_response.json 2>&1 | head -20
+            curl -s -v -H "Authorization: Bearer ${GITHUB_TOKEN}" "$API_URL" -o /tmp/api_response.json 2>&1 | head -20
             LATEST_VERSION=$(python3 /tmp/get_version.py /tmp/api_response.json 2>/dev/null)
             echo "DEBUG: LATEST_VERSION=$LATEST_VERSION"
             if [ -z "$LATEST_VERSION" ]; then
