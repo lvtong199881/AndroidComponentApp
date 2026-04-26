@@ -191,9 +191,28 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.build.outputs.SKIP != 'true'
+        id: create-release
+        run: |
+          BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
+          if echo "$BUILD_VERSIONS" | grep -q ','; then
+            TAG_NAME=$(echo "$BUILD_VERSIONS" | tr ',' '\n' | while read entry; do
+              MODULE=$(echo "$entry" | cut -d: -f1)
+              VERSION=$(echo "$entry" | cut -d: -f2)
+              echo "${MODULE}-${VERSION}"
+            done | tr '\n' '_' | sed 's/_$//' | sed 's/_/-/g')
+          else
+            TAG_NAME=$(echo "$BUILD_VERSIONS" | cut -d: -f2)
+          fi
+          echo "TAG_NAME=v${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "Created tag: v${TAG_NAME}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish GitHub Release
+        if: steps.build.outputs.SKIP != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.detect.outputs.build-versions }}
+          tag_name: ${{ steps.create-release.outputs.TAG_NAME }}
           name: Release ${{ steps.detect.outputs.build-versions }}
           body: |
             ## Changes
@@ -205,8 +224,7 @@ jobs:
             ${{ steps.detect.outputs.build-versions }}
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update ComponentHostApp
         if: steps.build.outputs.SKIP != 'true'
