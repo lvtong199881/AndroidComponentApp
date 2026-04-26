@@ -71,3 +71,5 @@ object AppUtils {
 // CI verification v19: use COMPONENT_HOST_APP_TOKEN for cross-repo push
 
 // CI verification v20: retry CI after PAT propagation
+
+// CI verification v21: fix ${secrets.COMPONENT_HOST_APP_TOKEN} syntax
