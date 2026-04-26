@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
 
     private val videos = mutableListOf<Video>()
-    private lateinit var videoAdapter: ShortVideoAdapter
+    private var videoAdapter: ShortVideoAdapter? = null
 
     private var currentPage = 1
     private var isLoading = false
@@ -48,21 +48,22 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
     }
 
     private fun setupViewPager() {
-        videoAdapter = ShortVideoAdapter(
+        val adapter = ShortVideoAdapter(
             videos = videos,
-            onLikeClick = { video -> onLikeClicked(video) },
-            onCommentClick = { video -> onCommentClicked(video) },
-            onShareClick = { video -> onShareClicked(video) }
+            onLikeClick = this::onLikeClicked,
+            onCommentClick = this::onCommentClicked,
+            onShareClick = this::onShareClicked
         )
+        videoAdapter = adapter
 
         binding.viewPagerVideo.apply {
-            adapter = videoAdapter
+            this.adapter = adapter
             orientation = ViewPager2.ORIENTATION_VERTICAL
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    videoAdapter.setCurrentPosition(position)
+                    videoAdapter?.setCurrentPosition(position)
 
                     if (position >= videos.size - 3 && !isLoading && hasMoreData) {
                         loadMoreVideos()
@@ -85,7 +86,7 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
                     if (body != null && !body.videos.isNullOrEmpty()) {
                         videos.clear()
                         videos.addAll(body.videos)
-                        videoAdapter.notifyDataSetChanged()
+                        videoAdapter?.notifyDataSetChanged()
                         currentPage = 1
                         hasMoreData = !body.nextPage.isNullOrEmpty()
                         showContent()
@@ -119,7 +120,7 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
                     if (body != null && !body.videos.isNullOrEmpty()) {
                         val startPosition = videos.size
                         videos.addAll(body.videos)
-                        videoAdapter.notifyItemRangeInserted(startPosition, body.videos.size)
+                        videoAdapter?.notifyItemRangeInserted(startPosition, body.videos.size)
                         currentPage = nextPage
                         hasMoreData = !body.nextPage.isNullOrEmpty()
                     } else {
@@ -166,17 +167,17 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
     override fun onResume() {
         super.onResume()
         val currentPos = binding.viewPagerVideo.currentItem
-        videoAdapter.setCurrentPosition(currentPos)
+        videoAdapter?.setCurrentPosition(currentPos)
     }
 
     override fun onPause() {
         super.onPause()
-        videoAdapter.releaseAll()
+        videoAdapter?.releaseAll()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        videoAdapter.release()
+        videoAdapter?.release()
     }
 
     companion object {
