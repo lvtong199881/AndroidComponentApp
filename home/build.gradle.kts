@@ -98,7 +98,7 @@ publishing {
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
             credentials {
                 username = "lvtong199881"
-                password = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: ""
             }
         }
     }

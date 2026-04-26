@@ -55,8 +55,6 @@ dependencies {
     kapt("com.mohanlv:router-annotator:0.0.5")
 }
 
-val tokenFile = System.getProperty("user.home") + "/.github_token"
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -74,11 +72,9 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
-            val tokenFile = System.getProperty("user.home") + "/.github_token"
-            val token = File(tokenFile).takeIf { it.exists() }?.readText()?.trim() ?: ""
             credentials {
                 username = "lvtong199881"
-                password = token
+                password = System.getenv("GITHUB_TOKEN") ?: ""
             }
         }
     }
