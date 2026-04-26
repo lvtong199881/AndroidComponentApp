@@ -1,6 +1,5 @@
 package com.mohanlv.shortvideo.ui
 
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +46,6 @@ class VideoViewHolder(
         binding.tvAuthor.text = "@${video.user.name}"
         binding.tvTitle.text = video.url
 
-        binding.tvDuration.text = video.getFormattedDuration()
         binding.seekBarProgress.progress = 0
 
         binding.tvLikeCount.text = formatCount((1000..50000).random())
@@ -61,9 +59,9 @@ class VideoViewHolder(
             if (isPlaying) pauseVideo() else playVideo()
         }
 
-        binding.ivLike.setOnClickListener { video?.let { onLikeClick(it) } }
-        binding.tvCommentCount.setOnClickListener { video?.let { onCommentClick(it) } }
-        binding.tvShareCount.setOnClickListener { video?.let { onShareClick(it) } }
+        binding.ivLike.setOnClickListener { onLikeClick(video) }
+        binding.tvCommentCount.setOnClickListener { onCommentClick(video) }
+        binding.tvShareCount.setOnClickListener { onShareClick(video) }
 
         binding.seekBarProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
