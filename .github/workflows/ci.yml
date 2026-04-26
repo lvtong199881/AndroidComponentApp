@@ -150,12 +150,14 @@ jobs:
                     echo "✓ $module v${retry_version} published (retry successful)"
                     BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${retry_version}/")
                   else
-                    echo "✗ $module publish retry failed"
-                    exit 1
+                    echo "!! $module publish retry failed, adding to failed list"
+                    FAILED_MODULES="${FAILED_MODULES},${module}"
+                    continue
                   fi
                 else
-                  echo "✗ Could not determine latest version for retry"
-                  exit 1
+                  echo "!! Could not determine latest version for retry, adding to failed list"
+                  FAILED_MODULES="${FAILED_MODULES},${module}"
+                  continue
                 fi
               elif grep -q "401\|Unauthorized" /tmp/publish_output.txt 2>/dev/null; then
                 echo "!! Publish 401 Unauthorized, detecting actual latest version..."
@@ -163,8 +165,9 @@ jobs:
                 curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "$MODULE_API_URL" > /tmp/api_response.json
                 ACTUAL_LATEST=$(python3 /tmp/get_version.py /tmp/api_response.json 2>/dev/null || echo "")
                 if [ -z "$ACTUAL_LATEST" ]; then
-                  echo "✗ Could not determine latest version for 401 retry"
-                  exit 1
+                  echo "!! Could not determine latest version for 401 retry, adding to failed list"
+                  FAILED_MODULES="${FAILED_MODULES},${module}"
+                  continue
                 fi
                 if [ "$ACTUAL_LATEST" = "$VERSION" ]; then
                   echo ">>> 401 on same version ($VERSION), retrying after 5s..."
@@ -183,8 +186,9 @@ jobs:
                       echo "✓ $module v${retry_version} published (retry successful)"
                       BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${retry_version}/")
                     else
-                      echo "✗ $module publish retry failed"
-                      exit 1
+                      echo "!! $module v${retry_version} retry failed, adding to failed list"
+                      FAILED_MODULES="${FAILED_MODULES},${module}"
+                      continue
                     fi
                   fi
                   set -e
@@ -198,8 +202,9 @@ jobs:
                     echo "✓ $module v${retry_version} published (retry successful)"
                     BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${retry_version}/")
                   else
-                    echo "✗ $module publish retry failed"
-                    exit 1
+                    echo "!! $module publish retry failed, adding to failed list"
+                    FAILED_MODULES="${FAILED_MODULES},${module}"
+                    continue
                   fi
                   set -e
                 fi
@@ -211,6 +216,24 @@ jobs:
               echo "✓ $module v${VERSION} published"
             fi
           done
+
+          if [ -n "$FAILED_MODULES" ]; then
+            FAILED_MODULES=${FAILED_MODULES#,}
+            echo "========================================"
+            echo "WARNING: Some modules failed to publish:"
+            echo "  $FAILED_MODULES"
+            echo "These modules will not be included in the release."
+            echo "========================================"
+            # Remove failed modules from BUILD_VERSIONS for release
+            for failed in $(echo "$FAILED_MODULES" | tr ',' ' '); do
+              BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/,*${failed}:[^,]*/,/g" | sed 's/^,//;s/,$//')
+            done
+            if [ -z "$BUILD_VERSIONS" ]; then
+              echo "ERROR: All modules failed to publish, exiting."
+              exit 1
+            fi
+            echo "Updated BUILD_VERSIONS for release: $BUILD_VERSIONS"
+          fi
 
       - name: Create GitHub Release
         id: create-release
