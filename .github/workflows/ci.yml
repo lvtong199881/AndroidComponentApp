@@ -162,7 +162,23 @@ jobs:
                 MODULE_API_URL="https://api.github.com/users/lvtong199881/packages/maven/com.mohanlv.${module}/versions?per_page=100"
                 curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "$MODULE_API_URL" > /tmp/api_response.json
                 ACTUAL_LATEST=$(python3 /tmp/get_version.py /tmp/api_response.json 2>/dev/null || echo "")
-                if [ -n "$ACTUAL_LATEST" ]; then
+                if [ -z "$ACTUAL_LATEST" ]; then
+                  echo "✗ Could not determine latest version for 401 retry"
+                  exit 1
+                fi
+                if [ "$ACTUAL_LATEST" = "$VERSION" ]; then
+                  echo ">>> 401 on same version ($VERSION), retrying after 5s..."
+                  sleep 5
+                  set +e
+                  ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${VERSION} --no-daemon -q
+                  if [ $? -eq 0 ]; then
+                    echo "✓ $module v${VERSION} published (retry successful)"
+                  else
+                    echo "✗ $module publish retry failed"
+                    exit 1
+                  fi
+                  set -e
+                else
                   LAST_NUM=$(echo $ACTUAL_LATEST | awk -F'.' '{print $3}')
                   retry_version=$(echo $ACTUAL_LATEST | awk -F'.' -v n="$((LAST_NUM + 1))" '{OFS="."; $3=n; print}')
                   echo ">>> Retrying 401 with version $retry_version"
@@ -176,9 +192,6 @@ jobs:
                     exit 1
                   fi
                   set -e
-                else
-                  echo "✗ Could not determine latest version for 401 retry"
-                  exit 1
                 fi
               else
                 echo "✗ $module publish failed (exit ${PUBLISH_EXIT})"
