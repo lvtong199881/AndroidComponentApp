@@ -228,6 +228,8 @@ jobs:
 
       - name: Update ComponentHostApp
         if: steps.build.outputs.SKIP != 'true'
+        env:
+          COMPONENT_HOST_APP_TOKEN: ${{ secrets.COMPONENT_HOST_APP_TOKEN }}
         run: |
           BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
           echo "========================================"
@@ -236,7 +238,7 @@ jobs:
           echo "========================================"
 
           cd ..
-          git clone "https://x-access-token:${secrets.COMPONENT_HOST_APP_TOKEN}@github.com/lvtong199881/ComponentHostApp.git"
+          git clone "https://x-access-token:${COMPONENT_HOST_APP_TOKEN}@github.com/lvtong199881/ComponentHostApp.git"
           cd ComponentHostApp
           git checkout main
 
