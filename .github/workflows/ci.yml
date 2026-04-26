@@ -174,8 +174,18 @@ jobs:
                   if [ $? -eq 0 ]; then
                     echo "✓ $module v${VERSION} published (retry successful)"
                   else
-                    echo "✗ $module publish retry failed"
-                    exit 1
+                    echo "!! Same version still fails, incrementing to next version..."
+                    LAST_NUM=$(echo $VERSION | awk -F'.' '{print $3}')
+                    retry_version=$(echo $VERSION | awk -F'.' -v n="$((LAST_NUM + 1))" '{OFS="."; $3=n; print}')
+                    echo ">>> Retrying with version $retry_version"
+                    ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${retry_version} --no-daemon -q
+                    if [ $? -eq 0 ]; then
+                      echo "✓ $module v${retry_version} published (retry successful)"
+                      BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${retry_version}/")
+                    else
+                      echo "✗ $module publish retry failed"
+                      exit 1
+                    fi
                   fi
                   set -e
                 else
