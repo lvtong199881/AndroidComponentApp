@@ -309,7 +309,7 @@ jobs:
             module="${entry%%:*}"
             version="${entry#*:}"
             echo "Updating com.mohanlv:${module} to ${version}"
-            sed -i.bak "s/com\.mohanlv:${module}:[0-9.]*/com.mohanlv:${module}:${version}/g" app/build.gradle.kts
+            sed -i.bak "s/com\.mohanlv:${module}:[0-9.]*')/com.mohanlv:${module}:${version}')/g" app/build.gradle.kts
           done
 
           git config user.name "github-actions[bot]"
