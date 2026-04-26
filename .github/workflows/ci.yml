@@ -226,13 +226,36 @@ jobs:
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ComponentHostApp 更新需要跨 repo push 权限。
-      # 当前 GITHUB_TOKEN 对 ComponentHostApp (另一 repo) 没有写权限。
-      # TODO: 添加 deploy key 或创建有 ComponentHostApp 写权限的 PAT secret
-      # - name: Update ComponentHostApp
-      #   run: |
-      #     BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
-      #     git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/lvtong199881/ComponentHostApp.git"
-      #     cd ComponentHostApp && git checkout main
-      #     ... (sed 替换版本号)
-      #     git push
+      - name: Update ComponentHostApp
+        if: steps.build.outputs.SKIP != 'true'
+        run: |
+          BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
+          echo "========================================"
+          echo "Updating ComponentHostApp"
+          echo "Build versions: $BUILD_VERSIONS"
+          echo "========================================"
+
+          cd ..
+          git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/lvtong199881/ComponentHostApp.git"
+          cd ComponentHostApp
+          git checkout main
+
+          IFS=',' read -ra VERSIONS_ARRAY <<< "$BUILD_VERSIONS"
+          for entry in "${VERSIONS_ARRAY[@]}"; do
+            module="${entry%%:*}"
+            version="${entry#*:}"
+            echo "Updating com.mohanlv:${module} to ${version}"
+            sed -i.bak "s/com\.mohanlv:${module}:[0-9.]*/com.mohanlv:${module}:${version}/g" app/build.gradle.kts
+          done
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update components to new versions"
+            git push
+            echo "✓ ComponentHostApp updated"
+          fi
