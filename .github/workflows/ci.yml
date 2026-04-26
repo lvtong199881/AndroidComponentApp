@@ -158,16 +158,28 @@ jobs:
                   exit 1
                 fi
               elif grep -q "401\|Unauthorized" /tmp/publish_output.txt 2>/dev/null; then
-                echo "!! Publish 401 Unauthorized, retrying..."
-                set +e
-                ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${VERSION} --no-daemon -q
-                if [ $? -eq 0 ]; then
-                  echo "✓ $module v${VERSION} published (retry successful)"
+                echo "!! Publish 401 Unauthorized, detecting actual latest version..."
+                MODULE_API_URL="https://api.github.com/users/lvtong199881/packages/maven/com.mohanlv.${module}/versions?per_page=100"
+                curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "$MODULE_API_URL" > /tmp/api_response.json
+                ACTUAL_LATEST=$(python3 /tmp/get_version.py /tmp/api_response.json 2>/dev/null || echo "")
+                if [ -n "$ACTUAL_LATEST" ]; then
+                  LAST_NUM=$(echo $ACTUAL_LATEST | awk -F'.' '{print $3}')
+                  retry_version=$(echo $ACTUAL_LATEST | awk -F'.' -v n="$((LAST_NUM + 1))" '{OFS="."; $3=n; print}')
+                  echo ">>> Retrying 401 with version $retry_version"
+                  set +e
+                  ./gradlew :${module}:publishMavenPublicationToGitHubPackagesRepository -P${module}.version=${retry_version} --no-daemon -q
+                  if [ $? -eq 0 ]; then
+                    echo "✓ $module v${retry_version} published (retry successful)"
+                    BUILD_VERSIONS=$(echo "$BUILD_VERSIONS" | sed "s/${module}:${VERSION}/${module}:${retry_version}/")
+                  else
+                    echo "✗ $module publish retry failed"
+                    exit 1
+                  fi
+                  set -e
                 else
-                  echo "✗ $module publish retry failed"
+                  echo "✗ Could not determine latest version for 401 retry"
                   exit 1
                 fi
-                set -e
               else
                 echo "✗ $module publish failed (exit ${PUBLISH_EXIT})"
                 exit 1
