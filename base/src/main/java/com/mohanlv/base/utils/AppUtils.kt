@@ -57,3 +57,5 @@ object AppUtils {
 // CI verification v12: fix 409 retry with PIPESTATUS and grep detection
 
 // CI verification v13: use max-version python script across all API calls
+
+// CI verification v14: fix tag name format for GitHub Release
