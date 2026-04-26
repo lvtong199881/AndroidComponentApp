@@ -14,7 +14,7 @@ jobs:
       packages: write
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.COMPONENT_HOST_APP_TOKEN }}
 
     steps:
       - name: Checkout Components
@@ -107,7 +107,7 @@ jobs:
       - name: Build and publish changed modules
         id: build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.COMPONENT_HOST_APP_TOKEN }}
         run: |
           BUILD_VERSIONS="${{ steps.detect.outputs.build-versions }}"
 
@@ -261,7 +261,7 @@ jobs:
           echo "TAG_NAME=v${TAG_NAME}" >> $GITHUB_OUTPUT
           echo "Created tag: v${TAG_NAME}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.COMPONENT_HOST_APP_TOKEN }}
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
@@ -278,7 +278,7 @@ jobs:
             ${{ steps.detect.outputs.build-versions }}
           draft: false
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.COMPONENT_HOST_APP_TOKEN }}
 
       - name: Update ComponentHostApp
         env:
