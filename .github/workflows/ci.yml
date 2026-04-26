@@ -246,3 +246,4 @@ jobs:
             git push
             echo "✓ ComponentHostApp updated"
           fi
+# CI test: no module changes
