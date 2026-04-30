@@ -78,7 +78,7 @@ jobs:
             echo "ERROR: GITHUB_TOKEN is empty or not set"
           fi
 
-          for module in $MODULES_TO_PUBLISH; do
+          for module in $(echo "$MODULES_TO_PUBLISH" | tr ',' ' '); do
             PACKAGE_NAME="com.mohanlv.${module}"
             API_URL="https://api.github.com/users/lvtong199881/packages/maven/${PACKAGE_NAME}/versions?per_page=100"
             echo "DEBUG: Calling API for $module..."
