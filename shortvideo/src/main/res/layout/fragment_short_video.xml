@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@android:color/black"
+    android:fitsSystemWindows="false">
 
-    <!-- 竖向滑动视频列表 -->
+    <!-- 竖向滑动视频列表 - 全屏显示，包括状态栏区域 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:orientation="vertical" />
+
+    <!-- TitleBar - 在状态栏下方 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_gradient_top"
+        app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
+        app:title="@string/short_video_title"
+        app:titleTextColor="@android:color/white" />
 
     <!-- 加载中提示 -->
     <ProgressBar
@@ -34,7 +48,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:src="@android:drawable/ic_menu_camera"
-            android:tint="@color/text_secondary" />
+            app:tint="@color/text_secondary" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -12,6 +12,7 @@ import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
+import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentShortVideoBinding
 import com.mohanlv.shortvideo.model.Video
 import com.mohanlv.shortvideo.api.PexelsApiClient
@@ -39,7 +40,24 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setupToolbar()
         setupViewPager()
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            activity?.onBackPressedDispatcher?.onBackPressed()
+        }
+        binding.toolbar.inflateMenu(R.menu.menu_short_video)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_settings -> {
+                    Toast.makeText(context, "Settings", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun initData() {
