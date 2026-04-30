@@ -37,8 +37,6 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    // 源码依赖
-    implementation(project(":shortvideo"))
 
     // maven依赖 - 来自 AndroidBaseSDKProject
     implementation("com.mohanlv:base:1.2.28")
@@ -54,8 +52,8 @@ dependencies {
     api("com.google.code.gson:gson:2.10.1")
 
     // 路由注解
-    compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.5")
+    compileOnly("com.mohanlv:router-annotation:1.0.1")
+    kapt("com.mohanlv:router-annotator:1.0.1")
     testImplementation("junit:junit:4.13.2")
     implementation("io.coil-kt:coil:2.5.0")
 }

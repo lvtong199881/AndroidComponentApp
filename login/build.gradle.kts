@@ -50,9 +50,10 @@ dependencies {
     api("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
 
-    kapt("com.mohanlv:init-annotator:0.0.6")
-    compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.5")
+    kapt("com.mohanlv:init-annotator:1.0.1")
+    // 路由注解
+    compileOnly("com.mohanlv:router-annotation:1.0.1")
+    kapt("com.mohanlv:router-annotator:1.0.1")
 }
 
 // 显式声明发布任务依赖 assembleRelease
