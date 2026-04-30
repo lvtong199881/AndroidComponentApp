@@ -43,7 +43,7 @@ jobs:
             exit 0
           fi
 
-          MODULES="login shortvideo user home"
+          MODULES=$(grep -oP 'include\(":\K[^"]+' settings.gradle.kts | tr '\n' ' ' | sed 's/ $//')
           PREV_MAIN=$(git rev-parse main~1 2>/dev/null || git rev-parse main^1 2>/dev/null || echo "")
 
           if [ -n "$PREV_MAIN" ]; then
