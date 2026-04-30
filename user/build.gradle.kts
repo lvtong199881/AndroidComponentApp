@@ -38,11 +38,11 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.mohanlv:base:1.2.26")
+    implementation("com.mohanlv:base:1.2.28")
     implementation(project(":login"))
-    implementation("com.mohanlv:network:1.2.13")
-    implementation("com.mohanlv:router:1.2.8")
-    implementation("com.mohanlv:logger:1.2.20")
+    implementation("com.mohanlv:network:1.2.15")
+    implementation("com.mohanlv:router:1.2.10")
+    implementation("com.mohanlv:logger:1.2.26")
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.google.code.gson:gson:2.10.1")
 
@@ -90,7 +90,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            url = uri("https://maven.pkg.github.com/lvtong199881/PackagesMaven")
             credentials {
                 username = "lvtong199881"
                 password = System.getenv("GITHUB_TOKEN") ?: run {

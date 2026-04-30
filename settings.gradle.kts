@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            url = uri("https://maven.pkg.github.com/lvtong199881/PackagesMaven")
             credentials {
                 username = "lvtong199881"
                 password = System.getenv("GITHUB_TOKEN") ?: run {

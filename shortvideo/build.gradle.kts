@@ -39,11 +39,10 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-implementation("com.mohanlv:base:1.2.26")
-    implementation("com.mohanlv:router:1.2.8")
-    api("com.google.code.gson:gson:2.10.1")
-    implementation("com.mohanlv:network:1.2.13")
-    implementation("com.mohanlv:logger:1.2.20")
+    implementation("com.mohanlv:base:1.2.28")
+    implementation("com.mohanlv:router:1.2.10")
+    implementation("com.mohanlv:network:1.2.15")
+    implementation("com.mohanlv:logger:1.2.26")
 
     // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")
@@ -95,7 +94,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            url = uri("https://maven.pkg.github.com/lvtong199881/PackagesMaven")
             credentials {
                 username = "lvtong199881"
                 password = System.getenv("GITHUB_TOKEN") ?: run {

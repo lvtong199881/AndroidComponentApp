@@ -41,12 +41,12 @@ dependencies {
     implementation(project(":shortvideo"))
 
     // maven依赖 - 来自 AndroidBaseSDKProject
-    implementation("com.mohanlv:base:1.2.26")
-    implementation("com.mohanlv:network:1.2.13")
-    implementation("com.mohanlv:router:1.2.8")
-    implementation("com.mohanlv:logger:1.2.20")
-    implementation("com.mohanlv:reactnative:1.2.8")
-    implementation("com.mohanlv:websdk:1.2.13")
+    implementation("com.mohanlv:base:1.2.28")
+    implementation("com.mohanlv:network:1.2.15")
+    implementation("com.mohanlv:router:1.2.10")
+    implementation("com.mohanlv:logger:1.2.26")
+    implementation("com.mohanlv:reactnative:1.2.10")
+    implementation("com.mohanlv:websdk:1.2.15")
     // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -92,7 +92,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lvtong199881/AndroidComponentApp")
+            url = uri("https://maven.pkg.github.com/lvtong199881/PackagesMaven")
             credentials {
                 username = "lvtong199881"
                 password = System.getenv("GITHUB_TOKEN") ?: run {
