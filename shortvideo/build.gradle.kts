@@ -39,7 +39,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation("com.mohanlv:base:1.2.25")
+    implementation("com.mohanlv:base:1.2.31")
     implementation("com.mohanlv:router:1.2.4")
     api("com.google.code.gson:gson:2.10.1")
     implementation("com.mohanlv:network:1.2.12")
