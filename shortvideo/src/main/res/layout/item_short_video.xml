@@ -74,12 +74,14 @@
         <SeekBar
             android:id="@+id/seekBarProgress"
             android:layout_width="match_parent"
-            android:layout_height="6dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:max="100"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             android:progress="0"
+            android:thumbOffset="0dp"
+            android:splitTrack="false"
             android:progressDrawable="@drawable/seekbar_progress"
             android:thumb="@drawable/seekbar_thumb" />
 

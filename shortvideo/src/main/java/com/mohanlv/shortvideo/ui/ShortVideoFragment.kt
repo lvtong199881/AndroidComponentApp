@@ -4,17 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.mohanlv.base.base.BaseFragment
+import com.mohanlv.base.utils.getStatusBarHeight
 import com.mohanlv.logger.Logger
 import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
+import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentShortVideoBinding
 import com.mohanlv.shortvideo.model.Video
 import com.mohanlv.shortvideo.api.PexelsApiClient
+import com.mohanlv.shortvideo.log
 import kotlinx.coroutines.launch
 
 /**
@@ -39,7 +43,29 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setupToolbar()
         setupViewPager()
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            activity?.onBackPressedDispatcher?.onBackPressed()
+        }
+        val toolbarLp = binding.toolbar.layoutParams
+        log("getStatusBarHeight=${getStatusBarHeight(context!!)}")
+        (toolbarLp as? FrameLayout.LayoutParams)?.let {
+            it.topMargin = getStatusBarHeight(context!!)
+        }
+        binding.toolbar.inflateMenu(R.menu.menu_short_video)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_settings -> {
+                    Toast.makeText(context, "Settings", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun initData() {
