@@ -44,9 +44,9 @@ dependencies {
     implementation("com.mohanlv:network:1.2.15")
     implementation("com.mohanlv:logger:1.2.26")
 
-    // Router annotation
-    compileOnly("com.mohanlv:router-annotation:0.0.6")
-    kapt("com.mohanlv:router-annotator:0.0.5")
+    // 路由注解
+    compileOnly("com.mohanlv:router-annotation:1.0.1")
+    kapt("com.mohanlv:router-annotator:1.0.1")
 
     // Retrofit for Pexels API
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
