@@ -43,7 +43,7 @@ jobs:
             exit 0
           fi
 
-          MODULES="startup logger router network base login reactnative websdk shortvideo user home"
+          MODULES="login shortvideo user home"
           PREV_MAIN=$(git rev-parse main~1 2>/dev/null || git rev-parse main^1 2>/dev/null || echo "")
 
           if [ -n "$PREV_MAIN" ]; then
