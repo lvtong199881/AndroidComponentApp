@@ -4,4 +4,6 @@
     <string name="web">网页</string>
     <string name="my">我的</string>
     <string name="rn">RN</string>
+    <string name="short_video">短视频</string>
+    <string name="short_video_desc">播放短视频</string>
 </resources>
