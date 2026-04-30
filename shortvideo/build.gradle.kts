@@ -42,7 +42,7 @@ dependencies {
     implementation("com.mohanlv:base:1.2.28")
     implementation("com.mohanlv:router:1.2.10")
     implementation("com.mohanlv:network:1.2.15")
-    implementation("com.mohanlv:logger:1.2.26")ti
+    implementation("com.mohanlv:logger:1.2.26")
 
     // Router annotation
     compileOnly("com.mohanlv:router-annotation:0.0.6")
