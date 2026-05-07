@@ -39,10 +39,10 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation("com.mohanlv:base:1.2.28")
-    implementation("com.mohanlv:router:1.2.10")
-    implementation("com.mohanlv:network:1.2.15")
-    implementation("com.mohanlv:logger:1.2.26")
+    implementation("com.mohanlv:base:1.2.33")
+    implementation("com.mohanlv:router:1.2.15")
+    implementation("com.mohanlv:network:1.2.20")
+    implementation("com.mohanlv:logger:1.2.31")
 
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")
