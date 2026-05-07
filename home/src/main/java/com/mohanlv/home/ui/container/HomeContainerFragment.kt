@@ -2,12 +2,15 @@ package com.mohanlv.home.ui.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.R
 import com.mohanlv.home.databinding.FragmentHomeContainerBinding
-import com.mohanlv.router.RoutePath
 import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
 
@@ -27,6 +30,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setupWindowInsets()
         setupBottomNavigation()
 
         // 恢复保存的选中状态（避免 popBackStack 后状态丢失）
@@ -34,6 +38,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
             currentFragmentTag = tag
             val menuItemId = when (tag) {
                 "home" -> R.id.nav_home
+                "discover" -> R.id.nav_discover
                 "web" -> R.id.nav_web
                 "user" -> R.id.nav_user
                 "rn" -> R.id.nav_rn
@@ -55,10 +60,20 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
         currentFragmentTag?.let { outState.putString(KEY_SELECTED_TAG, it) }
     }
 
+    private fun setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // 底部导航栏需要避开导航栏
+            binding.bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+    }
+
     private fun setupBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val tag = when (item.itemId) {
                 R.id.nav_home -> "home"
+                R.id.nav_discover -> "discover"
                 R.id.nav_web -> "web"
                 R.id.nav_user -> "user"
                 R.id.nav_rn -> "rn"
@@ -98,15 +113,11 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
 
     private fun createFragment(tag: String): Fragment? {
         return when (tag) {
-            "home" -> com.mohanlv.home.ui.HomeFragment()
-            "web" -> RouterManager.getFragment(RoutePath.WEB_VIEW)
-            "user" -> RouterManager.getFragment(RoutePath.USER)
-            "rn" -> {
-                val bundle = android.os.Bundle()
-                bundle.putString("repo", "MyRNApp")
-                bundle.putString("componentName", "MyRNApp")
-                com.mohanlv.reactnative.ui.RNFragment().apply { arguments = bundle }
-            }
+            "home" -> RouterManager.getFragment("oneandroid://home/main")
+            "discover" -> RouterManager.getFragment("oneandroid://shortvideo/discover")
+            "web" -> RouterManager.getFragment("oneandroid://home/web")
+            "user" -> RouterManager.getFragment("oneandroid://home/user")
+            "rn" -> RouterManager.getFragment("oneandroid://common/rn?repo=MyRNApp&componentName=MyRNApp")
             else -> null
         }
     }

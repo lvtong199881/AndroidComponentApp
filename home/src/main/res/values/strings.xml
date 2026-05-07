@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="home">Home</string>
+    <string name="discover">Discover</string>
     <string name="web">Web</string>
     <string name="my">My</string>
     <string name="rn">RN</string>
+    <string name="short_video">短视频</string>
+    <string name="short_video_desc">播放短视频</string>
 </resources>
