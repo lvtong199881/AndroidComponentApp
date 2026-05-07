@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
-import com.mohanlv.shortvideo.R
+import com.mohanlv.router.RouterManager
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentPhotosBinding
 import com.mohanlv.shortvideo.model.Photo
@@ -20,7 +23,7 @@ import kotlinx.coroutines.launch
 class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
 
     private val photos = mutableListOf<Photo>()
-    private lateinit var photoAdapter: PhotoAdapter
+    private lateinit var photosAdapter: PhotosAdapter
 
     private var currentPage = 1
     private var isLoading = false
@@ -32,7 +35,16 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setupWindowInsets()
         setupRecyclerView()
+    }
+
+    private fun setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.recyclerView) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = insets.top)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     override fun initData() {
@@ -41,27 +53,23 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
     }
 
     private fun setupRecyclerView() {
-        photoAdapter = PhotoAdapter(photos) { photo ->
-            // 点击照片事件
-        }
+        photosAdapter = PhotosAdapter(
+            photos = photos,
+            onItemClick = { _ ->
+                // 点击照片事件
+            },
+            onSearchClick = {
+                RouterManager.navigate("oneandroid://shortvideo/photos/search")
+            }
+        )
 
         binding.recyclerView.apply {
-            layoutManager = androidx.recyclerview.widget.StaggeredGridLayoutManager(2, androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL)
-            adapter = photoAdapter
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = photosAdapter
 
-            // 加载更多
-            addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val layoutManager = recyclerView.layoutManager as? GridLayoutManager ?: return
-                    val totalItemCount = layoutManager.itemCount
-                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                    if (lastVisibleItem >= totalItemCount - 3 && !isLoading && hasMoreData) {
-                        loadMorePhotos()
-                    }
-                }
-            })
+            // 搜索栏占满整行，照片保持2列
+            val manager = layoutManager as StaggeredGridLayoutManager
+            manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
         }
     }
 
@@ -77,7 +85,7 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
                     if (body != null && !body.photos.isNullOrEmpty()) {
                         photos.clear()
                         photos.addAll(body.photos)
-                        photoAdapter.notifyDataSetChanged()
+                        photosAdapter.notifyPhotosChanged()
                         currentPage = 1
                         hasMoreData = !body.nextPage.isNullOrEmpty()
                         binding.layoutEmpty.visibility = View.GONE
@@ -109,9 +117,8 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null && !body.photos.isNullOrEmpty()) {
-                        val startPosition = photos.size
                         photos.addAll(body.photos)
-                        photoAdapter.notifyItemRangeInserted(startPosition, body.photos.size)
+                        photosAdapter.addPhotos(body.photos)
                         currentPage = nextPage
                         hasMoreData = !body.nextPage.isNullOrEmpty()
                     } else {
