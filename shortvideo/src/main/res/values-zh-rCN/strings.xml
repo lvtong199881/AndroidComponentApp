@@ -16,6 +16,13 @@
     <string name="settings">设置</string>
     <string name="tab_photos">照片</string>
     <string name="tab_videos">视频</string>
+    <string name="search_photos">搜索照片</string>
+    <string name="search">搜索</string>
+    <string name="search_photos_hint">搜索照片</string>
+    <string name="search_photos_empty">暂无搜索结果</string>
+    <string name="search_photos_tip">搜索照片</string>
+    <string name="back_desc">返回</string>
+    <string name="clear_desc">清空</string>
     <string name="no_photos">暂无照片</string>
     <string name="no_videos">暂无视频</string>
     <string name="photo_desc">照片</string>

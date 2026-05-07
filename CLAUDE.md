@@ -9,6 +9,7 @@
 - **Java/Android**: Java 17，compileSdk 35，minSdk 24
 - **网络库**: Retrofit 2.9.0 + OkHttp 4.12.0
 - **图片库**: Coil 2.5.0
+- **路由库**：Router
 - **基础组件**: base、network、router、startup、logger、reactnative、websdk
 
 ## 常见任务
