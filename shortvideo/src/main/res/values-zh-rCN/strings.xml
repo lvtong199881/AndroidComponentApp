@@ -14,4 +14,11 @@
     <string name="like_desc">点赞视频</string>
     <string name="play_icon_desc">播放视频</string>
     <string name="settings">设置</string>
+    <string name="tab_photos">照片</string>
+    <string name="tab_videos">视频</string>
+    <string name="no_photos">暂无照片</string>
+    <string name="no_videos">暂无视频</string>
+    <string name="photo_desc">照片</string>
+    <string name="video_thumbnail_desc">视频缩略图</string>
+    <string name="play_video_desc">播放视频</string>
 </resources>

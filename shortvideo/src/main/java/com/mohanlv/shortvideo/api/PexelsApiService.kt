@@ -1,5 +1,6 @@
 package com.mohanlv.shortvideo.api
 
+import com.mohanlv.shortvideo.model.PexelsPhotoResponse
 import com.mohanlv.shortvideo.model.PexelsResponse
 import com.mohanlv.shortvideo.model.Video
 import retrofit2.Response
@@ -8,7 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 /**
- * Pexels Videos API 服务接口
+ * Pexels API 服务接口（Photos + Videos）
  * 文档：https://www.pexels.com/api/documentation/
  *
  * 注意：需要申请 API Key，免费账号每月 200 请求
@@ -24,6 +25,38 @@ interface PexelsApiService {
         // API 基础地址
         const val BASE_URL = "https://api.pexels.com/"
     }
+
+    // ==================== Photos API ====================
+
+    /**
+     * 获取精选照片
+     * GET /v1/curated
+     *
+     * @param page 页码（默认1）
+     * @param perPage 每页数量（默认15，最大80）
+     */
+    @GET("v1/curated")
+    suspend fun getCuratedPhotos(
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 15
+    ): Response<PexelsPhotoResponse>
+
+    /**
+     * 搜索照片
+     * GET /v1/search
+     *
+     * @param query 搜索关键词
+     * @param page 页码（默认1）
+     * @param perPage 每页数量（默认15，最大80）
+     */
+    @GET("v1/search")
+    suspend fun searchPhotos(
+        @Query("query") query: String,
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 15
+    ): Response<PexelsPhotoResponse>
+
+    // ==================== Videos API ====================
 
     /**
      * 获取热门视频
