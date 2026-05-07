@@ -15,7 +15,7 @@
 ## 常见任务
 - 集成：
   - 先判断当前项目是否有develop分支
-    - 如果有，则**从 develop 分支发起 PR 来合并到 main 分支**，不能直接 push 到 main。创建 PR 使用 token（通过环境变量或配置获取 GitHub token）来发起。
+    - 如果有，则**从 develop 分支发起 PR 来合并到 main 分支**，不能直接 push 到 main。调用github api创建PR, 通过环境变量或配置获取 GitHub token。
     - 如果没有，则把local/develop push到remote/develop，切换到local/main分支，执行git pull，merge origin/develop 到 local/main，最后git push
 
 ## 工作模式
