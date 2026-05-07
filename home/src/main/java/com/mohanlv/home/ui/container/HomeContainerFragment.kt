@@ -2,7 +2,11 @@ package com.mohanlv.home.ui.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.home.R
@@ -27,6 +31,7 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setupWindowInsets()
         setupBottomNavigation()
 
         // 恢复保存的选中状态（避免 popBackStack 后状态丢失）
@@ -53,6 +58,15 @@ class HomeContainerFragment : BaseFragment<FragmentHomeContainerBinding>() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         currentFragmentTag?.let { outState.putString(KEY_SELECTED_TAG, it) }
+    }
+
+    private fun setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // 底部导航栏需要避开导航栏
+            binding.bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     private fun setupBottomNavigation() {
