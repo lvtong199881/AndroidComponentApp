@@ -17,7 +17,6 @@ import com.mohanlv.shortvideo.databinding.FragmentShortVideoBinding
 import com.mohanlv.shortvideo.model.Video
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.log
-import com.mohanlv.shortvideo.ui.ShortVideoAdapter
 import kotlinx.coroutines.launch
 
 /**

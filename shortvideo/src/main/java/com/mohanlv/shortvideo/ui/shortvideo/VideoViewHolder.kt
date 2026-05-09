@@ -1,4 +1,4 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.shortvideo
 
 import android.view.View
 import android.widget.SeekBar

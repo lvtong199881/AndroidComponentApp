@@ -1,10 +1,11 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.shortvideo
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
@@ -12,6 +13,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentVideosBinding
 import com.mohanlv.shortvideo.model.Video
+import com.mohanlv.shortvideo.ui.DiscoverVideoAdapter
 import kotlinx.coroutines.launch
 
 /**
@@ -51,8 +53,8 @@ class VideosFragment : BaseFragment<FragmentVideosBinding>() {
             adapter = videoAdapter
 
             // 加载更多
-            addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val layoutManager = recyclerView.layoutManager as? StaggeredGridLayoutManager ?: return
                     val totalItemCount = layoutManager.itemCount
