@@ -25,7 +25,14 @@ import kotlinx.coroutines.launch
 class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
 
     private val photos = mutableListOf<Photo>()
-    private lateinit var photoAdapter: PhotoAdapter
+    private val photoAdapter: PhotoAdapter by lazy {
+        PhotoAdapter(
+            photos = photos,
+            onItemClick = { _ ->
+                // 点击照片事件
+            }
+        )
+    }
 
     private var currentPage = 1
     private var isLoading = false
@@ -49,13 +56,6 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     }
 
     private fun setupRecyclerView() {
-        photoAdapter = PhotoAdapter(
-            photos = photos,
-            onItemClick = { _ ->
-                // 点击照片事件
-            }
-        )
-
         binding.recyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             adapter = photoAdapter

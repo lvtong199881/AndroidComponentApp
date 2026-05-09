@@ -14,7 +14,8 @@ import com.mohanlv.shortvideo.databinding.FragmentEmptyBinding
 class EmptyFragment : Fragment() {
 
     private var _binding: FragmentEmptyBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentEmptyBinding?
+        get() = _binding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,7 +23,7 @@ class EmptyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEmptyBinding.inflate(inflater, container, false)
-        return binding.root
+        return _binding?.root ?: View(context)
     }
 
     override fun onDestroyView() {

@@ -21,7 +21,11 @@ import kotlinx.coroutines.launch
 class VideosFragment : BaseFragment<FragmentVideosBinding>() {
 
     private val videos = mutableListOf<Video>()
-    private lateinit var videoAdapter: DiscoverVideoAdapter
+    private val videoAdapter: DiscoverVideoAdapter by lazy {
+        DiscoverVideoAdapter(videos) { _ ->
+            // 点击视频事件
+        }
+    }
 
     private var currentPage = 1
     private var isLoading = false
@@ -42,10 +46,6 @@ class VideosFragment : BaseFragment<FragmentVideosBinding>() {
     }
 
     private fun setupRecyclerView() {
-        videoAdapter = DiscoverVideoAdapter(videos) { video ->
-            // 点击视频事件
-        }
-
         binding.recyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             adapter = videoAdapter
