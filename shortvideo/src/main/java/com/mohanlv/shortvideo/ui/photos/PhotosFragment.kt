@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
 import com.mohanlv.router.RouterManager
+import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentPhotosBinding
 import com.mohanlv.shortvideo.model.Photo
@@ -20,10 +21,19 @@ import kotlinx.coroutines.launch
 /**
  * 精选照片页面
  */
+@Route(path = "oneandroid://shortvideo/photos", description = "精选照片")
 class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
 
     private val photos = mutableListOf<Photo>()
-    private lateinit var photosAdapter: PhotosAdapter
+    private val photosAdapter: PhotosAdapter by lazy {
+        PhotosAdapter(
+            photos = photos,
+            onItemClick = { _ -> },
+            onSearchClick = {
+                RouterManager.navigate("oneandroid://shortvideo/photos/search")
+            }
+        )
+    }
 
     private var currentPage = 1
     private var isLoading = false
@@ -53,21 +63,10 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
     }
 
     private fun setupRecyclerView() {
-        photosAdapter = PhotosAdapter(
-            photos = photos,
-            onItemClick = { _ ->
-                // 点击照片事件
-            },
-            onSearchClick = {
-                RouterManager.navigate("oneandroid://shortvideo/photos/search")
-            }
-        )
-
         binding.recyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             adapter = photosAdapter
 
-            // 搜索栏占满整行，照片保持2列
             val manager = layoutManager as StaggeredGridLayoutManager
             manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
         }

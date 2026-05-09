@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
+import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentVideosBinding
 import com.mohanlv.shortvideo.model.Video
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 /**
  * 热门视频页面
  */
+@Route(path = "oneandroid://shortvideo/videos", description = "热门视频")
 class VideosFragment : BaseFragment<FragmentVideosBinding>() {
 
     private val videos = mutableListOf<Video>()
