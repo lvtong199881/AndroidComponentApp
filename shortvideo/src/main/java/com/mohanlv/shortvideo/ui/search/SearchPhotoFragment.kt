@@ -17,7 +17,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentSearchPhotoBinding
 import com.mohanlv.shortvideo.model.Photo
-import com.mohanlv.shortvideo.ui.PhotoAdapter
+import com.mohanlv.shortvideo.ui.photos.PhotoAdapter
 import kotlinx.coroutines.launch
 
 /**
