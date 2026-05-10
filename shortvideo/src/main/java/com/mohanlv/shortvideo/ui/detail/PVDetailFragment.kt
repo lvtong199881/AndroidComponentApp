@@ -1,5 +1,6 @@
 package com.mohanlv.shortvideo.ui.detail
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,46 +14,14 @@ import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentPvDetailBinding
+import com.mohanlv.shortvideo.model.Photo
+import com.mohanlv.shortvideo.model.Video
 
 /**
  * 图片/视频详情页面
  */
 @Route(path = "oneandroid://shortvideo/detail", description = "详情")
 class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
-
-    companion object {
-        private const val EXTRA_TYPE = "type"
-        private const val EXTRA_PHOTO_URL = "photo_url"
-        private const val EXTRA_VIDEO_URL = "video_url"
-        private const val EXTRA_IMAGE_URL = "image_url"
-        private const val EXTRA_AUTHOR = "author"
-        private const val TYPE_PHOTO = "photo"
-        private const val TYPE_VIDEO = "video"
-
-        fun navigateToPhoto(photoUrl: String, imageUrl: String, author: String? = null) {
-            RouterManager.navigate(
-                "oneandroid://shortvideo/detail",
-                Bundle().apply {
-                    putString(EXTRA_TYPE, TYPE_PHOTO)
-                    putString(EXTRA_PHOTO_URL, photoUrl)
-                    putString(EXTRA_IMAGE_URL, imageUrl)
-                    putString(EXTRA_AUTHOR, author)
-                }
-            )
-        }
-
-        fun navigateToVideo(videoUrl: String, imageUrl: String, author: String? = null) {
-            RouterManager.navigate(
-                "oneandroid://shortvideo/detail",
-                Bundle().apply {
-                    putString(EXTRA_TYPE, TYPE_VIDEO)
-                    putString(EXTRA_VIDEO_URL, videoUrl)
-                    putString(EXTRA_IMAGE_URL, imageUrl)
-                    putString(EXTRA_AUTHOR, author)
-                }
-            )
-        }
-    }
 
     private var isMuted = false
 
@@ -67,39 +36,42 @@ class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
         }
         binding.toolbar.updatePadding(top = getStatusBarHeight(getSafeContext()))
 
-        arguments?.let { args ->
-            val type = args.getString(EXTRA_TYPE)
-            val imageUrl = args.getString(EXTRA_IMAGE_URL, "")
-            val author = args.getString(EXTRA_AUTHOR, "")
+        val photo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("extra_photo", Photo::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getParcelable("extra_photo")
+        }
 
-            binding.toolbar.title = author
+        val video = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("extra_video", Video::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getParcelable("extra_video")
+        }
 
-            when (type) {
-                TYPE_PHOTO -> {
-                    val photoUrl = args.getString(EXTRA_PHOTO_URL, "")
-                    showPhoto(photoUrl)
-                }
-                TYPE_VIDEO -> {
-                    val videoUrl = args.getString(EXTRA_VIDEO_URL, "")
-                    showVideo(videoUrl, imageUrl)
-                }
-            }
+        if (video != null) {
+            showVideo(video)
+        } else if (photo != null) {
+            showPhoto(photo)
         }
     }
 
-    private fun showPhoto(photoUrl: String) {
+    private fun showPhoto(photo: Photo) {
+        binding.toolbar.title = photo.photographer
         binding.imageContent.visibility = View.VISIBLE
         binding.videoContent.visibility = View.GONE
         binding.btnPlay.visibility = View.GONE
         binding.btnMute.visibility = View.GONE
-        binding.imageContent.load(photoUrl) {
+        binding.imageContent.load(photo.src.large) {
             crossfade(true)
             placeholder(R.color.background)
             error(R.color.divider)
         }
     }
 
-    private fun showVideo(videoUrl: String, imageUrl: String) {
+    private fun showVideo(video: Video) {
+        binding.toolbar.title = video.user.name
         binding.imageContent.visibility = View.VISIBLE
         binding.videoContent.visibility = View.GONE
         binding.btnPlay.visibility = View.VISIBLE
@@ -107,15 +79,13 @@ class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
 
         binding.btnMute.setOnClickListener { toggleMute() }
 
-        // 显示封面图
-        binding.imageContent.load(imageUrl) {
+        binding.imageContent.load(video.image) {
             crossfade(true)
             placeholder(R.color.background)
             error(R.color.divider)
         }
 
-        // 自动播放视频
-        playVideo(videoUrl)
+        video.getBestVideoUrl()?.let { playVideo(it) }
     }
 
     private var mediaPlayer: android.media.MediaPlayer? = null
@@ -125,7 +95,6 @@ class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
         binding.btnPlay.visibility = View.GONE
         binding.videoContent.visibility = View.VISIBLE
 
-        // 设置 VideoView 居中
         val params = binding.videoContent.layoutParams as android.widget.FrameLayout.LayoutParams
         params.gravity = android.view.Gravity.CENTER
         binding.videoContent.layoutParams = params
