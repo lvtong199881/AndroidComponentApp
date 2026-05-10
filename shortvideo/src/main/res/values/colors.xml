@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
     <color name="background">#F5F5F5</color>
     <color name="surface">#FFFFFF</color>
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="divider">#E0E0E0</color>
+    <color name="chip_background_unselected">#1F000000</color>
+    <color name="chip_background_selected">#2196F3</color>
 </resources>

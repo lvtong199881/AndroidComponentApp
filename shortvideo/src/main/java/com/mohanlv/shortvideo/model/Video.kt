@@ -6,17 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * 视频数据模型
- * 使用 Pexels Videos API: https://www.pexels.com/api/
- *
- * @property id 视频ID
- * @property width 视频宽度
- * @property height 视频高度
- * @property url 视频页面URL
- * @property image 封面图片URL
- * @property duration 视频时长（秒）
- * @property user 视频作者信息
- * @property videoFiles 视频文件列表
- * @property videoPictures 视频图片列表
+ * 使用 Pexels Videos API
  */
 data class Video(
     @SerializedName("id")
@@ -45,22 +35,15 @@ data class Video(
 
     @SerializedName("video_pictures")
     val videoPictures: List<VideoPicture>
-) : Parcelable {
-    /**
-     * 获取最佳质量的视频URL
-     */
+) {
     fun getBestVideoUrl(): String? {
         return videoFiles
-            ?.filter { it.link?.isNotEmpty() == true }
-            ?.sortedByDescending { it.quality?.let { q -> q.removeSuffix("p").toIntOrNull() } ?: 0 }
-            ?.firstOrNull()
+            .filter { it.link?.isNotEmpty() == true }
+            .sortedByDescending { it.quality?.let { q -> q.removeSuffix("p").toIntOrNull() } ?: 0 }
+            .firstOrNull()
             ?.link
     }
 
-    /**
-     * 获取视频时长（格式化）
-     * 例如：90秒 -> "01:30"
-     */
     fun getFormattedDuration(): String {
         val minutes = duration / 60
         val seconds = duration % 60

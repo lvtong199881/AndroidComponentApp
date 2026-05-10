@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:clickable="true"
+    android:focusable="true">
 
     <!-- 搜索栏 -->
     <LinearLayout
@@ -57,12 +59,45 @@
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="44dp"
             android:paddingHorizontal="16dp"
             android:background="@drawable/bg_search_button"
             android:text="@string/search"
             android:textColor="@color/surface"
             android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <!-- 筛选项栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:background="@color/surface">
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical"
+                app:singleLine="true"/>
+
+        </HorizontalScrollView>
+
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_menu_more"
+            android:contentDescription="@string/menu_desc"/>
 
     </LinearLayout>
 

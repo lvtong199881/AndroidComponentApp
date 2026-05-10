@@ -38,7 +38,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation("com.mohanlv:common:1.0.9")
+    implementation("com.mohanlv:common:1.0.11")
 
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")

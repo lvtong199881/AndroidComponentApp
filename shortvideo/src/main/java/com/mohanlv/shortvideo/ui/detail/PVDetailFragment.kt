@@ -1,6 +1,5 @@
 package com.mohanlv.shortvideo.ui.detail
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentPvDetailBinding
 import com.mohanlv.shortvideo.model.Photo
 import com.mohanlv.shortvideo.model.Video
+import com.mohanlv.common.GsonUtils
 
 /**
  * 图片/视频详情页面
@@ -36,19 +36,11 @@ class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
         }
         binding.toolbar.updatePadding(top = getStatusBarHeight(getSafeContext()))
 
-        val photo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("extra_photo", Photo::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            arguments?.getParcelable("extra_photo")
-        }
+        val photoJson = arguments?.getString("extra_photo")
+        val videoJson = arguments?.getString("extra_video")
 
-        val video = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("extra_video", Video::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            arguments?.getParcelable("extra_video")
-        }
+        val photo = GsonUtils.fromJson(photoJson, Photo::class.java)
+        val video = GsonUtils.fromJson(videoJson, Video::class.java)
 
         if (video != null) {
             showVideo(video)

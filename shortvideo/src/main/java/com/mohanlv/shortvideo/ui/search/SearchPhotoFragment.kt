@@ -1,21 +1,30 @@
 package com.mohanlv.shortvideo.ui.search
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
 import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
+import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentSearchPhotoBinding
+import com.mohanlv.shortvideo.databinding.PanelFilterBinding
 import com.mohanlv.shortvideo.model.Photo
 import com.mohanlv.shortvideo.navigateToDetail
 import com.mohanlv.shortvideo.ui.photos.PhotoAdapter
@@ -42,6 +51,16 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     private var hasMoreData = true
     private var currentQuery = ""
 
+    private val chipMap = mutableMapOf<Int, Chip>()
+
+    private var currentOrientation = ""
+    private var currentSize = ""
+    private var currentColor = ""
+
+    private var tempOrientation = ""
+    private var tempSize = ""
+    private var tempColor = ""
+
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentSearchPhotoBinding {
         return FragmentSearchPhotoBinding.inflate(inflater, container, false)
     }
@@ -50,6 +69,7 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
         super.initView(savedInstanceState)
         setupRecyclerView()
         setupSearchBar()
+        setupFilterChips()
         // 自动拉起键盘
         binding.editSearch.requestFocus()
         binding.editSearch.postDelayed({
@@ -102,6 +122,251 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
         }
     }
 
+    private fun setupFilterChips() {
+        addFilterChip(R.string.filter_orientation)
+        addFilterChip(R.string.filter_size)
+        addFilterChip(R.string.filter_color)
+
+        binding.btnMenu.setOnClickListener {
+            showFilterPanel()
+        }
+    }
+
+    private fun showFilterPanel() {
+        tempOrientation = currentOrientation
+        tempSize = currentSize
+        tempColor = currentColor
+
+        val panelBinding = PanelFilterBinding.inflate(LayoutInflater.from(requireContext()))
+        val popupWindow = PopupWindow(
+            panelBinding.root,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            elevation = 8f
+            setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            inputMethodMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
+            softInputMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
+        }
+
+        setupPanelChips(panelBinding)
+
+        panelBinding.btnReset.setOnClickListener {
+            tempOrientation = ""
+            tempSize = ""
+            tempColor = ""
+            setupPanelChips(panelBinding)
+        }
+
+        panelBinding.btnConfirm.setOnClickListener {
+            currentOrientation = tempOrientation
+            currentSize = tempSize
+            currentColor = tempColor
+            updateChipStates()
+            popupWindow.dismiss()
+            if (currentQuery.isNotEmpty()) {
+                performSearch()
+            }
+        }
+
+        panelBinding.root.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        popupWindow.setAnimationStyle(R.style.Animation_Panel)
+        popupWindow.showAsDropDown(binding.btnMenu)
+    }
+
+    private fun setupPanelChips(panelBinding: PanelFilterBinding) {
+        panelBinding.chipGroupOrientation.removeAllViews()
+        panelBinding.chipGroupSize.removeAllViews()
+        panelBinding.chipGroupColor.removeAllViews()
+
+        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_landscape, "landscape", tempOrientation) { tempOrientation = it }
+        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_portrait, "portrait", tempOrientation) { tempOrientation = it }
+        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_square, "square", tempOrientation) { tempOrientation = it }
+
+        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_large, "large", tempSize) { tempSize = it }
+        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_medium, "medium", tempSize) { tempSize = it }
+        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_small, "small", tempSize) { tempSize = it }
+
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_black, "black", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_black_white, "black_and_white", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_red, "red", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_orange, "orange", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_yellow, "yellow", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_green, "green", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_turquoise, "turquoise", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_blue, "blue", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_violet, "violet", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_pink, "pink", tempColor) { tempColor = it }
+        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_brown, "brown", tempColor) { tempColor = it }
+    }
+
+    private fun addPanelChip(chipGroup: ChipGroup, labelRes: Int, value: String, currentValue: String, onSelected: (String) -> Unit) {
+        val chip = Chip(requireContext()).apply {
+            text = getString(labelRes)
+            isCheckable = true
+            isChecked = value == currentValue
+            chipBackgroundColor = ColorStateList.valueOf(
+                if (value == currentValue) Color.parseColor("#2196F3") else Color.parseColor("#1F000000")
+            )
+            setTextColor(if (value == currentValue) Color.WHITE else resources.getColor(R.color.text_primary, null))
+            isCloseIconVisible = value == currentValue
+            closeIconTint = ColorStateList.valueOf(Color.WHITE)
+            setCloseIconResource(R.drawable.ic_chip_close)
+            isCheckedIconVisible = false
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    // Uncheck all other chips in the group
+                    for (i in 0 until chipGroup.childCount) {
+                        val otherChip = chipGroup.getChildAt(i) as? Chip
+                        if (otherChip != null && otherChip != this) {
+                            otherChip.isChecked = false
+                            otherChip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#1F000000"))
+                            otherChip.setTextColor(resources.getColor(R.color.text_primary, null))
+                            otherChip.isCloseIconVisible = false
+                        }
+                    }
+                    // Style this chip as selected
+                    chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#2196F3"))
+                    setTextColor(Color.WHITE)
+                    isCloseIconVisible = true
+                    onSelected(value)
+                }
+            }
+        }
+        chipGroup.addView(chip)
+    }
+
+    private fun updateChipStates() {
+        updateSingleChipState(R.string.filter_orientation, currentOrientation)
+        updateSingleChipState(R.string.filter_size, currentSize)
+        updateSingleChipState(R.string.filter_color, currentColor)
+    }
+
+    private fun updateSingleChipState(titleRes: Int, value: String) {
+        val chip = chipMap[titleRes] ?: return
+        if (value.isEmpty()) {
+            chip.text = getString(titleRes)
+            chip.setChipBackgroundColorResource(R.color.chip_background_unselected)
+            chip.setTextColor(resources.getColor(R.color.text_primary, null))
+            chip.isCloseIconVisible = false
+        } else {
+            val optionText = getFilterOptions(titleRes).find { it.second == value }?.first ?: ""
+            chip.text = getString(titleRes) + ": " + optionText
+            chip.setChipBackgroundColorResource(R.color.chip_background_selected)
+            chip.setTextColor(resources.getColor(android.R.color.white, null))
+            chip.isCloseIconVisible = true
+        }
+    }
+
+    private fun addFilterChip(titleRes: Int) {
+        val chip = Chip(requireContext()).apply {
+            text = getString(titleRes)
+            isCheckable = false
+            setChipBackgroundColorResource(R.color.chip_background_unselected)
+            setTextColor(resources.getColor(R.color.text_primary, null))
+            isCloseIconVisible = false
+            closeIconTint = ColorStateList.valueOf(Color.WHITE)
+            setCloseIconResource(R.drawable.ic_chip_close)
+            setOnClickListener { view ->
+                showFilterPopup(view as Chip, titleRes)
+            }
+            setOnCloseIconClickListener {
+                clearFilter(this, titleRes)
+            }
+        }
+        chipMap[titleRes] = chip
+        binding.chipGroup.addView(chip)
+    }
+
+    private fun clearFilter(chip: Chip, titleRes: Int) {
+        chip.text = getString(titleRes)
+        chip.setChipBackgroundColorResource(R.color.chip_background_unselected)
+        chip.setTextColor(resources.getColor(R.color.text_primary, null))
+        chip.isCloseIconVisible = false
+        updateFilterParam(titleRes, "")
+        if (currentQuery.isNotEmpty()) {
+            performSearch()
+        }
+    }
+
+    private fun showFilterPopup(anchorChip: Chip, titleRes: Int) {
+        val popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_filter, null)
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            elevation = 8f
+            setBackgroundDrawable(resources.getDrawable(R.drawable.bg_popup_filter, null))
+        }
+
+        val titleText = popupView.findViewById<TextView>(R.id.textTitle)
+        val container = popupView.findViewById<ViewGroup>(R.id.containerOptions)
+        titleText.text = getString(titleRes)
+
+        val options = getFilterOptions(titleRes)
+        container.removeAllViews()
+        for (option in options) {
+            val optionView = LayoutInflater.from(requireContext()).inflate(R.layout.item_filter_option, container, false)
+            val textView = optionView.findViewById<TextView>(R.id.textOption)
+            textView.text = option.first
+            textView.setOnClickListener {
+                anchorChip.text = getString(titleRes) + ": " + option.first
+                anchorChip.setChipBackgroundColorResource(R.color.chip_background_selected)
+                anchorChip.setTextColor(resources.getColor(android.R.color.white, null))
+                anchorChip.isCloseIconVisible = true
+                updateFilterParam(titleRes, option.second)
+                popupWindow.dismiss()
+                if (currentQuery.isNotEmpty()) {
+                    performSearch()
+                }
+            }
+            container.addView(optionView)
+        }
+
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        popupWindow.showAsDropDown(anchorChip, 0, 0)
+    }
+
+    private fun getFilterOptions(titleRes: Int): List<Pair<String, String>> {
+        return when (titleRes) {
+            R.string.filter_orientation -> listOf(
+                getString(R.string.filter_orientation_landscape) to "landscape",
+                getString(R.string.filter_orientation_portrait) to "portrait",
+                getString(R.string.filter_orientation_square) to "square"
+            )
+            R.string.filter_size -> listOf(
+                getString(R.string.filter_size_large) to "large",
+                getString(R.string.filter_size_medium) to "medium",
+                getString(R.string.filter_size_small) to "small"
+            )
+            R.string.filter_color -> listOf(
+                getString(R.string.filter_color_black) to "black",
+                getString(R.string.filter_color_black_white) to "black_and_white",
+                getString(R.string.filter_color_red) to "red",
+                getString(R.string.filter_color_orange) to "orange",
+                getString(R.string.filter_color_yellow) to "yellow",
+                getString(R.string.filter_color_green) to "green",
+                getString(R.string.filter_color_turquoise) to "turquoise",
+                getString(R.string.filter_color_blue) to "blue",
+                getString(R.string.filter_color_violet) to "violet",
+                getString(R.string.filter_color_pink) to "pink",
+                getString(R.string.filter_color_brown) to "brown"
+            )
+            else -> emptyList()
+        }
+    }
+
+    private fun updateFilterParam(titleRes: Int, value: String) {
+        when (titleRes) {
+            R.string.filter_orientation -> currentOrientation = value
+            R.string.filter_size -> currentSize = value
+            R.string.filter_color -> currentColor = value
+        }
+    }
+
     private fun performSearch() {
         val query = binding.editSearch.text.toString().trim()
         if (query.isEmpty()) {
@@ -111,10 +376,10 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
         // 隐藏键盘
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.editSearch.windowToken, 0)
-        searchPhotos(query)
+        searchPhotos(query, currentOrientation, currentSize, currentColor)
     }
 
-    private fun searchPhotos(query: String) {
+    private fun searchPhotos(query: String, orientation: String, size: String, color: String) {
         if (isLoading) return
         isLoading = true
         currentPage = 1
@@ -123,7 +388,14 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = PexelsApiClient.apiService.searchPhotos(query = query, page = 1, perPage = 20)
+                val response = PexelsApiClient.apiService.searchPhotos(
+                    query = query,
+                    page = 1,
+                    perPage = 20,
+                    orientation = orientation.ifEmpty { null },
+                    size = size.ifEmpty { null },
+                    color = color.ifEmpty { null }
+                )
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null && !body.photos.isNullOrEmpty()) {
@@ -159,7 +431,14 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val nextPage = currentPage + 1
-                val response = PexelsApiClient.apiService.searchPhotos(query = currentQuery, page = nextPage, perPage = 20)
+                val response = PexelsApiClient.apiService.searchPhotos(
+                    query = currentQuery,
+                    page = nextPage,
+                    perPage = 20,
+                    orientation = currentOrientation.ifEmpty { null },
+                    size = currentSize.ifEmpty { null },
+                    color = currentColor.ifEmpty { null }
+                )
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null && !body.photos.isNullOrEmpty()) {

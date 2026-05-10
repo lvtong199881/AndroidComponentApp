@@ -3,18 +3,11 @@ package com.mohanlv.shortvideo.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
  * 照片数据模型
  * 使用 Pexels Photos API
- *
- * @property id 照片ID
- * @property width 照片宽度
- * @property height 照片高度
- * @property url 照片页面URL
- * @property photographer 摄影师名称
- * @property photographerUrl 摄影师主页
- * @property src 图片资源URL
  */
 data class Photo(
     @SerializedName("id")
