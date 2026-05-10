@@ -33,6 +33,7 @@
             app:labelVisibilityMode="labeled"
             app:itemIconTint="@color/bottom_nav_item_color"
             app:itemTextColor="@color/bottom_nav_item_color"
+            app:itemRippleColor="@null"
             app:elevation="0dp"/>
 
     </LinearLayout>
