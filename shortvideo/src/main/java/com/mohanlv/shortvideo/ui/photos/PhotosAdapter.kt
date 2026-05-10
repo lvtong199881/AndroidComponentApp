@@ -73,6 +73,4 @@ class PhotosAdapter(
         photos.addAll(newPhotos)
         notifyItemRangeInserted(startPosition, newPhotos.size)
     }
-
-    private class SearchHeaderViewHolder(val binding: ItemSearchHeaderBinding) : RecyclerView.ViewHolder(binding.root)
 }

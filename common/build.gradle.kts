@@ -53,6 +53,7 @@ dependencies {
     api("com.mohanlv:logger:1.2.31")
     api("com.mohanlv:reactnative:1.2.13")
     api("com.mohanlv:websdk:1.2.20")
+    api("com.mohanlv:login:1.2.17")
 
     // 网络库
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -95,6 +96,7 @@ publishing {
             artifact(file("build/outputs/aar/common-release.aar")) {
                 extension = "aar"
             }
+
             pom {
                 name.set("common")
                 description.set("Android Component: common")
@@ -103,6 +105,16 @@ publishing {
                         name.set("MIT")
                         url.set("https://opensource.org/licenses/MIT")
                     }
+                }
+            }
+            // 自动添加 api 依赖到 POM
+            pom.withXml {
+                val dependenciesNode = asNode().appendNode("dependencies")
+                configurations.api.get().dependencies.forEach { dep ->
+                    val depNode = dependenciesNode.appendNode("dependency")
+                    depNode.appendNode("groupId", dep.group)
+                    depNode.appendNode("artifactId", dep.name)
+                    depNode.appendNode("version", dep.version)
                 }
             }
         }
