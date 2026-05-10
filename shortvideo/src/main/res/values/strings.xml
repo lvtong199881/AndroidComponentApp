@@ -28,4 +28,5 @@
     <string name="search_photos_tip">Search for photos</string>
     <string name="back_desc">Back</string>
     <string name="clear_desc">Clear</string>
+    <string name="fragment_not_found">Fragment not found</string>
 </resources>

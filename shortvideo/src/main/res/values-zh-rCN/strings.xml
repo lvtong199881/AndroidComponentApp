@@ -25,7 +25,13 @@
     <string name="clear_desc">清空</string>
     <string name="no_photos">暂无照片</string>
     <string name="no_videos">暂无视频</string>
+    <string name="share_desc">分享视频</string>
+    <string name="comment_desc">查看评论</string>
+    <string name="like_desc">点赞视频</string>
+    <string name="play_icon_desc">播放视频</string>
+    <string name="settings">设置</string>
     <string name="photo_desc">照片</string>
     <string name="video_thumbnail_desc">视频缩略图</string>
     <string name="play_video_desc">播放视频</string>
+    <string name="fragment_not_found">未找到页面</string>
 </resources>

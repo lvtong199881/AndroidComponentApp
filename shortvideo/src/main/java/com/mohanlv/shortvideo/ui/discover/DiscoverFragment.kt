@@ -1,18 +1,17 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentDiscoverBinding
+import com.mohanlv.shortvideo.ui.discover.DiscoverPagerAdapter
 
 /**
  * 发现页面
@@ -52,18 +51,5 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                 else -> ""
             }
         }.attach()
-    }
-
-    private class DiscoverPagerAdapter(fragment: Fragment) : androidx.viewpager2.adapter.FragmentStateAdapter(fragment) {
-
-        override fun getItemCount(): Int = 2
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> PhotosFragment()
-                1 -> VideosFragment()
-                else -> throw IllegalArgumentException("Invalid position: $position")
-            }
-        }
     }
 }

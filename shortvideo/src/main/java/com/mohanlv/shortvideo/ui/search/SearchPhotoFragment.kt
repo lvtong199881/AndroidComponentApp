@@ -1,4 +1,4 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.search
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.logger.Logger
@@ -16,6 +17,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentSearchPhotoBinding
 import com.mohanlv.shortvideo.model.Photo
+import com.mohanlv.shortvideo.ui.PhotoAdapter
 import kotlinx.coroutines.launch
 
 /**
@@ -25,7 +27,14 @@ import kotlinx.coroutines.launch
 class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
 
     private val photos = mutableListOf<Photo>()
-    private lateinit var photoAdapter: PhotoAdapter
+    private val photoAdapter: PhotoAdapter by lazy {
+        PhotoAdapter(
+            photos = photos,
+            onItemClick = { _ ->
+                // 点击照片事件
+            }
+        )
+    }
 
     private var currentPage = 1
     private var isLoading = false
@@ -49,19 +58,12 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     }
 
     private fun setupRecyclerView() {
-        photoAdapter = PhotoAdapter(
-            photos = photos,
-            onItemClick = { _ ->
-                // 点击照片事件
-            }
-        )
-
         binding.recyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             adapter = photoAdapter
 
-            addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val layoutManager = recyclerView.layoutManager as? StaggeredGridLayoutManager ?: return
                     val totalItemCount = layoutManager.itemCount

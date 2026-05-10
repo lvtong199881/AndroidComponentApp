@@ -1,4 +1,4 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.common
 
 import android.content.Context
 import android.util.AttributeSet

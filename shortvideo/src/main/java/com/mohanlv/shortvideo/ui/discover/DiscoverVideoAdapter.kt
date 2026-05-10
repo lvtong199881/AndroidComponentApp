@@ -1,4 +1,4 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.discover
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

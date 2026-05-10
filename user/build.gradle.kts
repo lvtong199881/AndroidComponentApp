@@ -38,11 +38,7 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.mohanlv:base:1.2.33")
-    implementation("com.mohanlv:login:1.2.17")
-    implementation("com.mohanlv:network:1.2.20")
-    implementation("com.mohanlv:router:1.2.15")
-    implementation("com.mohanlv:logger:1.2.31")
+    implementation("com.mohanlv:common:1.0.2")
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.google.code.gson:gson:2.10.1")
 

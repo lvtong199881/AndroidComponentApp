@@ -43,7 +43,12 @@ dependencyResolutionManagement {
     }
 }
 
+// 壳工程app
+include(":app")
+project(":app").projectDir = File(rootDir, "../ComponentHostApp/app")
+
 // 组件模块（独立的 Gradle 项目）
+include(":common")
 include(":login")
 include(":home")
 include(":user")

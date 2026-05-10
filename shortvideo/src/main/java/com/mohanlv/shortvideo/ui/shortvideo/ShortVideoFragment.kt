@@ -1,4 +1,4 @@
-package com.mohanlv.shortvideo.ui
+package com.mohanlv.shortvideo.ui.shortvideo
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.mohanlv.base.base.BaseFragment
 import com.mohanlv.base.utils.getStatusBarHeight
 import com.mohanlv.logger.Logger
-import com.mohanlv.router.RoutePath
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentShortVideoBinding
@@ -52,9 +50,9 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
         val toolbarLp = binding.toolbar.layoutParams
-        log("getStatusBarHeight=${getStatusBarHeight(context!!)}")
+        log("getStatusBarHeight=${getStatusBarHeight(requireContext())}")
         (toolbarLp as? FrameLayout.LayoutParams)?.let {
-            it.topMargin = getStatusBarHeight(context!!)
+            it.topMargin = getStatusBarHeight(requireContext())
         }
         binding.toolbar.inflateMenu(R.menu.menu_short_video)
         binding.toolbar.setOnMenuItemClickListener { item ->
@@ -204,11 +202,5 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         videoAdapter?.release()
-    }
-
-    companion object {
-        fun newInstance(): ShortVideoFragment {
-            return ShortVideoFragment()
-        }
     }
 }
