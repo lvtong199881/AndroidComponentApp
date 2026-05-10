@@ -17,6 +17,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentSearchPhotoBinding
 import com.mohanlv.shortvideo.model.Photo
+import com.mohanlv.shortvideo.navigateToDetail
 import com.mohanlv.shortvideo.ui.photos.PhotoAdapter
 import kotlinx.coroutines.launch
 
@@ -30,8 +31,8 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     private val photoAdapter: PhotoAdapter by lazy {
         PhotoAdapter(
             photos = photos,
-            onItemClick = { _ ->
-                // 点击照片事件
+            onItemClick = { photo ->
+                navigateToDetail(photo = photo)
             }
         )
     }

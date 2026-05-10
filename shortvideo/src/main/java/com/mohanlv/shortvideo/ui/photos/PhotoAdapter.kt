@@ -17,12 +17,12 @@ class PhotoAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        holder.bind(photos[position])
+        holder.bind(photos[position], onItemClick = onItemClick)
     }
 
     override fun getItemCount(): Int = photos.size
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int, payloads: MutableList<Any>) {
-        holder.bind(photos[position], payloads)
+        holder.bind(photos[position], payloads, onItemClick)
     }
 }

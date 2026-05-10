@@ -20,7 +20,8 @@
         app:tabSelectedTextColor="@color/primary"
         app:tabTextColor="@color/text_secondary"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="2dp"/>
+        app:tabIndicatorHeight="2dp"
+        app:tabRippleColor="@null"/>
 
     <!-- ViewPager2 -->
     <androidx.viewpager2.widget.ViewPager2

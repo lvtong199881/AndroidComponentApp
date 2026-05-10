@@ -16,6 +16,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentPhotosBinding
 import com.mohanlv.shortvideo.model.Photo
+import com.mohanlv.shortvideo.navigateToDetail
 import kotlinx.coroutines.launch
 
 /**
@@ -28,7 +29,9 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
     private val photosAdapter: PhotosAdapter by lazy {
         PhotosAdapter(
             photos = photos,
-            onItemClick = { _ -> },
+            onItemClick = { photo ->
+                navigateToDetail(photo = photo)
+            },
             onSearchClick = {
                 RouterManager.navigate("oneandroid://shortvideo/photos/search")
             }
@@ -60,6 +63,21 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
 
             val manager = layoutManager as StaggeredGridLayoutManager
             manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+
+            // 加载更多
+            addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as? StaggeredGridLayoutManager ?: return
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItems = layoutManager.findLastVisibleItemPositions(null)
+                    val lastVisibleItem = lastVisibleItems.maxOrNull() ?: 0
+
+                    if (lastVisibleItem >= totalItemCount - 3 && !isLoading && hasMoreData) {
+                        loadMorePhotos()
+                    }
+                }
+            })
         }
     }
 

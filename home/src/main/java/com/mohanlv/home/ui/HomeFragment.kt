@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.mohanlv.base.base.BaseFragment
+import com.mohanlv.base.utils.getStatusBarHeight
+import com.mohanlv.common.getSafeContext
 import com.mohanlv.home.databinding.FragmentHomeBinding
 import com.mohanlv.home.logE
 import com.mohanlv.network.NetworkManager
@@ -47,6 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        binding.root.updatePadding(top = getStatusBarHeight(getSafeContext()))
         setupRecyclerView()
         setupSwipeRefresh()
         setupShortVideoEntrance()

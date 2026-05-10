@@ -1,5 +1,7 @@
 package com.mohanlv.shortvideo.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -43,7 +45,7 @@ data class Video(
 
     @SerializedName("video_pictures")
     val videoPictures: List<VideoPicture>
-) {
+) : Parcelable {
     /**
      * 获取最佳质量的视频URL
      */
@@ -64,6 +66,37 @@ data class Video(
         val seconds = duration % 60
         return String.format("%02d:%02d", minutes, seconds)
     }
+
+    constructor(parcel: Parcel) : this(
+        id = parcel.readLong(),
+        width = parcel.readInt(),
+        height = parcel.readInt(),
+        url = parcel.readString() ?: "",
+        image = parcel.readString() ?: "",
+        duration = parcel.readInt(),
+        user = parcel.readParcelable(VideoUser::class.java.classLoader) ?: VideoUser(0, "", ""),
+        videoFiles = parcel.createTypedArrayList(VideoFile) ?: emptyList(),
+        videoPictures = parcel.createTypedArrayList(VideoPicture) ?: emptyList()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeInt(width)
+        parcel.writeInt(height)
+        parcel.writeString(url)
+        parcel.writeString(image)
+        parcel.writeInt(duration)
+        parcel.writeParcelable(user, flags)
+        parcel.writeTypedList(videoFiles)
+        parcel.writeTypedList(videoPictures)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<Video> {
+        override fun createFromParcel(parcel: Parcel): Video = Video(parcel)
+        override fun newArray(size: Int): Array<Video?> = arrayOfNulls(size)
+    }
 }
 
 /**
@@ -78,7 +111,26 @@ data class VideoUser(
 
     @SerializedName("url")
     val url: String
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        id = parcel.readLong(),
+        name = parcel.readString() ?: "",
+        url = parcel.readString() ?: ""
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeString(name)
+        parcel.writeString(url)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<VideoUser> {
+        override fun createFromParcel(parcel: Parcel): VideoUser = VideoUser(parcel)
+        override fun newArray(size: Int): Array<VideoUser?> = arrayOfNulls(size)
+    }
+}
 
 /**
  * 视频文件信息
@@ -101,7 +153,32 @@ data class VideoFile(
 
     @SerializedName("link")
     val link: String?
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        id = parcel.readLong(),
+        quality = parcel.readString(),
+        fileType = parcel.readString(),
+        width = parcel.readValue(Int::class.java.classLoader) as? Int,
+        height = parcel.readValue(Int::class.java.classLoader) as? Int,
+        link = parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeString(quality)
+        parcel.writeString(fileType)
+        parcel.writeValue(width)
+        parcel.writeValue(height)
+        parcel.writeString(link)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<VideoFile> {
+        override fun createFromParcel(parcel: Parcel): VideoFile = VideoFile(parcel)
+        override fun newArray(size: Int): Array<VideoFile?> = arrayOfNulls(size)
+    }
+}
 
 /**
  * 视频图片信息
@@ -115,7 +192,26 @@ data class VideoPicture(
 
     @SerializedName("picture")
     val picture: String?
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        id = parcel.readLong(),
+        nr = parcel.readValue(Int::class.java.classLoader) as? Int,
+        picture = parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeValue(nr)
+        parcel.writeString(picture)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<VideoPicture> {
+        override fun createFromParcel(parcel: Parcel): VideoPicture = VideoPicture(parcel)
+        override fun newArray(size: Int): Array<VideoPicture?> = arrayOfNulls(size)
+    }
+}
 
 /**
  * Pexels API 响应模型（Videos）

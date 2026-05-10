@@ -13,6 +13,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentVideosBinding
 import com.mohanlv.shortvideo.model.Video
+import com.mohanlv.shortvideo.navigateToDetail
 import com.mohanlv.shortvideo.ui.discover.DiscoverVideoAdapter
 import kotlinx.coroutines.launch
 
@@ -24,8 +25,8 @@ class VideosFragment : BaseFragment<FragmentVideosBinding>() {
 
     private val videos = mutableListOf<Video>()
     private val videoAdapter: DiscoverVideoAdapter by lazy {
-        DiscoverVideoAdapter(videos) { _ ->
-            // 点击视频事件
+        DiscoverVideoAdapter(videos) { video ->
+            navigateToDetail(video = video)
         }
     }
 
