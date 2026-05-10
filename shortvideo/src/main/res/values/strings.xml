@@ -29,4 +29,6 @@
     <string name="back_desc">Back</string>
     <string name="clear_desc">Clear</string>
     <string name="fragment_not_found">Fragment not found</string>
+    <string name="unmute_desc">Unmute</string>
+    <string name="mute_desc">Mute</string>
 </resources>

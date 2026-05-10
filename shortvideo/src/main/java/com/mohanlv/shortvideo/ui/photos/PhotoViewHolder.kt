@@ -14,7 +14,7 @@ import com.mohanlv.shortvideo.model.Photo
  */
 class PhotoViewHolder(private val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(photo: Photo, payloads: MutableList<Any> = mutableListOf()) {
+    fun bind(photo: Photo, payloads: MutableList<Any> = mutableListOf(), onItemClick: ((Photo) -> Unit)? = null) {
         if (payloads.isEmpty()) {
             binding.imagePhoto.setAspectRatio(photo.width, photo.height)
             binding.imagePhoto.setBackgroundColor(
@@ -29,7 +29,7 @@ class PhotoViewHolder(private val binding: ItemPhotoBinding) : RecyclerView.View
         }
 
         binding.root.setOnClickListener {
-            // onItemClick(photo)
+            onItemClick?.invoke(photo)
         }
     }
 

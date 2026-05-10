@@ -16,6 +16,7 @@ import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.databinding.FragmentPhotosBinding
 import com.mohanlv.shortvideo.model.Photo
+import com.mohanlv.shortvideo.ui.detail.PVDetailFragment
 import kotlinx.coroutines.launch
 
 /**
@@ -28,7 +29,9 @@ class PhotosFragment : BaseFragment<FragmentPhotosBinding>() {
     private val photosAdapter: PhotosAdapter by lazy {
         PhotosAdapter(
             photos = photos,
-            onItemClick = { _ -> },
+            onItemClick = { photo ->
+                PVDetailFragment.navigateToPhoto(photo.src.original, photo.src.large, photo.photographer)
+            },
             onSearchClick = {
                 RouterManager.navigate("oneandroid://shortvideo/photos/search")
             }

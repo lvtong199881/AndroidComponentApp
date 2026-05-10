@@ -29,4 +29,6 @@
     <string name="video_thumbnail_desc">视频缩略图</string>
     <string name="play_video_desc">播放视频</string>
     <string name="fragment_not_found">未找到页面</string>
+    <string name="unmute_desc">开启声音</string>
+    <string name="mute_desc">静音</string>
 </resources>
