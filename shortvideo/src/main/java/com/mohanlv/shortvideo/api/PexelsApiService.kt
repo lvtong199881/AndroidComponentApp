@@ -53,7 +53,10 @@ interface PexelsApiService {
     suspend fun searchPhotos(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
-        @Query("per_page") perPage: Int = 15
+        @Query("per_page") perPage: Int = 15,
+        @Query("orientation") orientation: String? = null,
+        @Query("size") size: String? = null,
+        @Query("color") color: String? = null
     ): Response<PexelsPhotoResponse>
 
     // ==================== Videos API ====================
