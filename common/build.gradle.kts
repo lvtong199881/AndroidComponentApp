@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mohanlv.login"
+    namespace = "com.mohanlv.common"
     compileSdk = 35
 
     defaultConfig {
@@ -28,7 +28,6 @@ android {
     }
 
     kotlinOptions { jvmTarget = "17" }
-
     buildFeatures { viewBinding = true }
 }
 
@@ -41,15 +40,43 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.mohanlv:common:1.0.2")
-    api("com.google.code.gson:gson:2.10.1")
-    testImplementation("junit:junit:4.13.2")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    kapt("com.mohanlv:init-annotator:1.0.1")
+    // 基础模块
+    api("com.mohanlv:base:1.2.33")
+    api("com.mohanlv:network:1.2.20")
+    api("com.mohanlv:router:1.2.15")
+    api("com.mohanlv:startup:1.2.34")
+    api("com.mohanlv:logger:1.2.31")
+    api("com.mohanlv:reactnative:1.2.13")
+    api("com.mohanlv:websdk:1.2.20")
+
+    // 网络库
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // 图片库
+    implementation("io.coil-kt:coil:2.5.0")
+
+    // JSON
+    api("com.google.code.gson:gson:2.10.1")
+
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")
     kapt("com.mohanlv:router-annotator:1.0.1")
+
+    testImplementation("junit:junit:4.13.2")
+}
+
+kapt {
+    arguments {
+        arg("routerCollectorPackage", "com.mohanlv.common")
+        arg("routerCollectorModuleName", "common")
+    }
 }
 
 // 显式声明发布任务依赖 assembleRelease
@@ -62,15 +89,15 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.mohanlv"
-            artifactId = "login"
+            artifactId = "common"
             val moduleVersion = project.findProperty("$artifactId.version")?.toString() ?: "1.0.0"
             version = moduleVersion
-            artifact(file("build/outputs/aar/login-release.aar")) {
+            artifact(file("build/outputs/aar/common-release.aar")) {
                 extension = "aar"
             }
             pom {
-                name.set("login")
-                description.set("Android Component: login")
+                name.set("common")
+                description.set("Android Component: common")
                 licenses {
                     license {
                         name.set("MIT")
@@ -92,14 +119,5 @@ publishing {
                 }
             }
         }
-    }
-}
-
-kapt {
-    arguments {
-        arg("initCollectorPackage", "com.mohanlv.login")
-        arg("initCollectorModuleName", "login")
-        arg("routerCollectorPackage", "com.mohanlv.login")
-        arg("routerCollectorModuleName", "login")
     }
 }
