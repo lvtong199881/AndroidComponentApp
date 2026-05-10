@@ -3,15 +3,14 @@ package com.mohanlv.shortvideo.ui.discover
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mohanlv.base.base.BaseFragment
+import com.mohanlv.base.utils.getStatusBarHeight
+import com.mohanlv.common.getSafeContext
 import com.mohanlv.router.annotation.Route
 import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.FragmentDiscoverBinding
-import com.mohanlv.shortvideo.ui.discover.DiscoverPagerAdapter
 
 /**
  * 发现页面
@@ -27,16 +26,8 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setupWindowInsets()
+        binding.tabLayout.updatePadding(top = getStatusBarHeight(getSafeContext()))
         setupViewPager()
-    }
-
-    private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.tabLayout.updatePadding(top = insets.top)
-            WindowInsetsCompat.CONSUMED
-        }
     }
 
     private fun setupViewPager() {

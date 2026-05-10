@@ -27,7 +27,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
 
@@ -39,7 +38,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    implementation("com.mohanlv:common:1.0.7")
+    implementation("com.mohanlv:common:1.0.9")
 
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")

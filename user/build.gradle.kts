@@ -26,8 +26,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
 
@@ -38,7 +36,7 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.mohanlv:common:1.0.7")
+    implementation("com.mohanlv:common:1.0.9")
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.google.code.gson:gson:2.10.1")
 

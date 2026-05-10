@@ -27,7 +27,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
 
@@ -38,7 +37,7 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    implementation("com.mohanlv:common:1.0.7")
+    implementation("com.mohanlv:common:1.0.9")
     // Retrofit + OkHttp (network:1.0.1 未暴露这些 transitive 依赖)
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0")
