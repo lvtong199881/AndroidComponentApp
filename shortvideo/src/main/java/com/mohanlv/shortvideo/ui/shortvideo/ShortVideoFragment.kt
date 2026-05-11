@@ -18,6 +18,7 @@ import com.mohanlv.shortvideo.databinding.FragmentShortVideoBinding
 import com.mohanlv.shortvideo.model.Video
 import com.mohanlv.shortvideo.api.PexelsApiClient
 import com.mohanlv.shortvideo.log
+import com.mohanlv.common.shape
 import kotlinx.coroutines.launch
 
 /**
@@ -47,6 +48,12 @@ class ShortVideoFragment : BaseFragment<FragmentShortVideoBinding>() {
     }
 
     private fun setupToolbar() {
+        binding.toolbar.background = shape {
+            gradient {
+                orientation = android.graphics.drawable.GradientDrawable.Orientation.BOTTOM_TOP
+                gradientColorsString = listOf("#80000000", "#00000000")
+            }
+        }
         binding.toolbar.setNavigationOnClickListener {
             RouterManager.popBackStack()
         }

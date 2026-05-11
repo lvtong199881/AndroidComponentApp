@@ -33,7 +33,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:background="@drawable/bg_play_icon"
+            
             android:src="@android:drawable/ic_media_play"
             android:visibility="gone"
             android:contentDescription="@string/play_video_desc" />

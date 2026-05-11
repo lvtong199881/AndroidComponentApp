@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="8dp"
-            android:background="@drawable/bg_duration_tag"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
             android:textColor="@android:color/white"
@@ -35,11 +34,11 @@
 
         <!-- 播放图标 -->
         <ImageView
+            android:id="@+id/ivPlay"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:src="@android:drawable/ic_media_play"
-            android:background="@drawable/bg_play_icon"
             android:padding="12dp"
             android:contentDescription="@string/play_video_desc"/>
 
