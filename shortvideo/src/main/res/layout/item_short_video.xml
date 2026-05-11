@@ -30,7 +30,6 @@
         android:id="@+id/ivPlayIcon"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:background="@drawable/bg_circle_semi_transparent"
         android:contentDescription="@string/play_icon_desc"
         android:padding="16dp"
         android:src="@android:drawable/ic_media_play"
@@ -44,7 +43,6 @@
         android:id="@+id/bottomArea"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_gradient_bottom"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         android:paddingTop="16dp"
@@ -81,9 +79,7 @@
             android:paddingEnd="0dp"
             android:progress="0"
             android:thumbOffset="0dp"
-            android:splitTrack="false"
-            android:progressDrawable="@drawable/seekbar_progress"
-            android:thumb="@drawable/seekbar_thumb" />
+            android:splitTrack="false" />
 
 
 

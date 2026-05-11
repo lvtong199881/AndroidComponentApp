@@ -28,6 +28,8 @@ import com.mohanlv.shortvideo.databinding.PanelFilterBinding
 import com.mohanlv.shortvideo.model.Photo
 import com.mohanlv.shortvideo.navigateToDetail
 import com.mohanlv.shortvideo.ui.photos.PhotoAdapter
+import com.mohanlv.common.dpFloat
+import com.mohanlv.common.shape
 import kotlinx.coroutines.launch
 
 /**
@@ -100,6 +102,14 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     private fun setupSearchBar() {
         binding.btnBack.setOnClickListener {
             RouterManager.popBackStack()
+        }
+        binding.layoutSearchInput.background = shape {
+            solidColorString = "#F5F5F5"
+            cornerRadius = 20f.dpFloat
+        }
+        binding.btnSearch.background = shape {
+            solidColorString = "#6200EE"
+            cornerRadius = 20f.dpFloat
         }
 
         binding.btnClear.setOnClickListener {
@@ -230,7 +240,10 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
             true
         ).apply {
             elevation = 8f
-            setBackgroundDrawable(resources.getDrawable(R.drawable.bg_popup_filter, null))
+            setBackgroundDrawable(shape {
+                solidColorString = "#1AFFFFFF"
+                cornerRadius = 8f.dpFloat
+            })
         }
 
         val titleText = popupView.findViewById<TextView>(R.id.textTitle)

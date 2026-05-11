@@ -3,7 +3,13 @@ package com.mohanlv.shortvideo.ui.shortvideo
 import android.view.View
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ClipDrawable
+import android.view.Gravity
 import com.mohanlv.base.utils.ImageLoader
+import com.mohanlv.common.dpFloat
+import com.mohanlv.common.shape
 import com.mohanlv.shortvideo.R
 import com.mohanlv.shortvideo.databinding.ItemShortVideoBinding
 import com.mohanlv.shortvideo.model.Video
@@ -25,6 +31,30 @@ class VideoViewHolder(
     private var video: Video? = null
     private var isPlaying = false
     private var progressTimer: Timer? = null
+
+    init {
+        binding.ivPlayIcon.background = shape { solidColorString = "#80000000" }
+        binding.bottomArea.background = shape {
+            gradient {
+                orientation = GradientDrawable.Orientation.TOP_BOTTOM
+                gradientColorsString = listOf("#80000000", "#00000000")
+            }
+        }
+        val bgDrawable = shape {
+            solidColorString = "#4DFFFFFF"
+            cornerRadius = 2f.dpFloat
+        }
+        val progressDrawable = shape {
+            solidColorString = "#66FFFFFF"
+            cornerRadius = 2f.dpFloat
+        }
+        val clipDrawable = ClipDrawable(progressDrawable, Gravity.END, 0)
+        binding.seekBarProgress.progressDrawable = LayerDrawable(arrayOf(bgDrawable, clipDrawable)).apply {
+            setId(0, android.R.id.background)
+            setId(1, android.R.id.progress)
+        }
+        binding.seekBarProgress.thumb = shape { solidColorString = "#e02e24" }
+    }
 
     private val progressUpdateTask = object : TimerTask() {
         override fun run() {

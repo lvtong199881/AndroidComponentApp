@@ -16,6 +16,7 @@ import com.mohanlv.shortvideo.databinding.FragmentPvDetailBinding
 import com.mohanlv.shortvideo.model.Photo
 import com.mohanlv.shortvideo.model.Video
 import com.mohanlv.common.GsonUtils
+import com.mohanlv.common.shape
 
 /**
  * 图片/视频详情页面
@@ -68,6 +69,7 @@ class PVDetailFragment : BaseFragment<FragmentPvDetailBinding>() {
         binding.videoContent.visibility = View.GONE
         binding.btnPlay.visibility = View.VISIBLE
         binding.btnMute.visibility = View.VISIBLE
+        binding.btnPlay.background = shape { solidColorString = "#e02e24" }
 
         binding.btnMute.setOnClickListener { toggleMute() }
 

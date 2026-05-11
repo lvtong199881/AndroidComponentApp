@@ -11,6 +11,8 @@ import android.widget.PopupWindow
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.mohanlv.shortvideo.R
+import com.mohanlv.common.dpFloat
+import com.mohanlv.common.shape
 
 /**
  * 筛选面板弹窗
@@ -35,6 +37,10 @@ class FilterPanelPopup(
 
     init {
         val view = View.inflate(ctx, R.layout.panel_filter, null)
+        view.background = shape {
+            solidColorString = "#1AFFFFFF"
+            cornerRadius = 8f.dpFloat
+        }
 
         chipGroupOrientation = view.findViewById(R.id.chipGroupOrientation)
         chipGroupSize = view.findViewById(R.id.chipGroupSize)
@@ -42,6 +48,19 @@ class FilterPanelPopup(
 
         val btnReset = view.findViewById<View>(R.id.btnReset)
         val btnConfirm = view.findViewById<View>(R.id.btnConfirm)
+
+        btnReset.background = shape {
+            solidColorString = "#00000000"
+            stroke {
+                strokeColorString = "#E0E0E0"
+                strokeWidth = 1f.dpFloat.toInt()
+            }
+            cornerRadius = 20f.dpFloat
+        }
+        btnConfirm.background = shape {
+            solidColorString = "#FFFFFF"
+            cornerRadius = 20f.dpFloat
+        }
 
         setupChips()
 
