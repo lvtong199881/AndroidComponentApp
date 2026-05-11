@@ -57,9 +57,7 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     private var currentSize = ""
     private var currentColor = ""
 
-    private var tempOrientation = ""
-    private var tempSize = ""
-    private var tempColor = ""
+    private var filterPanelPopup: FilterPanelPopup? = null
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentSearchPhotoBinding {
         return FragmentSearchPhotoBinding.inflate(inflater, container, false)
@@ -108,6 +106,14 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
             binding.editSearch.setText("")
         }
 
+        binding.editSearch.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                binding.btnClear.visibility = if (s.isNullOrEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+            }
+        })
+
         binding.btnSearch.setOnClickListener {
             performSearch()
         }
@@ -133,108 +139,33 @@ class SearchPhotoFragment : BaseFragment<FragmentSearchPhotoBinding>() {
     }
 
     private fun showFilterPanel() {
-        tempOrientation = currentOrientation
-        tempSize = currentSize
-        tempColor = currentColor
-
-        val panelBinding = PanelFilterBinding.inflate(LayoutInflater.from(requireContext()))
-        val popupWindow = PopupWindow(
-            panelBinding.root,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
-            elevation = 8f
-            setBackgroundDrawable(ColorDrawable(Color.WHITE))
-            inputMethodMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
-            softInputMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
-        }
-
-        setupPanelChips(panelBinding)
-
-        panelBinding.btnReset.setOnClickListener {
-            tempOrientation = ""
-            tempSize = ""
-            tempColor = ""
-            setupPanelChips(panelBinding)
-        }
-
-        panelBinding.btnConfirm.setOnClickListener {
-            currentOrientation = tempOrientation
-            currentSize = tempSize
-            currentColor = tempColor
-            updateChipStates()
-            popupWindow.dismiss()
-            if (currentQuery.isNotEmpty()) {
-                performSearch()
-            }
-        }
-
-        panelBinding.root.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        popupWindow.setAnimationStyle(R.style.Animation_Panel)
-        popupWindow.showAsDropDown(binding.btnMenu)
-    }
-
-    private fun setupPanelChips(panelBinding: PanelFilterBinding) {
-        panelBinding.chipGroupOrientation.removeAllViews()
-        panelBinding.chipGroupSize.removeAllViews()
-        panelBinding.chipGroupColor.removeAllViews()
-
-        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_landscape, "landscape", tempOrientation) { tempOrientation = it }
-        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_portrait, "portrait", tempOrientation) { tempOrientation = it }
-        addPanelChip(panelBinding.chipGroupOrientation, R.string.filter_orientation_square, "square", tempOrientation) { tempOrientation = it }
-
-        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_large, "large", tempSize) { tempSize = it }
-        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_medium, "medium", tempSize) { tempSize = it }
-        addPanelChip(panelBinding.chipGroupSize, R.string.filter_size_small, "small", tempSize) { tempSize = it }
-
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_black, "black", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_black_white, "black_and_white", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_red, "red", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_orange, "orange", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_yellow, "yellow", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_green, "green", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_turquoise, "turquoise", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_blue, "blue", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_violet, "violet", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_pink, "pink", tempColor) { tempColor = it }
-        addPanelChip(panelBinding.chipGroupColor, R.string.filter_color_brown, "brown", tempColor) { tempColor = it }
-    }
-
-    private fun addPanelChip(chipGroup: ChipGroup, labelRes: Int, value: String, currentValue: String, onSelected: (String) -> Unit) {
-        val chip = Chip(requireContext()).apply {
-            text = getString(labelRes)
-            isCheckable = true
-            isChecked = value == currentValue
-            chipBackgroundColor = ColorStateList.valueOf(
-                if (value == currentValue) Color.parseColor("#2196F3") else Color.parseColor("#1F000000")
-            )
-            setTextColor(if (value == currentValue) Color.WHITE else resources.getColor(R.color.text_primary, null))
-            isCloseIconVisible = value == currentValue
-            closeIconTint = ColorStateList.valueOf(Color.WHITE)
-            setCloseIconResource(R.drawable.ic_chip_close)
-            isCheckedIconVisible = false
-            setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    // Uncheck all other chips in the group
-                    for (i in 0 until chipGroup.childCount) {
-                        val otherChip = chipGroup.getChildAt(i) as? Chip
-                        if (otherChip != null && otherChip != this) {
-                            otherChip.isChecked = false
-                            otherChip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#1F000000"))
-                            otherChip.setTextColor(resources.getColor(R.color.text_primary, null))
-                            otherChip.isCloseIconVisible = false
-                        }
+        if (filterPanelPopup?.isShowing == true) {
+            filterPanelPopup?.dismiss()
+        } else {
+            filterPanelPopup?.dismiss()
+            filterPanelPopup = FilterPanelPopup(
+                context = requireContext(),
+                currentOrientation = currentOrientation,
+                currentSize = currentSize,
+                currentColor = currentColor,
+                onReset = {
+                    updateChipStates()
+                    if (currentQuery.isNotEmpty()) {
+                        performSearch()
                     }
-                    // Style this chip as selected
-                    chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#2196F3"))
-                    setTextColor(Color.WHITE)
-                    isCloseIconVisible = true
-                    onSelected(value)
+                },
+                onConfirm = { orientation, size, color ->
+                    currentOrientation = orientation
+                    currentSize = size
+                    currentColor = color
+                    updateChipStates()
+                    if (currentQuery.isNotEmpty()) {
+                        performSearch()
+                    }
                 }
-            }
+            )
+            filterPanelPopup?.show(binding.btnMenu)
         }
-        chipGroup.addView(chip)
     }
 
     private fun updateChipStates() {
