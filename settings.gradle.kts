@@ -5,7 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        id("com.android.library") version "8.5.0"
+        id("com.android.library") version "8.7.0"
         id("org.jetbrains.kotlin.android") version "2.2.10"
         id("com.facebook.react") version "0.76.9"
     }
@@ -43,9 +43,9 @@ dependencyResolutionManagement {
     }
 }
 
-// 壳工程app
-include(":app")
-project(":app").projectDir = File(rootDir, "../ComponentHostApp/app")
+// 壳工程app（暂时禁用，因签名配置问题）
+// include(":app")
+// project(":app").projectDir = File(rootDir, "../ComponentHostApp/app")
 
 // 组件模块（独立的 Gradle 项目）
 include(":common")
