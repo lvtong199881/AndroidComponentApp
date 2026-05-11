@@ -46,11 +46,11 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // 基础模块
-    api("com.mohanlv:base:1.2.33")
-    api("com.mohanlv:network:1.2.20")
-    api("com.mohanlv:router:1.2.15")
-    api("com.mohanlv:startup:1.2.34")
-    api("com.mohanlv:logger:1.2.31")
+    api("com.mohanlv:base:1.2.34")
+    api("com.mohanlv:network:1.2.21")
+    api("com.mohanlv:router:1.2.16")
+    api("com.mohanlv:startup:1.2.35")
+    api("com.mohanlv:logger:1.2.32")
     api("com.mohanlv:reactnative:1.2.13")
     api("com.mohanlv:websdk:1.2.20")
     api("com.mohanlv:login:1.2.17")
