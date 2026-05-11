@@ -16,8 +16,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
-        android:background="@color/surface"
-        android:elevation="4dp">
+        android:background="@color/surface">
 
         <!-- 返回按钮 -->
         <ImageButton
@@ -29,37 +28,45 @@
             android:contentDescription="@string/back_desc"/>
 
         <!-- 搜索输入框 -->
-        <EditText
-            android:id="@+id/editSearch"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:layout_marginHorizontal="12dp"
-            android:paddingHorizontal="16dp"
             android:background="@drawable/bg_search_input"
-            android:hint="@string/search_photos_hint"
-            android:textColorHint="@color/text_secondary"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:singleLine="true"
-            android:imeOptions="actionSearch"
-            android:inputType="text"/>
+            android:gravity="center_vertical">
 
-        <!-- 清空按钮 -->
-        <ImageButton
-            android:id="@+id/btnClear"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_clear"
-            android:visibility="gone"
-            android:contentDescription="@string/clear_desc"/>
+            <EditText
+                android:id="@+id/editSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingHorizontal="16dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/search_photos_hint"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
+
+            <ImageButton
+                android:id="@+id/btnClear"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_clear"
+                android:visibility="gone"
+                android:contentDescription="@string/clear_desc"/>
+
+        </LinearLayout>
 
         <!-- 搜索按钮 -->
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
-            android:layout_height="44dp"
+            android:layout_height="40dp"
             android:paddingHorizontal="16dp"
             android:background="@drawable/bg_search_button"
             android:text="@string/search"
@@ -67,6 +74,12 @@
             android:textSize="14sp"/>
 
     </LinearLayout>
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"/>
 
     <!-- 筛选项栏 -->
     <LinearLayout
