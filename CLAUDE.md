@@ -23,3 +23,15 @@
 - 我说"帮我看看" → 只分析问题不改代码
 - 涉及新增模块 -> 二次确认
 - 不确定业务逻辑 → 问我，不要猜
+
+## 代码规范
+
+### RecyclerView 列表规范
+- **Adapter 继承**：`RecyclerView.Adapter<XXXViewHolder>`，禁止使用 `ListAdapter`
+- **ViewHolder 写法**：
+  - 必须独立成文件，不允许 `inner class`
+  - 点击回调通过构造方法传递：`ViewHolder(binding) { }`
+  - bind 方法接收完整数据模型，不在 ViewHolder 内持有数据列表
+- 禁止新增xml文件写shape，必须使用[ShapeBuilder.kt](common/src/main/java/com/mohanlv/common/ShapeBuilder.kt)
+- 禁止新增或修改模块依赖
+- layout文件根布局必须使用`ConstraintLayout`

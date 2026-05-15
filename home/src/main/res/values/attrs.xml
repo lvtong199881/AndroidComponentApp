@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TagView">
+        <attr name="tagText" format="string" />
+        <attr name="tagBackgroundColor" format="color" />
+        <attr name="tagBorderColor" format="color" />
+        <attr name="tagTextColor" format="color" />
+        <attr name="tagCornerRadius" format="dimension" />
+        <attr name="tagTextSize" format="dimension" />
+        <attr name="tagBorderWidth" format="dimension" />
+    </declare-styleable>
+</resources>
