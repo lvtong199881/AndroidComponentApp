@@ -7,4 +7,8 @@
     <string name="rn">RN</string>
     <string name="short_video">短视频</string>
     <string name="short_video_desc">播放短视频</string>
+    <string name="private_tag">私密</string>
+    <string name="collection_empty">合集内容为空</string>
+    <string name="load_failed">加载失败</string>
+    <string name="retry">重试</string>
 </resources>

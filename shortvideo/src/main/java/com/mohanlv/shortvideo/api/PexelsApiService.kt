@@ -5,7 +5,6 @@ import com.mohanlv.shortvideo.model.PexelsResponse
 import com.mohanlv.shortvideo.model.Video
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 /**
