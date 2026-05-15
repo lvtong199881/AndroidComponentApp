@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohanlv.base.base.BaseFragment
@@ -12,9 +13,9 @@ import com.mohanlv.common.getSafeContext
 import com.mohanlv.home.api.PexelsApiClient
 import com.mohanlv.home.databinding.FragmentCollectionDetailBinding
 import com.mohanlv.home.logE
-import com.mohanlv.home.model.MediaItem
+import com.mohanlv.home.navigateToDetail
+import com.mohanlv.router.RouterManager
 import com.mohanlv.router.annotation.Route
-import androidx.core.view.updatePadding
 import kotlinx.coroutines.launch
 
 /**
@@ -25,6 +26,7 @@ class CollectionDetailFragment : BaseFragment<FragmentCollectionDetailBinding>()
 
     companion object {
         private const val EXTRA_COLLECTION_ID = "collection_id"
+        private const val EXTRA_COLLECTION_TITLE = "collection_title"
     }
 
     private val apiService = PexelsApiClient.apiService
@@ -33,6 +35,7 @@ class CollectionDetailFragment : BaseFragment<FragmentCollectionDetailBinding>()
     }
 
     private var collectionId: String? = null
+    private var collectionTitle: String? = null
     private var isLoading = false
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentCollectionDetailBinding {
@@ -41,8 +44,15 @@ class CollectionDetailFragment : BaseFragment<FragmentCollectionDetailBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        binding.root.updatePadding(top = getStatusBarHeight(getSafeContext()))
+        binding.toolbar.updatePadding(top = getStatusBarHeight(getSafeContext()))
+        binding.toolbar.setNavigationOnClickListener {
+            RouterManager.popBackStack()
+        }
+
         collectionId = arguments?.getString(EXTRA_COLLECTION_ID)
+        collectionTitle = arguments?.getString(EXTRA_COLLECTION_TITLE)
+        binding.toolbar.title = collectionTitle ?: ""
+
         setupRecyclerView()
         setupRetry()
     }
@@ -127,10 +137,5 @@ class CollectionDetailFragment : BaseFragment<FragmentCollectionDetailBinding>()
         binding.recyclerView.visibility = View.GONE
         binding.layoutEmpty.visibility = View.GONE
         binding.layoutError.visibility = View.VISIBLE
-    }
-
-    private fun navigateToDetail(media: MediaItem) {
-        // TODO BY @author: 跳转到详情页
-        logE("CollectionDetailFragment::点击媒体 id=${media.id}, type=${media.type}")
     }
 }

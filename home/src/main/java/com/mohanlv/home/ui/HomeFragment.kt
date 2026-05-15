@@ -54,7 +54,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     "oneandroid://home/collection/detail",
                     Bundle().apply {
                         putString("collection_id", id)
-                        putString("collection_title", collection.title)
+                        putString("collection_title", collection.title ?: "")
                     }
                 )
             }
