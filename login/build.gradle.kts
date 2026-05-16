@@ -11,9 +11,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
+            }
 
     buildTypes {
         release {
@@ -48,8 +46,7 @@ dependencies {
     implementation("com.mohanlv:startup:1.2.35")
     implementation("com.mohanlv:logger:1.2.32")
     api("com.google.code.gson:gson:2.10.1")
-    testImplementation("junit:junit:4.13.2")
-
+    
     kapt("com.mohanlv:init-annotator:1.0.1")
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")

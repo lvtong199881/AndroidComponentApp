@@ -11,8 +11,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -27,7 +25,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions { jvmTarget = "17" }
     buildFeatures { viewBinding = true }
 }
 
@@ -69,8 +66,6 @@ dependencies {
     // 路由注解
     compileOnly("com.mohanlv:router-annotation:1.0.1")
     kapt("com.mohanlv:router-annotator:1.0.1")
-
-    testImplementation("junit:junit:4.13.2")
 }
 
 kapt {
